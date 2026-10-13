@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# bri — Bristol FSAI Sim2 convenience CLI.
+# Dispatches `bri <command> [args...]` to commands/<command>.sh.
+# Add a new command by dropping a file into commands/ — no edits needed here.
+
+set -euo pipefail
+
+# Resolve the real install location even when invoked via the /usr/local/bin/bri symlink.
+SELF="$(readlink -f "${BASH_SOURCE[0]}")"
+BRI_DIR="$(dirname "$SELF")"
+COMMANDS_DIR="$BRI_DIR/commands"
+
+# EUFS_MASTER points at the colcon workspace root. The devcontainer sets it; fall back to
+# bri_cli's parent so the CLI also works if you copy it elsewhere.
+export EUFS_MASTER="${EUFS_MASTER:-$(dirname "$BRI_DIR")}"
+
+usage() {
+    cat <<EOF
+bri — Bristol FSAI Sim2 CLI
+
+Usage: bri <command> [args...]
+
+Commands:
+$(for f in "$COMMANDS_DIR"/*.sh; do
+    name=$(basename "$f" .sh)
+    desc=$(grep -m1 '^# desc:' "$f" 2>/dev/null | sed 's/^# desc: //')
+    printf '  %-10s %s\n' "$name" "$desc"
+done)
+
+Run 'bri <command> --help' for command-specific options (where supported).
+EOF
+}
+
+CMD="${1:-help}"
+shift || true
+
+case "$CMD" in
+    -h|--help|help|"")
+        usage
+        ;;
+    *)
+        SCRIPT="$COMMANDS_DIR/$CMD.sh"
+        if [[ -x "$SCRIPT" ]]; then
+            exec "$SCRIPT" "$@"
+        elif [[ -f "$SCRIPT" ]]; then
+            exec bash "$SCRIPT" "$@"
+        else
+            echo "bri: unknown command '$CMD'" >&2
+            echo "" >&2
+            usage >&2
+            exit 1
+        fi
+        ;;
+esac

@@ -1,0 +1,19 @@
+cone_position_estimator:
+  # Depth filtering parameters
+  closest_depth: 0.5
+  furthest_depth: 15.0
+  
+  # Cone detection parameters
+  fallen_cone_size_ratio: 2.0
+  
+  # Buffer settings
+  depth_buffer_size: 10
+
+  perception_logging_dir: "perception_logs"
+
+yolo_node:
+  # Model file path
+  # model_path: "models/yolov11n_640.pt"
+  model_path: "models/yolov11s_1024.pt"
+  perception_logging_dir: "perception_logs"
+  model_conf_threshold: 0.7

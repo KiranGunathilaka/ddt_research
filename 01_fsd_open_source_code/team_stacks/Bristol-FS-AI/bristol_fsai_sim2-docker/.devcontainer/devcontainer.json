@@ -1,0 +1,45 @@
+{
+  "name": "bristol-fsai-sim2",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "USERNAME": "vscode"
+    }
+  },
+  "remoteUser": "vscode",
+  "runArgs": [
+    "--privileged",
+    "--network=host",
+    "--ipc=host"
+    // "--gpus=all"
+  ],
+  "workspaceMount": "source=${localWorkspaceFolder},target=/${localWorkspaceFolderBasename},type=bind",
+  "workspaceFolder": "/${localWorkspaceFolderBasename}",
+  "forwardPorts": [8765],
+  "portsAttributes": {
+    "8765": {
+      "label": "foxglove_bridge",
+      "onAutoForward": "notify"
+    }
+  },
+  "mounts": [
+    "source=${localEnv:HOME}/.bash_history,target=/home/vscode/.bash_history,type=bind"
+  ],
+  "containerEnv": {
+    "EUFS_MASTER": "/${localWorkspaceFolderBasename}"
+  },
+  "postCreateCommand": "sudo rosdep install --from-paths /${localWorkspaceFolderBasename} --ignore-src -r -y || true; bash /${localWorkspaceFolderBasename}/bri_cli/install.sh",
+  "postStartCommand": "bash -c 'source /opt/ros/humble/setup.bash && nohup ros2 run foxglove_bridge foxglove_bridge --ros-args -p port:=8765 > /tmp/foxglove_bridge.log 2>&1 &'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "twxs.cmake",
+        "ms-vscode.cmake-tools",
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-iot.vscode-ros"
+      ]
+    }
+  }
+}
