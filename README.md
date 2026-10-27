@@ -5,6 +5,10 @@ Research archive and design notes for Falcon's Formula Student UK FS-AI entry (D
 Open these in a browser:
 
 - `sensors_and_autonomy_stack.html` — which sensors and computer to fit, and the autonomy stack we plan to build
+- `ddt_architecture_and_testing.html` — system architecture, vehicle profiles and test plan; FS-AI results, how teams without a car did it, sensors, cones, the ADS-DV vehicle model and landed cost in LKR
+- `xlsx/ddt_essential_costs.xlsx` — essential parts with landed cost, power budget, Jetson vs PC, FSG x86 teams
+- `ddt_compute_options.html` — which computer to fit to the ADS-DV without the Orin: seven options compared, landed cost in LKR
+- `ads_dv_explorer.html` — interactive 3D ADS-DV with see-through, exploded and cut-away views: every plug, switch, internal unit and colour-coded cable, plus dimensions, CAN interface and rules, each linked to its source; self-contained, so it can be shared on its own (the official CAD loads from IMechE's GitHub on request; `figures/src/ads_dv_outline.js` rebuilds the simplified model's outline)
 - `index.html` — inventory of everything collected here, with source URLs and commits (`sources.json` is the same data)
 
 ## Layout
