@@ -1,0 +1,325 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1850" height="1130" viewBox="0 0 1850 1130" font-family="DejaVu Sans, Segoe UI, Helvetica, Arial, sans-serif">
+<title>Falcon DDT system architecture: vehicle, perception, localisation, planning and control, system</title>
+<defs><marker id="ah0b5cad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0b5cad"/></marker><marker id="ah1a7f4b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1a7f4b"/></marker><marker id="ah334155" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#334155"/></marker><marker id="ah4b5563" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4b5563"/></marker><marker id="ah6d28d9" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6d28d9"/></marker><marker id="ahb45309" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b45309"/></marker></defs>
+<rect width="1850" height="1130" fill="#ffffff"/>
+<text x="20.0" y="28.0" font-size="18" font-weight="bold" fill="#111827" text-anchor="start">Falcon FS-AI DDT: system architecture</text>
+<rect x="20" y="40" width="506" height="740" rx="12" fill="#faf7ff" stroke="#6d28d9" stroke-opacity="0.45" stroke-width="1.4"/>
+<text x="34.0" y="62.0" font-size="14" font-weight="bold" fill="#6d28d9" text-anchor="start">1 · VEHICLE</text>
+<text x="136.9" y="62.0" font-size="11.5" font-weight="normal" fill="#6b7280" text-anchor="start">sensors, drivers, time, CAN</text>
+<rect x="596" y="40" width="530" height="740" rx="12" fill="#f6f9fe" stroke="#0b5cad" stroke-opacity="0.45" stroke-width="1.4"/>
+<text x="610.0" y="62.0" font-size="14" font-weight="bold" fill="#0b5cad" text-anchor="start">2 · PERCEPTION</text>
+<text x="745.9" y="62.0" font-size="11.5" font-weight="normal" fill="#6b7280" text-anchor="start">where the cones are, and their colour</text>
+<rect x="1196" y="40" width="260" height="740" rx="12" fill="#f5fbf7" stroke="#1a7f4b" stroke-opacity="0.45" stroke-width="1.4"/>
+<text x="1210.0" y="62.0" font-size="14" font-weight="bold" fill="#1a7f4b" text-anchor="start">3 · LOCALISATION</text>
+<rect x="1526" y="40" width="260" height="740" rx="12" fill="#fffaf3" stroke="#b45309" stroke-opacity="0.45" stroke-width="1.4"/>
+<text x="1540.0" y="62.0" font-size="14" font-weight="bold" fill="#b45309" text-anchor="start">4 · PLANNING + CONTROL</text>
+<rect x="20" y="846" width="1766" height="184" rx="12" fill="#f8f9fb" stroke="#334155" stroke-opacity="0.45" stroke-width="1.4"/>
+<text x="34.0" y="868.0" font-size="14" font-weight="bold" fill="#334155" text-anchor="start">5 · SYSTEM</text>
+<text x="134.1" y="868.0" font-size="11.5" font-weight="normal" fill="#6b7280" text-anchor="start">AS state, health, missions</text>
+<text x="34.0" y="84.0" font-size="11" font-weight="bold" fill="#6b7280" text-anchor="start">hardware</text>
+<text x="280.0" y="84.0" font-size="11" font-weight="bold" fill="#6b7280" text-anchor="start">drivers and time</text>
+<rect x="34" y="92" width="196" height="104" rx="8" fill="#f4f5f7" stroke="#5b6170" stroke-width="1.6"/>
+<text x="45.0" y="113.0" font-size="13" font-weight="bold" fill="#5b6170" text-anchor="start">Velodyne VLP-16</text>
+<text x="220.0" y="113.0" font-size="11.5" font-weight="bold" fill="#5b6170" text-anchor="end">10 Hz</text>
+<circle cx="48.0" cy="128.0" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="132.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">360° lidar, 16 rings</text>
+<circle cx="48.0" cy="144.5" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="148.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">about 100 m range</text>
+<circle cx="48.0" cy="161.0" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="165.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">owned</text>
+<rect x="34" y="212" width="196" height="104" rx="8" fill="#f4f5f7" stroke="#5b6170" stroke-width="1.6"/>
+<text x="45.0" y="233.0" font-size="13" font-weight="bold" fill="#5b6170" text-anchor="start">ZED 2 camera</text>
+<text x="220.0" y="233.0" font-size="11.5" font-weight="bold" fill="#5b6170" text-anchor="end">30 fps</text>
+<circle cx="48.0" cy="248.0" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="252.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">stereo: colour + depth</text>
+<circle cx="48.0" cy="264.5" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="268.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">owned</text>
+<rect x="34" y="340" width="196" height="198" rx="8" fill="#f4f5f7" stroke="#5b6170" stroke-width="1.6"/>
+<text x="45.0" y="361.0" font-size="13" font-weight="bold" fill="#5b6170" text-anchor="start">u-blox ZED-F9P</text>
+<text x="220.0" y="361.0" font-size="11.5" font-weight="bold" fill="#5b6170" text-anchor="end">10 Hz</text>
+<circle cx="48.0" cy="376.0" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="380.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">position, velocity</text>
+<circle cx="48.0" cy="392.5" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="396.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">PPS time pulse</text>
+<circle cx="48.0" cy="409.0" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="413.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">RTK corrections:</text>
+<text x="56.0" y="429.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">NTRIP over 4G,</text>
+<text x="56.0" y="446.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">if IMechE allows</text>
+<circle cx="48.0" cy="458.5" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="462.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">owned (two boards)</text>
+<rect x="34" y="556" width="196" height="80" rx="8" fill="#f4f5f7" stroke="#5b6170" stroke-width="1.6"/>
+<text x="45.0" y="577.0" font-size="13" font-weight="bold" fill="#5b6170" text-anchor="start">Xsens MTi-3 IMU</text>
+<circle cx="48.0" cy="592.0" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="596.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">yaw rate, acceleration</text>
+<circle cx="48.0" cy="608.5" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="612.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">to buy (dev kit)</text>
+<rect x="34" y="654" width="196" height="110" rx="8" fill="#f4f5f7" stroke="#5b6170" stroke-width="1.6"/>
+<text x="45.0" y="675.0" font-size="13" font-weight="bold" fill="#5b6170" text-anchor="start">ADS-DV VCU</text>
+<text x="220.0" y="675.0" font-size="11.5" font-weight="bold" fill="#5b6170" text-anchor="end">100 Hz</text>
+<circle cx="48.0" cy="690.0" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="694.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">the shared IMechE car</text>
+<circle cx="48.0" cy="706.5" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="710.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">CAN, 500 kbit/s</text>
+<circle cx="48.0" cy="723.0" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="727.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">steering, motor, brakes</text>
+<rect x="280" y="92" width="232" height="104" rx="8" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.6"/>
+<text x="291.0" y="113.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">Lidar driver</text>
+<circle cx="294.0" cy="128.0" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="132.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">Velodyne ROS 2 driver</text>
+<circle cx="294.0" cy="144.5" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="148.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">packets → point cloud</text>
+<circle cx="294.0" cy="161.0" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="165.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">stamped in GNSS time</text>
+<rect x="280" y="212" width="232" height="104" rx="8" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.6"/>
+<text x="291.0" y="233.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">Camera driver</text>
+<circle cx="294.0" cy="248.0" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="252.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">ZED ROS 2 wrapper</text>
+<circle cx="294.0" cy="264.5" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="268.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">rectified image + depth</text>
+<circle cx="294.0" cy="281.0" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="285.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">runs on the GPU</text>
+<rect x="280" y="340" width="232" height="92" rx="8" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.6"/>
+<text x="291.0" y="361.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">GNSS driver</text>
+<circle cx="294.0" cy="376.0" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="380.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">u-blox ROS 2 driver</text>
+<circle cx="294.0" cy="392.5" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="396.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">NTRIP client over 4G</text>
+<circle cx="294.0" cy="409.0" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="413.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">fix type and covariance</text>
+<rect x="280" y="446" width="232" height="92" rx="8" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.6"/>
+<text x="291.0" y="467.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">Time and frames</text>
+<circle cx="294.0" cy="482.0" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="486.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">chrony: PC clock on PPS</text>
+<circle cx="294.0" cy="498.5" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="502.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">tf: sensor poses from CAD</text>
+<text x="302.0" y="519.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">(per vehicle profile)</text>
+<rect x="280" y="556" width="232" height="80" rx="8" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.6"/>
+<text x="291.0" y="577.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">IMU driver</text>
+<circle cx="294.0" cy="592.0" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="596.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">Xsens ROS 2 driver</text>
+<circle cx="294.0" cy="608.5" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="612.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">stamped on arrival</text>
+<rect x="280" y="654" width="232" height="110" rx="8" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.6"/>
+<text x="291.0" y="675.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">CAN bridge</text>
+<text x="502.0" y="675.0" font-size="11.5" font-weight="bold" fill="#6d28d9" text-anchor="end">100 Hz</text>
+<circle cx="294.0" cy="690.0" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="694.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">FS-AI API on a CANable</text>
+<circle cx="294.0" cy="706.5" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="710.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">answers 50 ms handshake</text>
+<circle cx="294.0" cy="723.0" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="727.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">VCU2AI → ROS topics</text>
+<circle cx="294.0" cy="739.5" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="743.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">commands → AI2VCU, clamped</text>
+<rect x="610" y="92" width="214" height="104" rx="8" fill="#ebf3fc" stroke="#0b5cad" stroke-width="1.6"/>
+<text x="621.0" y="113.0" font-size="13" font-weight="bold" fill="#0b5cad" text-anchor="start">Lidar cones</text>
+<text x="814.0" y="113.0" font-size="11.5" font-weight="bold" fill="#0b5cad" text-anchor="end">≤30 ms</text>
+<circle cx="624.0" cy="128.0" r="2.1" fill="#0b5cad"/>
+<text x="632.0" y="132.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">crop, motion de-skew</text>
+<circle cx="624.0" cy="144.5" r="2.1" fill="#0b5cad"/>
+<text x="632.0" y="148.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">ground removal</text>
+<circle cx="624.0" cy="161.0" r="2.1" fill="#0b5cad"/>
+<text x="632.0" y="165.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">clustering (DBSCAN)</text>
+<circle cx="624.0" cy="177.5" r="2.1" fill="#0b5cad"/>
+<text x="632.0" y="181.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">cone size + point check</text>
+<rect x="610" y="212" width="214" height="104" rx="8" fill="#ebf3fc" stroke="#0b5cad" stroke-width="1.6"/>
+<text x="621.0" y="233.0" font-size="13" font-weight="bold" fill="#0b5cad" text-anchor="start">Camera cones</text>
+<text x="814.0" y="233.0" font-size="11.5" font-weight="bold" fill="#0b5cad" text-anchor="end">≤25 ms</text>
+<circle cx="624.0" cy="248.0" r="2.1" fill="#0b5cad"/>
+<text x="632.0" y="252.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">YOLO on TensorRT</text>
+<circle cx="624.0" cy="264.5" r="2.1" fill="#0b5cad"/>
+<text x="632.0" y="268.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">blue, yellow, orange</text>
+<circle cx="624.0" cy="281.0" r="2.1" fill="#0b5cad"/>
+<text x="632.0" y="285.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">trained on FSOCO + ours</text>
+<rect x="898" y="92" width="214" height="224" rx="8" fill="#ebf3fc" stroke="#0b5cad" stroke-width="1.6"/>
+<text x="909.0" y="113.0" font-size="13" font-weight="bold" fill="#0b5cad" text-anchor="start">Lidar–camera fusion</text>
+<text x="1102.0" y="113.0" font-size="11.5" font-weight="bold" fill="#0b5cad" text-anchor="end">10 Hz</text>
+<circle cx="912.0" cy="128.0" r="2.1" fill="#0b5cad"/>
+<text x="920.0" y="132.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">project lidar cones</text>
+<text x="920.0" y="148.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">into the image taken</text>
+<text x="920.0" y="165.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">at the same time</text>
+<circle cx="912.0" cy="177.5" r="2.1" fill="#0b5cad"/>
+<text x="920.0" y="181.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">match boxes (Hungarian)</text>
+<circle cx="912.0" cy="194.0" r="2.1" fill="#0b5cad"/>
+<text x="920.0" y="198.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">position from lidar,</text>
+<text x="920.0" y="214.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">colour from camera</text>
+<circle cx="912.0" cy="227.0" r="2.1" fill="#0b5cad"/>
+<text x="920.0" y="231.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">no match → "unknown"</text>
+<rect x="1210" y="92" width="232" height="204" rx="8" fill="#e8f5ee" stroke="#1a7f4b" stroke-width="1.6"/>
+<text x="1221.0" y="113.0" font-size="13" font-weight="bold" fill="#1a7f4b" text-anchor="start">Cone SLAM + mapping</text>
+<text x="1432.0" y="113.0" font-size="11.5" font-weight="bold" fill="#1a7f4b" text-anchor="end">10 Hz</text>
+<circle cx="1224.0" cy="128.0" r="2.1" fill="#1a7f4b"/>
+<text x="1232.0" y="132.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">data association (JCBB)</text>
+<circle cx="1224.0" cy="144.5" r="2.1" fill="#1a7f4b"/>
+<text x="1232.0" y="148.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">EKF-SLAM first,</text>
+<text x="1232.0" y="165.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">GraphSLAM (iSAM2) later</text>
+<circle cx="1224.0" cy="177.5" r="2.1" fill="#1a7f4b"/>
+<text x="1232.0" y="181.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">builds the cone map</text>
+<circle cx="1224.0" cy="194.0" r="2.1" fill="#1a7f4b"/>
+<text x="1232.0" y="198.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">lap 1: map + localise</text>
+<circle cx="1224.0" cy="210.5" r="2.1" fill="#1a7f4b"/>
+<text x="1232.0" y="214.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">laps 2–10: map frozen</text>
+<circle cx="1224.0" cy="227.0" r="2.1" fill="#1a7f4b"/>
+<text x="1232.0" y="231.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">out: map → odom</text>
+<rect x="1210" y="340" width="232" height="424" rx="8" fill="#e8f5ee" stroke="#1a7f4b" stroke-width="1.6"/>
+<text x="1221.0" y="361.0" font-size="13" font-weight="bold" fill="#1a7f4b" text-anchor="start">Odometry EKF</text>
+<text x="1432.0" y="361.0" font-size="11.5" font-weight="bold" fill="#1a7f4b" text-anchor="end">100 Hz</text>
+<circle cx="1224.0" cy="376.0" r="2.1" fill="#1a7f4b"/>
+<text x="1232.0" y="380.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">predict: IMU</text>
+<circle cx="1224.0" cy="392.5" r="2.1" fill="#1a7f4b"/>
+<text x="1232.0" y="396.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">update: wheel speeds,</text>
+<text x="1232.0" y="413.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">steering angle, GNSS</text>
+<circle cx="1224.0" cy="425.5" r="2.1" fill="#1a7f4b"/>
+<text x="1232.0" y="429.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">state: x, y, ψ, vx, vy, r</text>
+<circle cx="1224.0" cy="442.0" r="2.1" fill="#1a7f4b"/>
+<text x="1232.0" y="446.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">gyro bias as a state</text>
+<circle cx="1224.0" cy="458.5" r="2.1" fill="#1a7f4b"/>
+<text x="1232.0" y="462.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">out: odom → base_link</text>
+<circle cx="1224.0" cy="475.0" r="2.1" fill="#1a7f4b"/>
+<text x="1232.0" y="479.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">pose in map = SLAM</text>
+<text x="1232.0" y="495.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">correction ∘ odometry</text>
+<rect x="1540" y="92" width="232" height="204" rx="8" fill="#fdf2e4" stroke="#b45309" stroke-width="1.6"/>
+<text x="1551.0" y="113.0" font-size="13" font-weight="bold" fill="#b45309" text-anchor="start">Path planner</text>
+<text x="1762.0" y="113.0" font-size="11.5" font-weight="bold" fill="#b45309" text-anchor="end">10 Hz</text>
+<circle cx="1554.0" cy="128.0" r="2.1" fill="#b45309"/>
+<text x="1562.0" y="132.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">one mode per mission:</text>
+<circle cx="1554.0" cy="144.5" r="2.1" fill="#b45309"/>
+<text x="1562.0" y="148.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">accel: straight line</text>
+<circle cx="1554.0" cy="161.0" r="2.1" fill="#b45309"/>
+<text x="1562.0" y="165.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">skidpad: fixed figure 8</text>
+<circle cx="1554.0" cy="177.5" r="2.1" fill="#b45309"/>
+<text x="1562.0" y="181.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">autocross: Delaunay</text>
+<text x="1562.0" y="198.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">mid-line of the cones</text>
+<circle cx="1554.0" cy="210.5" r="2.1" fill="#b45309"/>
+<text x="1562.0" y="214.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">trackdrive: race line</text>
+<text x="1562.0" y="231.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">on the saved map</text>
+<rect x="1540" y="340" width="232" height="100" rx="8" fill="#fdf2e4" stroke="#b45309" stroke-width="1.6"/>
+<text x="1551.0" y="361.0" font-size="13" font-weight="bold" fill="#b45309" text-anchor="start">Speed profile</text>
+<circle cx="1554.0" cy="376.0" r="2.1" fill="#b45309"/>
+<text x="1562.0" y="380.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">forward–backward pass</text>
+<circle cx="1554.0" cy="392.5" r="2.1" fill="#b45309"/>
+<text x="1562.0" y="396.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">grip + steering limits</text>
+<text x="1562.0" y="413.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">from the profile</text>
+<rect x="1540" y="484" width="232" height="280" rx="8" fill="#fdf2e4" stroke="#b45309" stroke-width="1.6"/>
+<text x="1551.0" y="505.0" font-size="13" font-weight="bold" fill="#b45309" text-anchor="start">Controller</text>
+<text x="1762.0" y="505.0" font-size="11.5" font-weight="bold" fill="#b45309" text-anchor="end">50 Hz</text>
+<circle cx="1554.0" cy="520.0" r="2.1" fill="#b45309"/>
+<text x="1562.0" y="524.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">steering: pure pursuit,</text>
+<text x="1562.0" y="540.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">MPC later</text>
+<circle cx="1554.0" cy="553.0" r="2.1" fill="#b45309"/>
+<text x="1562.0" y="557.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">speed: PID → axle</text>
+<text x="1562.0" y="573.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">torque, brake pressure</text>
+<circle cx="1554.0" cy="586.0" r="2.1" fill="#b45309"/>
+<text x="1562.0" y="590.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">rate limits from the</text>
+<text x="1562.0" y="606.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">vehicle profile</text>
+<rect x="34" y="884" width="478" height="132" rx="8" fill="#eef1f5" stroke="#334155" stroke-width="1.6"/>
+<text x="45.0" y="905.0" font-size="13" font-weight="bold" fill="#334155" text-anchor="start">AS state manager</text>
+<circle cx="48.0" cy="920.0" r="2.1" fill="#334155"/>
+<text x="56.0" y="924.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">follows the VCU's AS state: off, ready,</text>
+<text x="56.0" y="940.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">driving, finished, emergency brake</text>
+<circle cx="48.0" cy="953.0" r="2.1" fill="#334155"/>
+<text x="56.0" y="957.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">reports mission status: selected,</text>
+<text x="56.0" y="973.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">running, finished</text>
+<circle cx="48.0" cy="986.0" r="2.1" fill="#334155"/>
+<text x="56.0" y="990.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">requests the emergency stop on a fault</text>
+<rect x="610" y="884" width="832" height="78" rx="8" fill="#eef1f5" stroke="#334155" stroke-width="1.6"/>
+<text x="621.0" y="905.0" font-size="13" font-weight="bold" fill="#334155" text-anchor="start">Supervisor (health)</text>
+<circle cx="624.0" cy="920.0" r="2.1" fill="#334155"/>
+<text x="632.0" y="924.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">rate and age of every topic</text>
+<circle cx="624.0" cy="936.5" r="2.1" fill="#334155"/>
+<text x="632.0" y="940.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">node heartbeats</text>
+<circle cx="1029.0" cy="920.0" r="2.1" fill="#334155"/>
+<text x="1037.0" y="924.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">CPU and GPU temperature</text>
+<circle cx="1029.0" cy="936.5" r="2.1" fill="#334155"/>
+<text x="1037.0" y="940.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">logs everything (rosbag2 / MCAP)</text>
+<rect x="1540" y="884" width="232" height="132" rx="8" fill="#eef1f5" stroke="#334155" stroke-width="1.6"/>
+<text x="1551.0" y="905.0" font-size="13" font-weight="bold" fill="#334155" text-anchor="start">Mission behaviour tree</text>
+<circle cx="1554.0" cy="920.0" r="2.1" fill="#334155"/>
+<text x="1562.0" y="924.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">one tree per mission</text>
+<circle cx="1554.0" cy="936.5" r="2.1" fill="#334155"/>
+<text x="1562.0" y="940.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">starts on "go"</text>
+<circle cx="1554.0" cy="953.0" r="2.1" fill="#334155"/>
+<text x="1562.0" y="957.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">counts laps (pose via tf)</text>
+<circle cx="1554.0" cy="969.5" r="2.1" fill="#334155"/>
+<text x="1562.0" y="973.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">finish → brake to stop</text>
+<path d="M 230,144 L 280,144" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="255.0" y="137.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">UDP</text>
+<path d="M 230,264 L 280,264" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="255.0" y="257.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">USB 3</text>
+<path d="M 230,386 L 280,386" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="255.0" y="379.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">UBX</text>
+<path d="M 230,596 L 280,596" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="255.0" y="589.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">USB</text>
+<path d="M 230,492 L 280,492" fill="none" stroke="#6d28d9" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ah6d28d9)"/>
+<text x="255.0" y="485.0" font-size="10.5" font-weight="normal" fill="#6d28d9" text-anchor="middle">PPS</text>
+<path d="M 230,690 L 280,690" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="255.0" y="683.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">CAN</text>
+<path d="M 280,734 L 230,734" fill="none" stroke="#b45309" stroke-width="1.6" marker-end="url(#ahb45309)"/>
+<text x="255.0" y="727.0" font-size="10.5" font-weight="normal" fill="#b45309" text-anchor="middle">CAN</text>
+<path d="M 512,144 L 610,144" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="561.0" y="137.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">point cloud</text>
+<path d="M 512,264 L 610,264" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="561.0" y="257.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">image</text>
+<path d="M 824,144 L 898,144" fill="none" stroke="#0b5cad" stroke-width="1.6" marker-end="url(#ah0b5cad)"/>
+<text x="861.0" y="137.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">positions</text>
+<path d="M 824,264 L 898,264" fill="none" stroke="#0b5cad" stroke-width="1.6" marker-end="url(#ah0b5cad)"/>
+<text x="861.0" y="257.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">boxes</text>
+<path d="M 1112,200 L 1210,200" fill="none" stroke="#0b5cad" stroke-width="1.6" marker-end="url(#ah0b5cad)"/>
+<text x="1161.0" y="193.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">coloured cones</text>
+<path d="M 512,386 L 1210,386" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="860.0" y="379.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">position, velocity</text>
+<path d="M 512,596 L 1210,596" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="860.0" y="589.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">yaw rate, acceleration</text>
+<path d="M 512,700 L 1210,700" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="860.0" y="693.0" font-size="11" font-weight="normal" fill="#374151" text-anchor="middle">wheel speeds, steering angle</text>
+<path d="M 1240,340 L 1240,296" fill="none" stroke="#1a7f4b" stroke-width="1.6" marker-end="url(#ah1a7f4b)"/>
+<text x="1248.0" y="323.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">odometry</text>
+<path d="M 1404,296 L 1404,340" fill="none" stroke="#1a7f4b" stroke-width="1.6" marker-end="url(#ah1a7f4b)"/>
+<text x="1396.0" y="323.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="end">map → odom</text>
+<path d="M 1442,180 L 1540,180" fill="none" stroke="#1a7f4b" stroke-width="1.6" marker-end="url(#ah1a7f4b)"/>
+<text x="1491.0" y="173.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">cone map</text>
+<path d="M 1442,600 L 1540,600" fill="none" stroke="#1a7f4b" stroke-width="1.6" marker-end="url(#ah1a7f4b)"/>
+<text x="1491.0" y="593.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">pose, 100 Hz</text>
+<path d="M 1656,296 L 1656,340" fill="none" stroke="#b45309" stroke-width="1.6" marker-end="url(#ahb45309)"/>
+<text x="1664.0" y="323.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">path</text>
+<path d="M 1656,440 L 1656,484" fill="none" stroke="#b45309" stroke-width="1.6" marker-end="url(#ahb45309)"/>
+<text x="1664.0" y="467.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">target speeds</text>
+<path d="M 1600,764 L 1600,804 L 490,804 L 490,764" fill="none" stroke="#b45309" stroke-width="2.2" marker-end="url(#ahb45309)"/>
+<rect x="804.2" y="797.5" width="451.7" height="15.5" rx="3" fill="#ffffff" opacity="0.96"/>
+<text x="1030.0" y="808.0" font-size="11.5" font-weight="bold" fill="#b45309" text-anchor="middle">steering angle, axle torque, brake pressure  →  AI2VCU, every 10 ms</text>
+<path d="M 310,764 L 310,884" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#ah334155)"/>
+<text x="302.0" y="836.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="end">AS state, mission, go</text>
+<path d="M 370,884 L 370,764" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#ah334155)"/>
+<text x="378.0" y="836.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">mission status, EBS request</text>
+<path d="M 610,922 L 512,922" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#ah334155)"/>
+<text x="561.0" y="915.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">fault</text>
+<path d="M 512,984 L 1540,984" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#ah334155)"/>
+<rect x="760.8" y="980.5" width="118.3" height="14.5" rx="3" fill="#ffffff" opacity="0.96"/>
+<text x="820.0" y="990.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">AS state, mission, go</text>
+<path d="M 1540,1004 L 512,1004" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#ah334155)"/>
+<rect x="1193.6" y="1000.5" width="92.9" height="14.5" rx="3" fill="#ffffff" opacity="0.96"/>
+<text x="1240.0" y="1010.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">mission finished</text>
+<path d="M 1772,950 L 1816,950 L 1816,130 L 1772,130" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#ah334155)"/>
+<rect x="1809.0" y="430.6" width="17" height="218.9" rx="3" fill="#ffffff" opacity="0.96"/>
+<text x="1821.0" y="540.0" font-size="11" font-weight="normal" fill="#334155" text-anchor="middle" transform="rotate(-90 1821 540)">mission and mode: explore, race, stop</text>
+<text x="20.0" y="1062.0" font-size="11.5" font-weight="bold" fill="#374151" text-anchor="start">Layers:</text>
+<rect x="82" y="1051" width="26" height="13" rx="4" fill="#f4f5f7" stroke="#5b6170" stroke-width="1.5"/>
+<text x="115.0" y="1062.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">hardware</text>
+<rect x="195.171875" y="1051" width="26" height="13" rx="4" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.5"/>
+<text x="228.2" y="1062.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">vehicle</text>
+<rect x="295.125" y="1051" width="26" height="13" rx="4" fill="#ebf3fc" stroke="#0b5cad" stroke-width="1.5"/>
+<text x="328.1" y="1062.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">perception</text>
+<rect x="415.703125" y="1051" width="26" height="13" rx="4" fill="#e8f5ee" stroke="#1a7f4b" stroke-width="1.5"/>
+<text x="448.7" y="1062.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">localisation</text>
+<rect x="539.71875" y="1051" width="26" height="13" rx="4" fill="#fdf2e4" stroke="#b45309" stroke-width="1.5"/>
+<text x="572.7" y="1062.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">planning + control</text>
+<rect x="705.390625" y="1051" width="26" height="13" rx="4" fill="#eef1f5" stroke="#334155" stroke-width="1.5"/>
+<text x="738.4" y="1062.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">system</text>
+<line x1="805.96875" y1="1058" x2="839.96875" y2="1058" stroke="#6b7280" stroke-width="1.6"/>
+<text x="846.0" y="1062.0" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="start">data</text>
+<line x1="895.875" y1="1058" x2="929.875" y2="1058" stroke="#6d28d9" stroke-width="1.6" stroke-dasharray="5 4"/>
+<text x="935.9" y="1062.0" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="start">time pulse</text>
+<line x1="1020.34375" y1="1058" x2="1054.34375" y2="1058" stroke="#b45309" stroke-width="2.2"/>
+<text x="1060.3" y="1062.0" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="start">commands to the car</text>
+<text x="20.0" y="1088.0" font-size="11.5" font-weight="normal" fill="#6b7280" text-anchor="start">Data flows left to right; commands return along the bottom. The pose reaches every block through tf2 and is not drawn: lidar de-skew, fusion and the behaviour tree read it there.</text>
+<text x="20.0" y="1106.0" font-size="11.5" font-weight="normal" fill="#6b7280" text-anchor="start">Rates are targets. Only the vehicle layer's drivers change between the ADS-DV and 1:10 profiles; the other layers take the profile's numbers (size, limits) as parameters.</text>
+</svg>
