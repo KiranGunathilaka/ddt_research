@@ -1,0 +1,2383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ADS-DV Explorer</title>
+<meta name="description" content="Interactive 3D guide to the IMechE FS-AI ADS-DV used for the DDT class: dimensions, connectors, sensors, CAN interface and rules, each linked to its official source.">
+<style>
+:root {
+  --bg: #f4f5f7; --surface: #ffffff; --surface-2: #eef0f3; --text: #1b1f24; --muted: #5b6470;
+  --border: #d6dae0; --accent: #c4302b; --accent-soft: #fbe9e8; --link: #1f5fbf; --ok: #1f8a4c;
+  --warn: #a35d00; --warn-soft: #fff4e2; --viewer-bg: #e9ecf0; --grid-a: #b7bec8; --grid-b: #d3d8de;
+  --hs-bg: #1b1f24; --hs-text: #ffffff; --chip: #e4e8ee; --code: #eef0f3;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111418; --surface: #181c21; --surface-2: #20252c; --text: #e6e9ed; --muted: #9aa4b1;
+    --border: #2d343d; --accent: #ef5a4f; --accent-soft: #3a1d1b; --link: #7fb0ff; --ok: #4cc07f;
+    --warn: #ffb547; --warn-soft: #33270f; --viewer-bg: #161a1f; --grid-a: #3a424c; --grid-b: #262c33;
+    --hs-bg: #f1f3f5; --hs-text: #111418; --chip: #262c34; --code: #20252c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111418; --surface: #181c21; --surface-2: #20252c; --text: #e6e9ed; --muted: #9aa4b1;
+  --border: #2d343d; --accent: #ef5a4f; --accent-soft: #3a1d1b; --link: #7fb0ff; --ok: #4cc07f;
+  --warn: #ffb547; --warn-soft: #33270f; --viewer-bg: #161a1f; --grid-a: #3a424c; --grid-b: #262c33;
+  --hs-bg: #f1f3f5; --hs-text: #111418; --chip: #262c34; --code: #20252c;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+a { color: var(--link); }
+code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.92em; }
+code { background: var(--code); padding: 0 4px; border-radius: 4px; }
+.wrap { max-width: 1440px; margin: 0 auto; padding: 0 16px; }
+
+header.top { padding-top: 18px; padding-bottom: 10px; }
+header.top .row { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+header.top h1 { margin: 0; font-size: 1.55rem; letter-spacing: -0.01em; }
+header.top p { margin: 4px 0 0; color: var(--muted); max-width: 900px; }
+.btn {
+  appearance: none; border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  border-radius: 8px; padding: 6px 10px; font: inherit; font-size: 0.88rem; cursor: pointer; line-height: 1.2;
+}
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+.btn:disabled { opacity: 0.5; cursor: default; }
+
+.explorer { display: grid; grid-template-columns: minmax(0, 1fr) 390px; gap: 14px; align-items: start; }
+.viewer {
+  position: relative; height: clamp(440px, 74vh, 860px); border-radius: 12px; overflow: hidden;
+  background: var(--viewer-bg); border: 1px solid var(--border);
+}
+.viewer canvas { display: block; width: 100%; height: 100%; touch-action: none; outline: none; }
+.labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.hs {
+  position: absolute; left: 0; top: 0; pointer-events: auto; display: flex; align-items: center; gap: 6px;
+  transform: translate(-11px, -11px); border: 0; padding: 0; background: none; cursor: pointer; font: inherit;
+}
+.hs .n {
+  width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; flex: none;
+  background: var(--hs-bg); color: var(--hs-text); font-size: 12px; font-weight: 700;
+  box-shadow: 0 0 0 2px var(--viewer-bg), 0 1px 4px rgba(0,0,0,.35);
+}
+.hs.approx .n { background: var(--viewer-bg); color: var(--text); border: 2px dashed var(--text); }
+.hs.sel .n { background: var(--accent); color: #fff; border-color: var(--accent); }
+.hs.behind { opacity: 0.35; }
+.hs.behind:hover, .hs.behind.sel { opacity: 1; }
+.hs .t {
+  display: none; white-space: nowrap; background: var(--surface); color: var(--text); border: 1px solid var(--border);
+  padding: 2px 7px; border-radius: 6px; font-size: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.18);
+}
+.show-names .hs .t, .hs:hover .t, .hs.sel .t, .hs:focus-visible .t { display: block; }
+.dim-label {
+  position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); white-space: nowrap; pointer-events: none;
+  background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 5px;
+  padding: 1px 6px; font-size: 11.5px; font-weight: 600; opacity: 0.94;
+}
+.dim-label.behind { opacity: 0.22; }
+.dim-label.zone { color: #b3261e; border-color: #e3a19c; }
+.dim-label.env { color: #1f5fbf; border-color: #9cbbe8; }
+.dim-label.sight { color: #7a4fc4; border-color: #c2a9ea; }
+
+.toolbar { position: absolute; left: 10px; top: 10px; right: 10px; display: flex; gap: 6px; flex-wrap: wrap; pointer-events: none; }
+.toolbar > * { pointer-events: auto; }
+.toolbar .grp { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 9px; padding: 3px; }
+.toolbar .btn { border: 0; padding: 5px 8px; font-size: 0.82rem; }
+.layers {
+  position: absolute; right: 10px; bottom: 10px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; font-size: 0.85rem; max-width: 250px; max-height: calc(100% - 70px); overflow: auto;
+}
+.layers summary { cursor: pointer; padding: 7px 11px; font-weight: 600; list-style-position: inside; }
+.layers .body { padding: 2px 11px 10px; display: grid; gap: 3px; }
+.layers label { display: flex; gap: 7px; align-items: center; cursor: pointer; }
+.layers .sub { color: var(--muted); font-size: 0.78rem; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+.layers input[type="range"] { width: 100%; }
+.readout {
+  position: absolute; left: 10px; bottom: 10px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 4px 9px; font-size: 0.78rem; color: var(--muted); max-width: calc(100% - 290px);
+}
+.readout b { color: var(--text); font-weight: 600; }
+.modelbar {
+  position: absolute; left: 10px; top: 52px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 7px 10px; font-size: 0.82rem; max-width: 330px;
+}
+.modelbar .row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.modelbar .status { color: var(--muted); margin-top: 5px; }
+.modelbar .status:empty { display: none; }
+.modelbar input[type="file"] { display: none; }
+.nogl { position: absolute; inset: 0; display: none; place-items: center; text-align: center; padding: 24px; color: var(--muted); }
+
+aside.inspector {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
+  max-height: clamp(440px, 74vh, 860px); overflow: auto; position: sticky; top: 10px;
+}
+.inspector h2 { margin: 0 0 4px; font-size: 1.12rem; }
+.inspector .kicker { color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.inspector ul { padding-left: 18px; margin: 8px 0; }
+.inspector li { margin: 4px 0; }
+.inspector .where { background: var(--surface-2); border-radius: 8px; padding: 7px 10px; font-size: 0.88rem; margin: 8px 0; }
+.inspector .actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.badge { display: inline-block; font-size: 0.72rem; font-weight: 700; border-radius: 999px; padding: 1px 8px; vertical-align: 2px; }
+.badge.cad { background: #e3f3ea; color: #1f6b40; }
+.badge.approx { background: var(--warn-soft); color: var(--warn); }
+.badge.none { background: var(--chip); color: var(--muted); }
+:root[data-theme="dark"] .badge.cad { background: #173726; color: #7fd8a4; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .badge.cad { background: #173726; color: #7fd8a4; } }
+.index { list-style: none; padding: 0; margin: 8px 0 0; }
+.index li { margin: 0; }
+.index button {
+  width: 100%; text-align: left; display: flex; gap: 9px; align-items: center; background: none; border: 0;
+  border-radius: 7px; padding: 5px 6px; font: inherit; color: var(--text); cursor: pointer;
+}
+.index button:hover { background: var(--surface-2); }
+.index .n {
+  width: 21px; height: 21px; flex: none; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700;
+  background: var(--hs-bg); color: var(--hs-text);
+}
+.index .approx .n { background: transparent; color: var(--text); border: 2px dashed var(--text); }
+.index .none .n { background: var(--chip); color: var(--muted); }
+
+a.src {
+  display: inline-block; font-size: 0.72rem; font-weight: 600; text-decoration: none; background: var(--chip);
+  color: var(--link); border-radius: 5px; padding: 0 5px; margin-left: 2px; white-space: nowrap; vertical-align: 1px;
+}
+a.src:hover { text-decoration: underline; }
+
+nav.toc { margin: 22px 0 8px; display: flex; gap: 6px; flex-wrap: wrap; }
+nav.toc a { font-size: 0.85rem; text-decoration: none; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 3px 11px; color: var(--text); }
+nav.toc a:hover { border-color: var(--muted); }
+.ctrls { display: flex; gap: 6px; margin: 6px 0 10px; }
+
+details.sec { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin: 10px 0; }
+details.sec > summary {
+  cursor: pointer; padding: 13px 16px; display: flex; align-items: baseline; gap: 10px; list-style: none;
+}
+details.sec > summary::-webkit-details-marker { display: none; }
+details.sec > summary::before { content: "▸"; color: var(--muted); transition: transform .15s; display: inline-block; }
+details.sec[open] > summary::before { transform: rotate(90deg); }
+details.sec > summary h2 { margin: 0; font-size: 1.08rem; }
+details.sec > summary .hint { color: var(--muted); font-size: 0.86rem; }
+details.sec > .content { padding: 0 18px 16px; }
+details.sec h3 { font-size: 0.98rem; margin: 16px 0 6px; }
+details.sec p { margin: 6px 0; }
+details.sec ul, details.sec ol { padding-left: 20px; margin: 6px 0; }
+details.sec li { margin: 3px 0; }
+.tbl { overflow-x: auto; margin: 8px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+.card { background: var(--surface-2); border-radius: 10px; padding: 10px 14px; }
+.card h3 { margin-top: 4px; }
+.note { background: var(--warn-soft); border-left: 3px solid var(--warn); padding: 8px 12px; border-radius: 6px; margin: 8px 0; }
+.pins { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; margin: 6px 0; }
+.pins div { background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 4px 8px; font-size: 0.86rem; }
+.pins b { font-family: ui-monospace, Menlo, Consolas, monospace; margin-right: 6px; }
+footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
+
+@media (max-width: 1000px) {
+  .explorer { grid-template-columns: 1fr; }
+  aside.inspector { position: static; max-height: none; }
+  .viewer { height: 64vh; min-height: 400px; }
+}
+@media (max-width: 640px) {
+  .layers { max-width: 200px; }
+  .readout { display: none; }
+  .modelbar { top: 50px; left: 10px; right: 10px; max-width: none; padding: 5px 7px; font-size: 0.76rem; }
+  .modelbar .btn { padding: 4px 7px; font-size: 0.76rem; }
+  .modelbar .row > span { display: none; }
+  .toolbar .btn { padding: 5px 6px; }
+}
+
+/* ---- systems view ---- */
+.toolbar .modes .btn { font-weight: 600; }
+.toolbar .modes .btn[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.cutgrp { align-items: center; padding: 3px 8px !important; }
+.cutgrp[hidden] { display: none !important; }
+.cutlabel { font-size: 0.8rem; color: var(--muted); }
+.cutgrp input { width: 140px; }
+.gotobar {
+  position: absolute; left: 10px; top: 52px; right: 10px; display: flex; gap: 5px; flex-wrap: wrap; align-items: center;
+  pointer-events: none; font-size: 0.78rem;
+}
+.gotobar > * { pointer-events: auto; }
+.gotobar > span { color: var(--muted); background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 2px 8px; }
+.chipbtn {
+  appearance: none; font: inherit; font-size: 0.78rem; cursor: pointer; border-radius: 999px; padding: 3px 10px;
+  background: var(--surface); color: var(--text); border: 1px solid var(--border);
+}
+.chipbtn:hover { border-color: var(--muted); }
+.legend {
+  position: absolute; left: 10px; bottom: 10px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; font-size: 0.8rem; max-width: 240px; max-height: calc(100% - 120px); overflow: auto;
+}
+.legend[hidden] { display: none; }
+.legend summary { cursor: pointer; padding: 6px 10px; font-weight: 600; }
+#legendBody { padding: 0 6px 4px; display: grid; gap: 1px; }
+.netrow {
+  display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; background: none; border: 0; border-radius: 6px;
+  padding: 1px 5px; font-size: 0.78rem; font: inherit; color: var(--text); cursor: pointer;
+}
+.netrow:hover { background: var(--surface-2); }
+.netrow.on { background: var(--surface-2); font-weight: 600; }
+.netrow.dim { opacity: 0.45; }
+.sw { width: 22px; height: 6px; border-radius: 3px; flex: none; }
+.legendkey { display: grid; gap: 3px; padding: 6px 10px 9px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.74rem; }
+.legendkey span { display: flex; align-items: center; gap: 7px; }
+.k { width: 14px; height: 10px; border-radius: 2px; display: inline-block; flex: none; }
+.k.solid { background: var(--muted); }
+.k.ghost { border: 1.5px dashed var(--muted); }
+.layers .modelrow { display: flex; gap: 5px; flex-wrap: wrap; }
+.layers .modelrow .btn { font-size: 0.78rem; padding: 4px 8px; }
+.layers .status { color: var(--muted); font-size: 0.76rem; }
+.layers .status:empty { display: none; }
+.readout { left: 50%; transform: translateX(-50%); bottom: 10px; max-width: 40%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.tag {
+  position: absolute; left: 0; top: 0; pointer-events: auto; cursor: pointer; white-space: nowrap; transform: translate(-50%, -100%);
+  background: var(--surface); color: var(--text); border: 1px solid var(--border); border-left: 3px solid var(--tagc, var(--muted));
+  border-radius: 5px; padding: 1px 6px; font-size: 11.5px; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,.18);
+}
+.tag.ghost { border-style: dashed; border-left-style: solid; font-weight: 500; }
+.tag.sel { background: var(--accent); color: #fff; border-color: var(--accent); }
+.tag::after {
+  content: ""; position: absolute; left: 50%; bottom: -7px; width: 1px; height: 7px; background: var(--muted);
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 5px; margin: 8px 0; }
+.chip { background: var(--surface-2); border: 1px solid var(--border); border-radius: 7px; padding: 3px 8px; font-size: 0.84rem; font-weight: 600; }
+.pills { display: flex; flex-wrap: wrap; gap: 5px; margin: 6px 0; }
+.pill {
+  display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  border-radius: 999px; padding: 2px 9px 2px 6px; font: inherit; font-size: 0.8rem; cursor: pointer;
+}
+.pill:hover { border-color: var(--muted); }
+.pill .sw { width: 14px; height: 5px; }
+.inspector .lead { margin: 6px 0; font-size: 0.92rem; }
+.inspector details.more { margin-top: 8px; border-top: 1px solid var(--border); padding-top: 6px; }
+.inspector details.more summary { cursor: pointer; color: var(--muted); font-size: 0.85rem; }
+.inspector .grouphead { margin: 12px 0 4px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.pinsvg { width: 100%; max-width: 300px; display: block; margin: 6px 0; }
+.pinsvg text { font: 600 11px system-ui, sans-serif; fill: var(--text); }
+@media (max-width: 640px) {
+  .gotobar { top: auto; bottom: 52px; }
+  .legend { max-width: 170px; }
+  .readout { display: none; }
+  .cutgrp input { width: 90px; }
+}
+</style>
+</head>
+<body>
+<header class="top wrap">
+  <div class="row">
+    <div>
+      <h1>ADS-DV Explorer</h1>
+      <p>The IMechE FS-AI ADS-DV used by DDT teams. Switch to <b>See-through</b>, <b>Exploded</b> or <b>Cut-away</b> to see every plug, switch, internal unit and cable, colour-coded by type. Click anything for its specs, or use <b>Go to</b>. Every fact links to its source: the official FS-AI GitHub files (pinned to the version checked on 27 Oct 2026), the FS-AI 2026 rules, IMechE's photos and drawings, and vendor datasheets.</p>
+    </div>
+    <button class="btn" id="themeBtn" type="button" title="Switch light / dark">◐ Theme</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="explorer">
+    <section class="viewer" id="viewer" aria-label="3D model of the ADS-DV">
+      <canvas id="c" tabindex="0"></canvas>
+      <div class="labels" id="labels"></div>
+      <div class="toolbar">
+        <div class="grp modes" role="group" aria-label="View mode">
+          <button class="btn" data-mode="outside" type="button" aria-pressed="true">Outside</button>
+          <button class="btn" data-mode="inside" type="button" aria-pressed="false">See-through</button>
+          <button class="btn" data-mode="exploded" type="button" aria-pressed="false">Exploded</button>
+          <button class="btn" data-mode="cut" type="button" aria-pressed="false">Cut-away</button>
+        </div>
+        <div class="grp" role="group" aria-label="Camera views">
+          <button class="btn" data-view="iso" type="button">3D</button>
+          <button class="btn" data-view="side" type="button">Side</button>
+          <button class="btn" data-view="front" type="button">Front</button>
+          <button class="btn" data-view="rear" type="button">Rear</button>
+          <button class="btn" data-view="top" type="button">Top</button>
+        </div>
+        <div class="grp cutgrp" id="cutGrp" hidden>
+          <label class="cutlabel" for="cutZ">Cut</label>
+          <input type="range" id="cutZ" min="-320" max="320" step="10" value="0" aria-label="Cut plane position">
+        </div>
+      </div>
+      <div class="gotobar" role="group" aria-label="Go to">
+        <span>Go to</span>
+        <button class="chipbtn" data-goto="front" type="button">Front plugs</button>
+        <button class="chipbtn" data-goto="tower" type="button">Light tower</button>
+        <button class="chipbtn" data-goto="switches" type="button">Switches</button>
+        <button class="chipbtn" data-goto="rearpanel" type="button">Rear panel</button>
+        <button class="chipbtn" data-goto="bay" type="button">Rear compute bay</button>
+        <button class="chipbtn" data-goto="drive" type="button">Battery &amp; drive</button>
+        <button class="chipbtn" data-goto="steer" type="button">Steering &amp; brakes</button>
+      </div>
+      <details class="legend" id="legend" open>
+        <summary>Cables</summary>
+        <div id="legendBody"></div>
+        <div class="legendkey">
+          <span><i class="k solid"></i>position from CAD / IMechE photo</span>
+          <span><i class="k ghost"></i>inside, position not published</span>
+        </div>
+      </details>
+      <details class="layers" id="layers">
+        <summary>Layers</summary>
+        <div class="body" id="layerBody">
+          <div class="sub">Vehicle</div>
+          <label><input type="checkbox" data-layer="body" checked> Bodywork</label>
+          <label><input type="checkbox" data-layer="chassis" checked> Chassis tub</label>
+          <label><input type="checkbox" data-layer="susp" checked> Suspension</label>
+          <label><input type="checkbox" data-layer="wheels" checked> Wheels &amp; tyres</label>
+          <label><input type="checkbox" data-layer="tsal" checked> Light tower</label>
+          <label><input type="checkbox" data-layer="zed" checked> ZED2 camera</label>
+          <label><input type="checkbox" data-layer="plate" checked> Front sensor plate</label>
+          <label><input type="checkbox" data-layer="rear" checked> Rear compute bay</label>
+          <label><input type="checkbox" data-layer="ext" checked> Plugs, switches &amp; lights</label>
+          <label><input type="checkbox" data-layer="int" checked> Internals &amp; cables</label>
+          <div class="sub">Bodywork opacity</div>
+          <input type="range" id="bodyOpacity" min="0.05" max="1" step="0.05" value="1" aria-label="Bodywork opacity">
+          <div class="sub">Overlays</div>
+          <label><input type="checkbox" data-layer="hotspots" checked> Numbered markers</label>
+          <label><input type="checkbox" data-layer="tags" checked> Name tags</label>
+          <label><input type="checkbox" data-layer="dims" checked> Dimensions</label>
+          <label><input type="checkbox" data-layer="envelope"> T 1.3.3 sensor envelope</label>
+          <label><input type="checkbox" data-layer="zone"> T 1.3.4 forward zone</label>
+          <label><input type="checkbox" data-layer="sight"> ZED sight line</label>
+          <label><input type="checkbox" data-layer="grid" checked> Ground grid (100 mm)</label>
+          <div class="sub">Model</div>
+          <div class="modelrow">
+            <button class="btn" id="mProxy" type="button" aria-pressed="true">Simplified</button>
+            <button class="btn" id="mCad" type="button" aria-pressed="false" disabled>Official CAD</button>
+          </div>
+          <div class="modelrow">
+            <button class="btn primary" id="loadCad" type="button">Load official CAD</button>
+            <label class="btn" for="cadFile" title="Open FS-AI_ADS-DV_CAD_2026.step or ADS-DV_Rear_Compute_Installation.stp from a local clone">Local STEP…</label>
+            <input type="file" id="cadFile" accept=".step,.stp,.STEP,.STP" multiple hidden>
+          </div>
+          <div class="status" id="cadStatus"></div>
+        </div>
+      </details>
+      <div class="readout" id="readout">Drag to rotate · right-drag to pan · scroll to zoom</div>
+      <div class="nogl" id="nogl">The 3D view needs WebGL and an internet connection (three.js loads from cdn.jsdelivr.net). All the information is still in the sections below.</div>
+    </section>
+
+    <aside class="inspector" id="inspector" aria-live="polite"></aside>
+  </div>
+
+  <nav class="toc" aria-label="Sections">
+    <a href="#sec-facts">Key facts</a>
+    <a href="#sec-dims">Dimensions</a>
+    <a href="#sec-power">Drive, steering, brakes, batteries</a>
+    <a href="#sec-sensors">Sensors on the car</a>
+    <a href="#sec-compute">Compute &amp; connectors</a>
+    <a href="#sec-mount">Mounting rules</a>
+    <a href="#sec-safety">Safety controls</a>
+    <a href="#sec-can">CAN interface</a>
+    <a href="#sec-states">State machine</a>
+    <a href="#sec-ops">Operating the car</a>
+    <a href="#sec-missions">Missions &amp; inspection</a>
+    <a href="#sec-notes">Discrepancies</a>
+    <a href="#sec-sources">Sources</a>
+  </nav>
+  <div class="ctrls">
+    <button class="btn" id="openAll" type="button">Expand all</button>
+    <button class="btn" id="closeAll" type="button">Collapse all</button>
+  </div>
+
+  <details class="sec" id="sec-facts" open>
+    <summary><h2>Key facts</h2><span class="hint">The official spec sheet in one table</span></summary>
+    <div class="content">
+      <div class="tbl"><table>
+        <thead><tr><th>Item</th><th>Value</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td>Vehicle</td><td>Formula Student style, no driver accommodation; electric RWD; drive-by-wire steering and brakes; EBS; VCU controls motors, brakes and steering</td><td><a class="src" data-ref="rules">FS-AI 2026 Rules p.3</a></td></tr>
+          <tr><td>Shared fleet</td><td>4 IMechE ADS-DVs are shared between DDT teams; teams may also bring an ADS-DV they bought</td><td><a class="src" data-ref="rules">Rules p.3</a></td></tr>
+          <tr><td>Mass</td><td>300 kg (about 75 kg per wheel)</td><td><a class="src" data-ref="ops:58">Operational Safety §4</a></td></tr>
+          <tr><td>Length / width</td><td>2815 mm / 1430 mm</td><td><a class="src" data-ref="spec:64-79">Spec §5</a></td></tr>
+          <tr><td>Wheelbase / track</td><td>1530 mm / 1200 mm front and rear</td><td><a class="src" data-ref="spec:64-79">Spec §5</a></td></tr>
+          <tr><td>Height</td><td>823 mm to the top of the TSAL dome (measured from the CAD)</td><td><a class="src" data-ref="step">CAD</a></td></tr>
+          <tr><td>Drive</td><td>Saietta 119R-68 motor, 55.7 Nm peak, 4000 rpm max, belt drive 3.5:1, open diff, RWD, Sevcon Gen4 DC controller, 5 kW max electrical power</td><td><a class="src" data-ref="spec:30-40">Spec §2</a></td></tr>
+          <tr><td>Steering</td><td>DC Electronics Microsteer motor, Shiftec ZE102-1 controller; ±21° road-wheel angle over CAN</td><td><a class="src" data-ref="spec:42-48">Spec §3</a> <a class="src" data-ref="sis">SIS p.4</a></td></tr>
+          <tr><td>Traction battery</td><td>Lead acid, 4 × 12 V 100 Ah, 50.0 V nominal (48.0–52.0 V), 5.10 kWh, 200 A peak / 100 A continuous</td><td><a class="src" data-ref="spec:50-62">Spec §4</a></td></tr>
+          <tr><td>Geometry</td><td>Static caster 6°, static camber 2°</td><td><a class="src" data-ref="spec:64-79">Spec §5</a></td></tr>
+          <tr><td>Tyres</td><td>Toyo Proxes R888R 225/45 R13 84V on 13×7 wheels; 20–22 psi</td><td><a class="src" data-ref="spec:64-79">Spec §5</a> <a class="src" data-ref="insp:59">Inspection §4</a></td></tr>
+          <tr><td>Standard sensors</td><td>ZED2 stereo camera on the TSAL post; PCAN-GPS (GNSS, gyro, accelerometer, magnetometer) on CAN; 4 wheel-speed sensors; steering angle and brake pressure feedback</td><td><a class="src" data-ref="compr:34-40">Compute README</a> <a class="src" data-ref="api:85-96">API README</a></td></tr>
+          <tr><td>Standard computer</td><td>InCarPC: Intel i7-8700T, NVIDIA GTX 1060 class GPU, 32 GB, PEAK CAN interface</td><td><a class="src" data-ref="compr:8-26">Compute README</a></td></tr>
+          <tr><td>AI ↔ car interface</td><td>CAN 2.0B, 500 kbit/s, terminated in the car; AI sends 5 messages every 10 ms</td><td><a class="src" data-ref="sis">SIS v4.0</a> <a class="src" data-ref="comp:104-110">Compute §Electrical</a></td></tr>
+          <tr><td>Computer power</td><td>13.7 V nominal, 30 A fused, shared by the front plug, the rear plug and the sensor plate</td><td><a class="src" data-ref="comp:100-103">Compute §Electrical</a></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </details>
+
+  <details class="sec" id="sec-dims">
+    <summary><h2>Dimensions &amp; geometry</h2><span class="hint">Spec values, plus positions measured from the official CAD</span></summary>
+    <div class="content">
+      <p>The 3D view uses these coordinates: <b>x</b> forward from the wheelbase midpoint, <b>y</b> up from the ground, <b>z</b> to the right, all in mm. Values marked "CAD" were measured from <code>FS-AI_ADS-DV_CAD_2026.step</code> <a class="src" data-ref="step">STEP</a>, unladen.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Dimension</th><th class="num">Spec</th><th class="num">CAD</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Overall length</td><td class="num">2815</td><td class="num">2815</td><td>Bodywork nose to tail</td></tr>
+          <tr><td>Overall width</td><td class="num">1430</td><td class="num">1428</td><td>Outside of the tyres</td></tr>
+          <tr><td>Wheelbase</td><td class="num">1530</td><td class="num">1533</td><td>Between wheel centres</td></tr>
+          <tr><td>Track, front and rear</td><td class="num">1200</td><td class="num">1183</td><td>The CAD number is between wheel centres. With 2° camber the contact patches sit about 9 mm further out each side, which gives about 1200.</td></tr>
+          <tr><td>Tyre diameter</td><td class="num">—</td><td class="num">515</td><td>CAD README uses a 515 mm circle for the envelope <a class="src" data-ref="cad:87-97">CAD README</a></td></tr>
+          <tr><td>Height to TSAL dome top</td><td class="num">—</td><td class="num">823</td><td>Highest point of the car; apex of the T 1.3.3 envelope</td></tr>
+          <tr><td>Ground clearance</td><td class="num">—</td><td class="num">49 / 51</td><td>Bodywork / chassis tub underside. "Ground clearance is low": use the supplied ramps <a class="src" data-ref="ops:52">Op. Safety §4</a></td></tr>
+          <tr><td>Sensor plate top surface</td><td class="num">—</td><td class="num">511</td><td>Example plate, 100 mm above the chassis on the spacer posts</td></tr>
+          <tr><td>Sensor plate centre</td><td class="num">—</td><td class="num">342</td><td>Behind the front axle line</td></tr>
+          <tr><td>Sensor post pattern</td><td class="num">—</td><td class="num">300 × 200</td><td>Lateral × longitudinal, M6 studs</td></tr>
+          <tr><td>ZED2 height</td><td class="num">≈ 737</td><td class="num">—</td><td>Derived: optical axis is 15° down and meets the ground about 2750 mm ahead <a class="src" data-ref="cad:87-93">CAD README</a></td></tr>
+          <tr><td>Rear compute plate</td><td class="num">330 × 250</td><td class="num">330 × 250</td><td>Lateral × longitudinal; top about 167 mm above ground; centre 289 mm behind the rear axle line <a class="src" data-ref="comp:25-69">Compute §Mechanical</a></td></tr>
+          <tr><td>Rear compute holes</td><td class="num">310 × 230</td><td class="num">310 × 230</td><td>4 × Ø6.4 mm, 10 mm from the edges <a class="src" data-ref="compplate">drawing</a></td></tr>
+          <tr><td>Rear compute box</td><td class="num">280 × 200 × 200</td><td class="num">280 × 200 × 200</td><td>Recommended maximum, wide × deep × high, centred on the plate <a class="src" data-ref="compimg">drawing</a></td></tr>
+        </tbody>
+      </table></div>
+      <p>The HiL simulator's vehicle file models a 279 kg sprung body plus 4 × 11.5 kg wheel and carrier, about 325 kg in total. That is a simulation value; the official mass is 300 kg. <a class="src" data-ref="hil:31-54">HiL vehicle</a> <a class="src" data-ref="hil:126-128">HiL body</a></p>
+    </div>
+  </details>
+
+  <details class="sec" id="sec-power">
+    <summary><h2>Drive, steering, brakes &amp; batteries</h2><span class="hint">What moves the car, and what the AI can command</span></summary>
+    <div class="content">
+      <div class="grid2">
+        <div class="card">
+          <h3>Drive</h3>
+          <ul>
+            <li>One Saietta 119R-68 motor drives the rear axle through a 3.5:1 belt and an open differential <a class="src" data-ref="spec:30-40">Spec §2</a> <a class="src" data-ref="hil:9-17">HiL</a></li>
+            <li>55.7 Nm peak motor torque, 4000 rpm max, 5 kW max electrical power <a class="src" data-ref="spec:30-40">Spec §2</a></li>
+            <li>55.7 Nm × 3.5 = 195 Nm, which is the axle torque limit in the CAN requests <a class="src" data-ref="sis">SIS p.4</a></li>
+            <li>Kinematic ceiling at 4000 rpm: 4000 / 3.5 × π × 0.515 m ≈ 111 km/h. This is arithmetic, not a rated top speed.</li>
+            <li>Sevcon Gen4 DC controller: CANopen, torque or speed control, IP66, 2 kg <a class="src" data-ref="sevcon">datasheet</a></li>
+            <li>The belt drives sit under the bodywork <a class="src" data-ref="insp:61-65">Inspection §4</a></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Steering</h3>
+          <ul>
+            <li>DC Electronics Microsteer motor with a Shiftec ZE102-1 controller <a class="src" data-ref="spec:42-48">Spec §3</a></li>
+            <li>Microsteer EPAS: 13.8 V nominal, up to 37 Nm column torque, 80 A max, 860°/s no-load, 4.8 kg, IP67, CAN control <a class="src" data-ref="msteer">datasheet</a></li>
+            <li>The AI requests a road-wheel angle (bicycle model) of −21.0 to +21.0°; positive turns left (ISO 8855) <a class="src" data-ref="sis">SIS p.4</a> <a class="src" data-ref="hil:9-17">HiL</a></li>
+            <li>The VCU will not enter AS_DRIVING unless the actual angle is under 5° <a class="src" data-ref="sis">SIS p.14</a></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Brakes &amp; EBS</h3>
+          <ul>
+            <li>Hydraulic brakes by wire: separate front and rear pressure requests, 0–100 % <a class="src" data-ref="sis">SIS p.5</a></li>
+            <li>EBS states: unavailable, armed, triggered. It must be armed before AS_READY; a pump charges it at start-up ("EBS Init → Charging → Armed") <a class="src" data-ref="um:216-221">UM §6.2</a></li>
+            <li>Asking for torque and brake pressure at the same time is a brake plausibility fault and triggers an emergency stop <a class="src" data-ref="sis">SIS §4</a></li>
+            <li>Before storage, discharge the brakes from the touchscreen Service page. A normally closed valve keeps the lines locked <a class="src" data-ref="um:303-321">UM §7.2</a></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Batteries &amp; low voltage</h3>
+          <ul>
+            <li>Traction: lead acid, 4 × 12 V 100 Ah, 50.0 V nominal, 48.0–52.0 V operating, 5.10 kWh, 200 A peak, 100 A continuous <a class="src" data-ref="spec:50-62">Spec §4</a></li>
+            <li>Do not operate below 47.5 V; charge to at least 50.0 V before storage <a class="src" data-ref="um:164-166">UM §5.2</a> <a class="src" data-ref="um:326">UM §8</a></li>
+            <li>Charging runs from about 52 V to 58 V and from −25 A down to about −2 A; you can stop below 5 A or above 56 V <a class="src" data-ref="um:384-389">UM §8.2</a></li>
+            <li>The LV battery is charged from the traction battery by a DC-DC converter and should read 13.5–14.5 V; below 13.0 V, stop and contact IMechE <a class="src" data-ref="um:160-163">UM §5.2</a></li>
+            <li>Power the car on for 15 minutes each week to recharge the LV battery <a class="src" data-ref="insp:77-87">Inspection §5</a></li>
+            <li>Charger: TC Charger HK-J-H66-40; vehicle power lead uses an Amphenol ELP02A04 connector <a class="src" data-ref="um21">2021 manual §2.6</a></li>
+            <li>The battery positions are not published.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <details class="sec" id="sec-sensors">
+    <summary><h2>Sensors on the car</h2><span class="hint">Everything the AI can read without fitting anything</span></summary>
+    <div class="content">
+      <div class="tbl"><table>
+        <thead><tr><th>Sensor</th><th>What it gives</th><th>How you read it</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td><b>ZED2 stereo camera</b> (the end-of-life ZED2, not ZED2i)</td><td>Stereo RGB; 120 mm baseline; 2208×1242 @ 15 fps, 1920×1080 @ 30, 1280×720 @ 60, 672×376 @ 100; FOV up to 110° H × 70° V × 120° D; depth 0.3–20 m; built-in IMU, barometer and magnetometer</td><td>USB 3.0 to the compute, via the car's front-to-rear USB run; the ZED SDK needs an NVIDIA GPU</td><td><a class="src" data-ref="compr:34-40">Compute README</a> <a class="src" data-ref="zed2">ZED 2 datasheet</a> <a class="src" data-ref="zedcmp">Stereolabs</a></td></tr>
+          <tr><td><b>PCAN-GPS</b></td><td>u-blox MAX-7W GNSS (GPS, GLONASS, Galileo, QZSS, SBAS); ST L3GD20 3-axis gyro; Bosch BMC050 accelerometer + magnetometer</td><td>Vehicle CAN, IDs 600h–657h; <code>fs_ai_api_imu_get_data()</code> and <code>fs_ai_api_gps_get_data()</code></td><td><a class="src" data-ref="api:85-96">API README</a> <a class="src" data-ref="pcan">PCAN-GPS manual</a> <a class="src" data-ref="dbc">DBC</a></td></tr>
+          <tr><td><b>Wheel speed sensors</b> × 4</td><td>Wheel speed in rpm (0–1250) and raw pulse counts (0–65535) for FL, FR, RL, RR</td><td>CAN 525h and 526h, every 10 ms</td><td><a class="src" data-ref="sis">SIS p.9–10</a> <a class="src" data-ref="dbc">DBC</a></td></tr>
+          <tr><td><b>Steering angle</b></td><td>Actual angle, max allowed angle, echoed request (0.1° resolution)</td><td>CAN 523h</td><td><a class="src" data-ref="sis">SIS p.9</a></td></tr>
+          <tr><td><b>Brake pressure</b></td><td>Front and rear normalised pressure, brake and EBS status</td><td>CAN 524h</td><td><a class="src" data-ref="sis">SIS p.9</a></td></tr>
+          <tr><td><b>Drive torque</b></td><td>Actual axle torque (±195 Nm), max available torque</td><td>CAN 521h / 522h</td><td><a class="src" data-ref="sis">SIS p.8</a></td></tr>
+          <tr><td><b>Vehicle state</b></td><td>AS state, mission (AMI), master switches, RES Go, faults, warnings</td><td>CAN 520h</td><td><a class="src" data-ref="sis">SIS p.6–8</a></td></tr>
+        </tbody>
+      </table></div>
+      <p>There is no lidar on the standard car. Teams add their own sensors on the front sensor plate after IMechE approves them (see <a href="#sec-mount">Mounting rules</a>).</p>
+    </div>
+  </details>
+
+  <details class="sec" id="sec-compute">
+    <summary><h2>Compute &amp; connectors</h2><span class="hint">InCarPC, your own computer, and every plug on the car</span></summary>
+    <div class="content">
+      <div class="grid2">
+        <div class="card">
+          <h3>InCarPC (standard, rear)</h3>
+          <ul>
+            <li>Part CQ77G-32-W10P13: Intel Core i7-8700T, NVIDIA GPU listed as "GTX 1060 Ti" with 1280 CUDA cores, 32 GB DDR4, removable 2.5" SATA SSD, PEAK-System CAN (SocketCAN), 4 × USB 3.0, 2 × GbE, Wi-Fi 802.11ac <a class="src" data-ref="compr:8-26">Compute README</a> <a class="src" data-ref="incarpc">spec PDF</a></li>
+            <li>IMechE has six, each on its own quick-change rear plate, shared across the cars and teams, so access is limited <a class="src" data-ref="compr:10">README</a> <a class="src" data-ref="compr:46">README</a></li>
+            <li>Not waterproof: no running in rain or standing water <a class="src" data-ref="ops:137-149">Op. Safety §7</a></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Your own computer</h3>
+          <ul>
+            <li><b>Rear:</b> a 330 × 250 mm plate, 2–5 mm thick, with 4 × Ø6.4 holes at 310 × 230 mm; posts Ø6 mm with Ø40 mm quick-release knobs; max 8 kg including the plate; max recommended box 280 × 200 × 200 mm; nothing above the rear bodywork; plate mounted rigidly, so consider anti-vibration mounts <a class="src" data-ref="comp:25-69">Compute §Mechanical</a></li>
+            <li><b>Front:</b> on the sensor plate, using the same power and CAN plug. The rear mount is then not needed <a class="src" data-ref="comp:15-16">Compute §Intro</a> <a class="src" data-ref="compr:50">README</a></li>
+            <li>You supply the CAN interface; the bus is already terminated <a class="src" data-ref="comp:104-108">Compute §Electrical</a></li>
+            <li>Needs IMechE approval through the ASF (T1.1.6, T4.4.3)</li>
+          </ul>
+        </div>
+      </div>
+      <h3>Connector table</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Connector</th><th>Where</th><th>Vehicle side</th><th>You fit</th><th>Rating / use</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td><b>Compute power + CAN</b> (7W2 combo D-sub: 2 power + 5 signal)</td><td>Front (sensor plate area) and rear (compute bay)</td><td>Socket: Harting 09 69 202 0072 (crimp) or Norcomp 680M7W2203L401 (solder)</td><td>Plug: Harting 09 69 212 0072 (crimp) or Norcomp 680M7W2103L401 (solder)</td><td>13.7 V nominal, 30 A fused, shared; CAN 500 kbit/s</td><td><a class="src" data-ref="comp:72-110">Compute §Electrical</a></td></tr>
+          <tr><td><b>Sensor power</b> (TE DT, 2-pin)</td><td>Front</td><td>DT06-2S</td><td>DT04-2P</td><td>11.5–14.5 V, up to 5 A; pin 1 = +12 V, pin 2 = GND</td><td><a class="src" data-ref="cad:154-160">CAD README</a></td></tr>
+          <tr><td><b>Ethernet</b></td><td>Front, cable runs to the rear</td><td>1 × Cat5e, RJ45</td><td>RJ45 plug</td><td>Sensor to rear computer</td><td><a class="src" data-ref="cad:162-166">CAD README</a></td></tr>
+          <tr><td><b>USB 3.0</b></td><td>Front, cables run to the rear</td><td>2 × Type-A socket</td><td>Type-A plug</td><td>Sensor to rear computer</td><td><a class="src" data-ref="cad:168-172">CAD README</a></td></tr>
+          <tr><td><b>MPP</b> (Multi-Purpose Port)</td><td>Rear</td><td>MPP socket</td><td>MPP dongle (supplied)</td><td>Dongle needed to drive; also joystick umbilical, charger comms, CAN diagnostics harness</td><td><a class="src" data-ref="um21">2021 manual §2.3–2.5</a></td></tr>
+          <tr><td><b>Charge port</b></td><td>Rear</td><td>Vehicle charge socket</td><td>Charger lead, Amphenol ELP02A04</td><td>Traction battery charging</td><td><a class="src" data-ref="um:339-341">UM §8.2</a> <a class="src" data-ref="um21">2021 manual</a></td></tr>
+        </tbody>
+      </table></div>
+      <h3>7W2 power + CAN pinout (compute side)</h3>
+      <div class="pins">
+        <div><b>A1</b>+12 V (30 A max)</div><div><b>A2</b>0 V</div><div><b>1</b>CAN-H</div><div><b>2</b>CAN-L</div><div><b>3</b>Reserved</div><div><b>4</b>Reserved</div><div><b>5</b>Reserved</div>
+      </div>
+      <p>Crimp pins: power 30 A Harting 09 69 282 5422, power 20 A 09 69 282 5421, signal 09 67 000 8177 or 09 67 000 8576. Check the pin numbers and the power polarity with a multimeter before connecting. <a class="src" data-ref="comp:111-150">Compute pinout</a></p>
+      <p class="note">The 30 A fuse covers the front compute plug, the rear compute plug and the sensor plate power together. If the InCarPC stays powered at the rear, it draws from the same 30 A as your front kit. <a class="src" data-ref="comp:103">Compute §Electrical</a></p>
+      <p>Mated connector CAD (DT power, USB, RJ45) is in the CAD repository. <a class="src" data-ref="cadrepo">FS-AI_ADS-DV_CAD</a></p>
+    </div>
+  </details>
+
+  <details class="sec" id="sec-mount">
+    <summary><h2>Mounting rules for your sensors and computer</h2><span class="hint">FS-AI 2026 rules T1 and the CAD README</span></summary>
+    <div class="content">
+      <ul>
+        <li><b>T1.1.2–T1.1.3:</b> the only modifications allowed are mounting sensors and the AI computer, and they must not affect any electrical or moving parts of the car <a class="src" data-ref="rules">Rules p.10</a></li>
+        <li><b>T1.1.6:</b> on a shared car you may fit your own computer and extra sensors after IMechE approval <a class="src" data-ref="rules">Rules p.10</a></li>
+        <li><b>T1.3.1–T1.3.2:</b> sensors securely mounted; any edge a pedestrian could touch needs at least a 1 mm radius <a class="src" data-ref="rules">Rules p.11</a></li>
+        <li><b>T1.3.3:</b> sensors must sit inside the surface from the top of the TSAL to the outside edges of the four tyres, or within 100 mm of the original bodywork. Toggle "T 1.3.3 sensor envelope" in the 3D view <a class="src" data-ref="rules">Rules p.11</a> <a class="src" data-ref="cad:87-116">CAD README</a></li>
+        <li><b>T1.3.4:</b> only owners of their own ADS-DV may use the zone up to 500 mm high and less than 700 mm ahead of the front tyres, no wider than the front axle. <b>Shared cars may not.</b> <a class="src" data-ref="rules">Rules p.11</a></li>
+        <li><b>T1.4:</b> sensors must meet local law (e.g. laser eye safety); prove it with datasheets in the ASF <a class="src" data-ref="rules">Rules p.11</a></li>
+        <li><b>Sensor plate:</b> nominal plate 100 mm above the chassis on the spacer posts; M6 rods with RS 188-3461 quick-release knobs (Ø40); use at least 3 of the 4 posts; Ø6.5 holes recommended; plate at most 5 mm thick; the centre post was removed for 2026 <a class="src" data-ref="cad:118-131">CAD README</a></li>
+        <li><b>Wiring:</b> the vehicle-side harness can move within the connector zone; strain relief is needed on both sides (a screwed cable-tie base is recommended) <a class="src" data-ref="cad:136-148">CAD README</a></li>
+        <li><b>Approval pack:</b> CAD placed in the official model, mounting parts, fasteners, materials, wiring and strain relief, zipped with a team ID and version <a class="src" data-ref="cad:184-200">CAD README</a></li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="sec" id="sec-safety">
+    <summary><h2>Safety controls &amp; indicators</h2><span class="hint">What stops the car, and what the lights mean</span></summary>
+    <div class="content">
+      <div class="grid2">
+        <div class="card">
+          <h3>E-stop loop</h3>
+          <p>The loop is closed only when all of these are true <a class="src" data-ref="um:153-158">UM §5.2</a> <a class="src" data-ref="glos:50">Glossary</a>:</p>
+          <ul><li>RES active (button twisted up, red LED on)</li><li>Both side emergency stops "Out"</li><li>MPP dongle present</li><li>Inertia switch closed (reset by pressing it down under the front body panel) <a class="src" data-ref="um:413-427">UM §9</a></li></ul>
+        </div>
+        <div class="card">
+          <h3>Remote Emergency Stop (RES)</h3>
+          <ul>
+            <li>GrossFunk transmitter and an in-car receiver; NiMH battery lasts about 4 h <a class="src" data-ref="um21">2021 manual §2.2</a></li>
+            <li>Radio band 430–440 MHz; airport RF has interfered before <a class="src" data-ref="ops:150-158">Op. Safety §8</a></li>
+            <li>The ASR wears it strapped round the waist whenever the car is active <a class="src" data-ref="ops:113-129">Op. Safety §6.2</a></li>
+            <li>"Go" switch 0 → 1 (rising edge) starts AS_DRIVING; switching Go off while driving triggers the EBS <a class="src" data-ref="sis">SIS §3.2, §3.7</a></li>
+            <li>On CAN: RES_TPDO 181h (E-stop, Go, K3, radio strength) <a class="src" data-ref="dbc">DBC</a></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Switches</h3>
+          <ul>
+            <li>LVMS (low voltage), ASMS (autonomous system), TSMS (tractive system): three key switches on the right-hand side <a class="src" data-ref="um21">2021 manual §3.1</a></li>
+            <li>AI Power Switch (AIMS) at the rear powers the compute platform; keep it off in storage even with no computer fitted <a class="src" data-ref="um:197-201">UM §6.2</a> <a class="src" data-ref="um:252-256">UM §6.2</a></li>
+            <li>4.3" touchscreen on the right-hand side: mission select (AMI), diagnostics, battery and brake pages, Service page <a class="src" data-ref="um21">2021 manual §3.3</a></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>TSAL / ASSI lights (dome on top)</h3>
+          <div class="tbl"><table>
+            <thead><tr><th>Light</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td>Green</td><td>LV on, tractive system off <a class="src" data-ref="um:150">UM</a></td></tr>
+              <tr><td>Red</td><td>Tractive system active <a class="src" data-ref="um:212">UM</a></td></tr>
+              <tr><td>Red + yellow</td><td>AS_READY <a class="src" data-ref="um:231">UM</a></td></tr>
+              <tr><td>Red + yellow + flashing blue</td><td>2026 manual: 5 s ready timer has run, safe to press Go <a class="src" data-ref="um:233">UM</a></td></tr>
+              <tr><td>Yellow flashing</td><td>AS_DRIVING <a class="src" data-ref="um21">2021 §3.2</a></td></tr>
+              <tr><td>Blue steady</td><td>AS_FINISHED <a class="src" data-ref="um21">2021 §3.2</a></td></tr>
+              <tr><td>Blue flashing</td><td>2021 manual: EMERGENCY_BRAKE <a class="src" data-ref="um21">2021 §3.2</a></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+      <h3>Operating area</h3>
+      <ul>
+        <li>Static work: a hazardous area of at least 5 m around the active car <a class="src" data-ref="ops:67">Op. Safety §5</a></li>
+        <li>Dynamic area at least 30 × 50 m, including a 10 m run-off zone; if the car enters the run-off zone the ASR must hit the RES immediately <a class="src" data-ref="ops:90-100">Op. Safety §6.1</a></li>
+        <li>No tethered connections while driving: wireless only <a class="src" data-ref="ops:113-129">Op. Safety §6.2</a></li>
+        <li>No running in rain, standing water, ice or snow <a class="src" data-ref="ops:137-149">Op. Safety §7</a></li>
+        <li>Lift only with the Quick Lift Jack under the chassis, never by the bodywork, nose or suspension; move it on the skateboard trolleys; avoid slopes over 10 % <a class="src" data-ref="ops:50-60">Op. Safety §4</a> <a class="src" data-ref="trans:135-143">Transport §4</a></li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="sec" id="sec-can">
+    <summary><h2>CAN interface (AI ↔ VCU)</h2><span class="hint">Messages, handshake and reserved IDs</span></summary>
+    <div class="content">
+      <p>CAN 2.0B at 500 kbit/s. The DBC on GitHub is <code>ADS-DV_2026_CAN1.dbc</code>; the message spec is still the 2021 v4.0 PDF. The 2026 manual says the interface is unchanged from previous years. <a class="src" data-ref="sis">SIS v4.0</a> <a class="src" data-ref="dbc">DBC 2026</a> <a class="src" data-ref="um:180-182">UM §6</a> The reference C library is the FS-AI API (MIT licence), which builds on SocketCAN <a class="src" data-ref="api:52-110">API README</a>.</p>
+      <h3>AI → VCU (send all five, every 10 ms)</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>ID</th><th>Message</th><th class="num">DLC</th><th>Signals</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">510h</td><td>AI2VCU_Status</td><td class="num">8</td><td>HANDSHAKE; ESTOP_REQUEST; MISSION_STATUS (0 not selected, 1 selected, 2 running, 3 finished); DIRECTION_REQUEST (0 neutral, 1 forward); LAP_COUNTER; CONES_COUNT_ACTUAL; CONES_COUNT_ALL; VEH_SPEED_ACTUAL; VEH_SPEED_DEMAND</td></tr>
+          <tr><td class="mono">511h</td><td>AI2VCU_Drive_F</td><td class="num">4</td><td>FRONT_AXLE_TRQ_REQUEST 0–195 Nm; FRONT_MOTOR_SPEED_MAX 0–4000 rpm</td></tr>
+          <tr><td class="mono">512h</td><td>AI2VCU_Drive_R</td><td class="num">4</td><td>REAR_AXLE_TRQ_REQUEST 0–195 Nm; REAR_MOTOR_SPEED_MAX 0–4000 rpm</td></tr>
+          <tr><td class="mono">513h</td><td>AI2VCU_Steer</td><td class="num">2</td><td>STEER_REQUEST −21.0 to 21.0° (+ = left)</td></tr>
+          <tr><td class="mono">514h</td><td>AI2VCU_Brake</td><td class="num">2</td><td>HYD_PRESS_F_REQ_pct, HYD_PRESS_R_REQ_pct, 0–100</td></tr>
+          <tr><td class="mono">501h</td><td>AI2LOG_Dynamics2</td><td class="num">6</td><td>Longitudinal and lateral acceleration, yaw rate (logging). The SIS lists it as an AI message; the DBC names PCAN as its sender.</td></tr>
+        </tbody>
+      </table></div>
+      <p>Torque requests are unsigned. Whether the motor drives or brakes depends on the motor speed limit you set. <a class="src" data-ref="sis">SIS p.4</a></p>
+      <h3>VCU → AI</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>ID</th><th>Message</th><th class="num">DLC</th><th class="num">Period</th><th>Signals</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">520h</td><td>VCU2AI_Status</td><td class="num">8</td><td class="num">10 ms</td><td>HANDSHAKE; SHUTDOWN_REQUEST; AS / TS switch status; GO_SIGNAL; STEERING_STATUS; AS_STATE; AMI_STATE; fault and warning flags; SHUTDOWN_CAUSE</td></tr>
+          <tr><td class="mono">521h / 522h</td><td>VCU2AI_Drive_F / _R</td><td class="num">6</td><td class="num">10 ms</td><td>Actual axle torque ±195 Nm; request echo; max axle torque</td></tr>
+          <tr><td class="mono">523h</td><td>VCU2AI_Steer</td><td class="num">6</td><td class="num">10 ms</td><td>ANGLE, ANGLE_MAX, ANGLE_REQUEST</td></tr>
+          <tr><td class="mono">524h</td><td>VCU2AI_Brake</td><td class="num">5</td><td class="num">10 ms</td><td>Front / rear pressure actual and requested; STATUS_BRK; STATUS_EBS</td></tr>
+          <tr><td class="mono">525h</td><td>VCU2AI_Speeds</td><td class="num">8</td><td class="num">10 ms</td><td>FL, FR, RL, RR wheel speed (rpm)</td></tr>
+          <tr><td class="mono">526h</td><td>VCU2AI_Wheel_counts</td><td class="num">8</td><td class="num">10 ms</td><td>FL, FR, RL, RR pulse counts</td></tr>
+          <tr><td class="mono">500h</td><td>VCU2LOG_Dynamics1</td><td class="num">8</td><td class="num">10 ms</td><td>Speed, steer, brake and torque, actual and target</td></tr>
+          <tr><td class="mono">502h</td><td>VCU2LOG_Status</td><td class="num">5</td><td class="num">100 ms</td><td>ASSI state, EBS state, AMI, steering, service brake, lap and cone counts</td></tr>
+          <tr><td class="mono">120h</td><td>VCU_STATUS</td><td class="num">8</td><td class="num">10 ms</td><td>VCU state machine, AS state, per-message timeout flags, warnings</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Handshake</h3>
+      <p>The VCU toggles HANDSHAKE in 520h and the AI must copy it back in 510h. If the copy does not match within 100 ms (10 messages), or any of the five AI messages misses 10 in a row, the VCU raises AI_COMMS_LOST. That means an emergency stop in any state other than AS_OFF. <a class="src" data-ref="sis">SIS §2.4</a></p>
+      <p class="note">Rule T1.1.8 says the VCU needs the correct handshake response within <b>50 ms</b>, stricter than the SIS's 100 ms. Design for 50 ms. <a class="src" data-ref="rules">Rules p.10</a></p>
+      <h3>Other nodes on the same bus (2026 DBC)</h3>
+      <p>RES (081h, 181h), umbilical joystick (084h, 184h, 284h), display "OPUS" (123h, 300h–302h, including EBS accumulator and caliper pressures), PCAN-GPS (600h–657h), CANopen NMT 000h and SYNC 080h. <a class="src" data-ref="dbc">DBC</a></p>
+      <h3>IDs the AI must never send</h3>
+      <p class="mono">000h · 080h–084h · 120h–124h · 181h–184h · 284h · 301h · 410h–41Fh · 450h–470h · 4E2h · 4FDh–4FFh · 550h · 581h–584h · 600h–640h · 650h–660h · 700h–705h <a class="src" data-ref="sis">SIS §2.3</a></p>
+    </div>
+  </details>
+
+  <details class="sec" id="sec-states">
+    <summary><h2>Autonomous state machine</h2><span class="hint">How the car moves from OFF to DRIVING, and back</span></summary>
+    <div class="content">
+      <div class="tbl"><table>
+        <thead><tr><th>From → to</th><th>Condition</th></tr></thead>
+        <tbody>
+          <tr><td>AS_OFF → AS_READY</td><td>TSMS on, ASMS on, mission chosen on the touchscreen (the AI echoes MISSION_STATUS = 1), EBS armed</td></tr>
+          <tr><td>AS_READY → AS_DRIVING</td><td>At least 5 s in READY; torque requests 0; steer request 0; DIRECTION_REQUEST = neutral; actual steer under 5°; then a RES Go rising edge. Requests are ignored while READY.</td></tr>
+          <tr><td>AS_DRIVING → AS_FINISHED</td><td>The AI stops the car with the service brake, then sets MISSION_STATUS = 3; the VCU confirms the car is at rest. Commands are ignored afterwards.</td></tr>
+          <tr><td>AS_FINISHED → AS_OFF</td><td>ASMS off</td></tr>
+          <tr><td>AS_READY → AS_OFF</td><td>ASMS off</td></tr>
+          <tr><td>AS_READY → EMERGENCY_BRAKE</td><td>Shutdown circuit opens: RES E-stop, RES link lost, side E-stop, inertia switch, VCU critical fault, BMS fault, or MPP dongle removed</td></tr>
+          <tr><td>AS_DRIVING → EMERGENCY_BRAKE</td><td>Any of the above, or Go switched off, ASMS off, or a fault below</td></tr>
+          <tr><td>AS_FINISHED → EMERGENCY_BRAKE</td><td>Shutdown circuit opens</td></tr>
+          <tr><td>EMERGENCY_BRAKE → AS_OFF</td><td>After the 15 s braking timer, ASMS off. A power cycle is needed before driving again.</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Faults that stop the car in AS_DRIVING</h3>
+      <ul>
+        <li><b>MISSION_STATUS_FAULT</b>: MISSION_STATUS = finished while any wheel is above 10 rpm</li>
+        <li><b>AUTONOMOUS_BRAKING_FAULT</b>: DIRECTION_REQUEST = neutral while any wheel is above 10 rpm</li>
+        <li><b>AI_COMMS_LOST</b>: handshake or message timeout</li>
+        <li><b>BRAKE_PLAUSIBILITY_FAULT</b>: torque request above 0 together with a brake request above 0</li>
+      </ul>
+      <p>Source: <a class="src" data-ref="sis">SIS §3–4</a>. Rule T4.2.2 also requires the AI to request the EBS itself when it detects an error, for example a lost sensor. <a class="src" data-ref="rules">Rules p.13</a></p>
+    </div>
+  </details>
+
+  <details class="sec" id="sec-ops">
+    <summary><h2>Operating the car</h2><span class="hint">Abridged from the 2026 User Manual</span></summary>
+    <div class="content">
+      <ol>
+        <li>Inspect the car; check tyre pressures (20–22 psi), wheel nuts, brake lines and steering lock to lock <a class="src" data-ref="insp:51-75">Inspection §4</a></li>
+        <li>AI Power Switch off; fit the MPP dongle; RES on (twist up, red LED); side E-stops out <a class="src" data-ref="um:130-152">UM §5.2</a></li>
+        <li>LVMS on → TSAL green → touchscreen starts → E-stop loop green; LV 13.5–14.5 V; traction above 47.5 V <a class="src" data-ref="um:147-166">UM §5.2</a></li>
+        <li>Touchscreen shows AS Init, OP Init, TS Init, EBS Init <a class="src" data-ref="um:167-176">UM §5.2</a></li>
+        <li>Computer on a power + CAN plug; AI Power Switch on; ASMS and TSMS on <a class="src" data-ref="um:194-206">UM §6.2</a></li>
+        <li>The computer starts sending CAN. As soon as valid messages arrive, the tractive system and EBS activate: TSAL red, EBS Init → Charging → Armed, AS Init → AS Off <a class="src" data-ref="um:207-224">UM §6.2</a></li>
+        <li>Insert the GEMS DA3 logger card (two green LEDs); select a mission and press Set → AS Ready (red + yellow) <a class="src" data-ref="um:225-232">UM §6.2</a></li>
+        <li>After 5 s blue flashes too; the ASR steps away and flips Go 0 → 1 → AS Driving <a class="src" data-ref="um:233-240">UM §6.2</a></li>
+        <li>After every mission (Finished or Emergency Brake), switch LVMS, ASMS and TSMS off to reset <a class="src" data-ref="um:248-251">UM §6.2</a></li>
+      </ol>
+      <p>Charging, storage (with brake discharge) and RES battery charging are in <a class="src" data-ref="um:259-446">UM §7–10</a>.</p>
+    </div>
+  </details>
+
+  <details class="sec" id="sec-missions">
+    <summary><h2>Missions &amp; scrutineering</h2><span class="hint">What the software must run</span></summary>
+    <div class="content">
+      <p>AMI_STATE values: 1 Acceleration · 2 Skidpad · 3 Autocross · 4 Track drive · 5 Static inspection A · 6 Static inspection B · 7 Autonomous demo. The AI must read the AMI correctly from the VCU (T4.3.2). <a class="src" data-ref="sis">SIS p.6</a> <a class="src" data-ref="rules">Rules p.13–14</a></p>
+      <ul>
+        <li><b>Static inspection A</b> (car on stands): sweep the full steering range and finish straight; ramp the drivetrain to 200 rpm in 10 s, stop within 5 s, set AS Finished</li>
+        <li><b>Static inspection B</b>: spin to 50 rpm, then trigger the EBS so the car goes to AS Emergency</li>
+        <li><b>Autonomous demo</b> before any dynamic event</li>
+        <li>Inspection items: a paper ASF (8 pages max), datasheets for all perception sensors, proof they meet local law <a class="src" data-ref="rules">Rules IN2, p.15–16</a></li>
+      </ul>
+      <p>The DDT scrutineering document is still a stub. Planned content: sticker sheet, sensor CAD review, ASR quiz, HiL CAN comms check (boot and SocketCAN launch script), sensor visual review, static and dynamic inspections. <a class="src" data-ref="ddt">DDT Scrutineering</a></p>
+      <p>The HiL simulator (IPG CarMaker with ROS 2) has a 2026 vehicle model: "single motor driving rear axle", steering angle equal to road-wheel angle (as on CAN), and cameras and lidar moved to match the 2026 sensor plate. <a class="src" data-ref="hil:9-17">HiL vehicle</a> <a class="src" data-ref="hilrepo">HiL repo</a></p>
+    </div>
+  </details>
+
+  <details class="sec" id="sec-notes">
+    <summary><h2>Discrepancies found while checking</h2><span class="hint">Where the sources disagree</span></summary>
+    <div class="content">
+      <ul>
+        <li><b>Handshake timeout:</b> SIS says 100 ms; rule T1.1.8 says 50 ms. <a class="src" data-ref="sis">SIS §2.4</a> <a class="src" data-ref="rules">Rules p.10</a></li>
+        <li><b>Front drive messages on a RWD car:</b> the 2026 spec is single-motor RWD, but the CAN spec (from the 2021 car) still has front and rear drive messages (511h, 512h). The FS-AI API exposes one axle torque request. <a class="src" data-ref="spec:30-40">Spec</a> <a class="src" data-ref="apih">fs-ai_api.h</a></li>
+        <li><b>Protocol change warning:</b> rule T1.1.4 warns that the 2026 protocol "may not be backwards compatible", while the 2026 manual says the interface is unchanged. <a class="src" data-ref="rules">Rules p.10</a> <a class="src" data-ref="um:180-182">UM §6</a></li>
+        <li><b>DBC file name:</b> the SIS markdown links <code>ADS-DV_2025_CAN1.dbc</code>; the repository holds <code>ADS-DV_2026_CAN1.dbc</code>. <a class="src" data-ref="sismd">SIS md</a></li>
+        <li><b>ASSI blue flashing:</b> the 2021 manual says it means EMERGENCY_BRAKE; the 2026 manual uses it for "5 s timer elapsed" in AS_READY. <a class="src" data-ref="um21">2021 §3.2</a> <a class="src" data-ref="um:233">UM 2026</a></li>
+        <li><b>Track:</b> spec 1200 mm; CAD wheel centres 1183 mm. The 2° camber accounts for the gap at the contact patch.</li>
+        <li><b>Tyres in the simulator:</b> the HiL model uses RT_185_50R13, not the spec 225/45 R13. <a class="src" data-ref="hil:255-258">HiL tyres</a></li>
+        <li><b>InCarPC GPU name:</b> listed as "GTX 1060 Ti", a model NVIDIA never sold. 1280 CUDA cores matches the GTX 1060 6 GB. <a class="src" data-ref="compr:16-18">README</a></li>
+        <li><b>Legacy node name:</b> the 2026 DBC still calls the AI node "NVIDIA Drive PX2". <a class="src" data-ref="dbc">DBC</a></li>
+        <li><b>Battery chemistry:</b> the 2021 manual ends charging at a 3.55 V maximum cell voltage (a lithium-type cell); the 2026 spec says lead acid, 4 × 12 V. Use the 2026 numbers. <a class="src" data-ref="um21">2021 manual §8</a> <a class="src" data-ref="spec:50-62">Spec §4</a></li>
+        <li><b>Old AI interface:</b> the 2018 IMechE electrical interface sheet (two Deutsch DTP power plugs, 25 A each, and a 9-way D-sub for CAN) and the 2018 drawing (4WD, Avon tyres, lidar in the nose) describe the original car. The 2026 car uses the 7W2 plug and is RWD. <a class="src" data-ref="arch">FS2023 archive</a></li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="sec" id="sec-sources">
+    <summary><h2>Sources</h2><span class="hint">Everything on this page comes from these</span></summary>
+    <div class="content">
+      <p>GitHub links are pinned to the commits checked on 27 Oct 2026, so line numbers stay correct. Open the repository root to see newer versions.</p>
+      <ul>
+        <li><a data-ref="docrepo">FS-AI_ADS-DV_Documentation</a>: <a data-ref="spec">Specifications &amp; Dimensions</a>, <a data-ref="um">User Manual</a>, <a data-ref="glos">Glossary</a>, <a data-ref="insp">Inspection Schedule</a>, <a data-ref="ops">Operational Safety</a>, <a data-ref="trans">Transportation Procedures</a>, <a data-ref="sis">Software Interface Specification v4.0 (PDF)</a>, <a data-ref="dbc">ADS-DV_2026_CAN1.dbc</a>, <a data-ref="ddt">DDT Scrutineering Process</a></li>
+        <li><a data-ref="cadrepo">FS-AI_ADS-DV_CAD</a>: <a data-ref="cad">README</a>, <a data-ref="step">FS-AI_ADS-DV_CAD_2026.step</a>, <a data-ref="cadside">side view sketch</a>, <a data-ref="cadfront">front view sketch</a>, <a data-ref="cadconn">connector location</a>, <a data-ref="cadphoto">connector photo</a></li>
+        <li><a data-ref="comprepo">FS-AI_Compute</a>: <a data-ref="compr">README</a>, <a data-ref="comp">Reference Compute Installation</a>, <a data-ref="incarpc">InCarPC spec (PDF)</a>, <a data-ref="compstep">rear compute STEP</a>, <a data-ref="incarphoto">InCarPC photo</a></li>
+        <li><a data-ref="apirepo">FS-AI_API</a>: <a data-ref="api">README</a>, <a data-ref="apih">fs-ai_api.h</a>, <a data-ref="pcan">PCAN-GPS user manual</a>, <a data-ref="um21">ADS-DV User Manual 2021 (PDF)</a></li>
+        <li><a data-ref="hilrepo">FS-AI_IMechE_ADS-DV_HiL</a>: <a data-ref="hil">2026 vehicle model</a></li>
+        <li>IMechE: <a data-ref="rules">Formula Student rules page</a> (FS-AI 2026 Rules v1: T1, T3, T4, IN1–IN2) and <a data-ref="forms">forms and documents</a>, which also hosts the FS2023 FS-AI archive with the 2018 "ADS-DV dimensions and locations" drawing (DJ Racecars) used to place the right-side switches and touchscreen</li>
+        <li>Photos in the <a data-ref="um21">ADS-DV User Manual 2021</a>: Fig. 12 master switches and E-stop, Fig. 13 rear interface panel, Fig. 14 light tower (ASSI, TSAL, GPS antenna, GEMS logger, camera mount), Fig. 21 RES receiver + PCAN-GPS enclosure (§9)</li>
+        <li>Vendors: <a data-ref="zed2">Stereolabs ZED 2 datasheet v1.1</a> (from the <a data-ref="zeddocs">Stereolabs datasheets page</a>), <a data-ref="zedcmp">Stereolabs camera comparison</a>, <a data-ref="msteer">DC Electronics Microsteer EPAS200M19 datasheet</a>, <a data-ref="sevcon">Sevcon Gen4 DC datasheet (mirror)</a></li>
+      </ul>
+      <p><b>About the 3D model.</b> Parts are placed three ways: from the official 2026 CAD (exact), from IMechE photos and drawings of earlier versions of the car (approximate, solid), or, for internals whose position IMechE does not publish (battery, VCU, motor, steering motor, brake unit, DC-DC, fuse), as dashed ghost boxes in plausible spots. Cable routes inside the car are schematic: the documents say what connects to what, not the harness path. The "Simplified" model is drawn by this page from dimensions and a coarse bodywork outline measured from the official CAD. Suspension members are placed from the CAD's part bounding boxes, so treat them as indicative. "Load official CAD" downloads the STEP files from IMechE's GitHub and renders them in your browser. The CAD is © IMechE and its README asks that it is not re-uploaded to other public locations, so this page does not contain it. <a class="src" data-ref="cad:13">CAD README</a> Markers with a dashed ring are parts the documents describe but the CAD does not contain. Their positions come from the text or IMechE renders, so they are approximate.</p>
+    </div>
+  </details>
+</main>
+<footer class="wrap">ADS-DV Explorer · Falcon Driverless · built from the official FS-AI documentation as of 27 Oct 2026. Not an IMechE document.</footer>
+
+<script>
+// Source links. Kept outside the 3D module so they resolve even if WebGL or the CDN is unavailable.
+(function () {
+  const SHA = {
+    doc: 'bb8f1624936f13c10a3406ea060088f2ffb4b908', cad: '958fdbf336fcc6cbd60535c2e7812d51a977d267',
+    comp: '27a09ea9ee8774b43ccf4ebe528fb96d9b519d2c', api: '33bcb61d2519ee1ac4935396d9bf465c6ebc81c1',
+    hil: '1fe77bed411ba621a3187bc2eb9ca13c7d371832',
+  };
+  const B = (repo, sha, path) => `https://github.com/FS-AI/${repo}/blob/${sha}/${path}`;
+  const D = (p) => B('FS-AI_ADS-DV_Documentation', SHA.doc, p);
+  const C = (p) => B('FS-AI_ADS-DV_CAD', SHA.cad, p);
+  const K = (p) => B('FS-AI_Compute', SHA.comp, p);
+  const A = (p) => B('FS-AI_API', SHA.api, p);
+  window.REFS = {
+    docrepo: 'https://github.com/FS-AI/FS-AI_ADS-DV_Documentation',
+    spec: D('FS-AI%20ADS-DV%20Specifications%20%26%20Dimensions.md'),
+    um: D('FS-AI%20ADS-DV%20User%20Manual.md'),
+    glos: D('FS-AI%20ADS-DV%20Glossary.md'),
+    insp: D('FS-AI%20ADS-DV%20Inspection%20Schedule.md'),
+    ops: D('FS-AI%20ADS-DV%20Operational%20Safety.md'),
+    trans: D('FS-AI%20ADS-DV%20Transportation%20Procedures.md'),
+    sis: D('ADS-DV_Software_Interface_Specification_v4.0.pdf'),
+    sismd: D('FS-AI%20ADS-DV%20Software%20Interface%20Specification.md'),
+    dbc: D('ADS-DV_2026_CAN1.dbc'),
+    ddt: D('FS-AI%20DDT%20Scrutineering%20Process.md'),
+    cadrepo: 'https://github.com/FS-AI/FS-AI_ADS-DV_CAD',
+    cad: C('README.md'),
+    step: C('FS-AI_ADS-DV_CAD_2026.step'),
+    cadside: C('images/FS-AI_ADS-DV_Side_View_Sketch_2026.png'),
+    cadfront: C('images/FS-AI_ADS-DV_Front_View_Sketch_2026.png'),
+    cadconn: C('images/FS-AI_ADS-DV_Additional_Sensor_Connector_Location_2026.png'),
+    cadphoto: C('images/Front_Connections.png'),
+    comprepo: 'https://github.com/FS-AI/FS-AI_Compute',
+    comp: K('ADS-DV_Reference_Compute_Installation.md'),
+    compr: K('README.md'),
+    incarpc: K('ADS-DV%20InCarPC%20Specification%20(2025%20V1).pdf'),
+    compstep: K('CAD/ADS-DV_Rear_Compute_Installation.stp'),
+    compplate: K('images/Rear_Compute_Plate_Required_Dimensions.png'),
+    compimg: K('images/Rear_Compute_Maximum_Recommended_Size.png'),
+    incarphoto: K('images/InCarPC_Installation.png'),
+    apirepo: 'https://github.com/FS-AI/FS-AI_API',
+    api: A('README.md'),
+    apih: A('FS-AI_API/fs-ai_api.h'),
+    pcan: A('Docs/PCAN-GPS_UserMan_eng.pdf'),
+    um21: A('Docs/ADS-DV%20User%20Manual%202021.pdf'),
+    hilrepo: 'https://github.com/FS-AI/FS-AI_IMechE_ADS-DV_HiL',
+    hil: B('FS-AI_IMechE_ADS-DV_HiL', SHA.hil, 'Data/Vehicle/FS-AI_IMechE_ADS-DV_2026'),
+    rules: 'https://www.imeche.org/events/formula-student/team-information/rules',
+    forms: 'https://www.imeche.org/events/formula-student/team-information/forms-and-documents',
+    arch: 'https://www.imeche.org/events/formula-student/team-information/forms-and-documents',
+    zed2: 'https://cdn.sanity.io/files/s18ewfw4/staging/ae6d5778bf3ce6ccd3a36a5eaf7d13a15bac926f.pdf/ZED%202%20Datasheet%20v1.1.pdf',
+    zeddocs: 'https://www.stereolabs.com/datasheets',
+    zedcmp: 'https://support.stereolabs.com/hc/en-us/articles/24824513333015-Where-can-I-find-a-comparison-table-for-the-ZED-Stereo-Cameras',
+    msteer: 'https://levelfivesupplies.com/wp-content/uploads/2023/01/EPAS200M19_Microsteer_Autonomous_Datasheetv5.pdf',
+    sevcon: 'https://www.e-kart.fr/images/stories/technique/SEVCON/sevcon-gen4-dc.pdf',
+  };
+  // data-ref="key" or "key:12" or "key:12-30"; line anchors only for text files on GitHub.
+  window.refUrl = function (ref) {
+    const [key, lines] = ref.split(':');
+    let url = window.REFS[key];
+    if (!url) return null;
+    if (lines && url.includes('github.com/FS-AI/') && !/\.(pdf|png|step|stp)$/i.test(url)) {
+      const [a, b] = lines.split('-');
+      url += `?plain=1#L${a}` + (b ? `-L${b}` : '');
+    }
+    return url;
+  };
+  window.resolveRefs = function (root) {
+    root.querySelectorAll('a[data-ref]').forEach((a) => {
+      const url = window.refUrl(a.dataset.ref);
+      if (!url) { console.warn('unknown ref', a.dataset.ref); return; }
+      a.href = url; a.target = '_blank'; a.rel = 'noopener';
+    });
+  };
+  window.resolveRefs(document);
+
+  const root = document.documentElement;
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+    window.dispatchEvent(new Event('themechange'));
+  });
+  document.getElementById('openAll').addEventListener('click', () => document.querySelectorAll('details.sec').forEach((d) => (d.open = true)));
+  document.getElementById('closeAll').addEventListener('click', () => document.querySelectorAll('details.sec').forEach((d) => (d.open = false)));
+  // Following a link to a section opens it.
+  const openHash = () => { const el = document.getElementById(location.hash.slice(1)); if (el && el.tagName === 'DETAILS') el.open = true; };
+  window.addEventListener('hashchange', openHash);
+  document.querySelectorAll('nav.toc a').forEach((a) => a.addEventListener('click', () => setTimeout(openHash, 0)));
+  openHash();
+})();
+</script>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// Coarse bodywork outline sampled from the official CAD by figures/src/ads_dv_outline.js.
+const BODY = /*BODY*/{"xs":[1485,1450,1415,1380,1345,1310,1275,1240,1205,1170,1135,1100,1065,1030,995,960,925,890,855,820,785,750,715,680,645,610,575,540,505,470,435,400,365,330,295,260,225,190,155,120,85,50,15,-20,-55,-90,-125,-160,-195,-230,-265,-300,-335,-370,-405,-440,-475,-510,-545,-580,-615,-650,-685,-720,-755,-790,-825,-860,-895,-930,-965,-1000,-1035,-1070,-1105,-1140,-1175,-1210,-1245,-1280,-1315,-1328],"zs":[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330],"top":[[180,180,180,181,181,181,181,181,178,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[210,211,211,211,212,212,212,213,213,213,210,198,163,121,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[237,237,237,238,238,239,239,240,241,241,242,241,236,218,126,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[261,262,262,263,264,264,265,266,266,267,267,268,267,265,255,148,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[283,283,284,284,285,286,286,287,288,288,289,290,291,290,289,283,254,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[303,303,303,304,304,305,306,306,307,308,309,310,311,312,312,310,305,287,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[321,321,322,322,323,323,323,324,325,326,326,327,328,329,330,330,329,324,308,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[338,338,338,339,339,339,340,340,341,342,343,344,345,346,347,347,347,345,341,326,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[354,354,354,354,355,355,355,355,356,357,357,358,359,360,360,361,362,361,360,355,339,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[369,369,369,369,369,369,369,369,369,370,371,372,373,373,374,375,376,376,376,373,368,347,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[382,382,381,381,381,381,381,381,382,383,383,384,385,385,386,387,388,388,387,387,385,377,343,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[395,395,394,394,394,394,394,394,394,394,395,396,396,397,398,399,399,400,401,401,399,395,385,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[405,405,405,405,404,404,404,404,404,405,406,407,408,408,409,410,411,412,412,412,412,411,406,396,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[416,416,415,415,415,415,415,415,415,415,416,417,417,418,419,420,421,422,423,424,424,423,421,417,405,-1,-1,-1,-1,-1,-1,-1,-1,-1],[425,425,425,425,425,425,425,424,424,425,425,426,427,428,429,430,431,432,433,433,434,434,434,431,427,410,-1,-1,-1,-1,-1,-1,-1,-1],[433,433,433,432,432,432,432,433,433,433,434,435,436,437,438,439,440,441,442,443,444,445,445,444,441,436,415,-1,-1,-1,-1,-1,-1,-1],[441,441,441,440,440,440,440,440,441,441,442,442,443,444,446,447,448,449,451,452,453,454,455,455,454,451,444,412,-1,-1,-1,-1,-1,-1],[447,447,447,447,446,446,447,447,448,448,449,449,451,452,453,454,455,457,458,460,461,462,464,464,464,463,460,452,-1,-1,-1,-1,-1,-1],[453,453,453,452,452,452,452,453,453,454,455,455,457,458,459,461,462,464,465,467,468,470,471,472,473,473,472,468,458,-1,-1,-1,-1,-1],[458,458,458,458,457,457,458,458,459,460,460,461,463,465,466,468,469,471,472,474,476,477,478,479,480,479,480,479,475,463,-1,-1,-1,-1],[461,461,461,461,461,461,462,462,463,464,465,466,467,469,470,472,473,475,477,479,481,482,484,486,487,488,488,488,485,478,463,-1,-1,-1],[464,465,465,465,465,465,465,466,467,468,469,470,471,472,474,476,478,480,482,484,486,488,489,491,492,493,495,495,494,490,482,-1,-1,-1],[466,466,466,467,467,467,468,468,469,470,471,472,473,475,477,479,481,483,484,486,488,490,493,495,496,497,499,498,499,497,492,479,-1,-1],[467,467,468,468,468,469,469,469,470,472,473,474,476,477,478,480,482,484,486,488,491,493,495,497,499,501,502,503,503,502,499,491,-1,-1],[467,467,468,468,468,469,469,470,471,472,473,475,476,477,479,481,483,485,487,489,492,494,496,499,501,503,504,505,505,505,502,496,474,-1],[467,467,468,468,468,469,469,470,471,473,474,475,476,478,479,481,483,485,488,490,492,495,497,499,501,503,505,506,506,505,503,498,479,-1],[467,467,468,468,468,469,469,471,472,473,474,475,477,478,51,51,51,485,488,490,492,494,497,499,501,503,504,505,506,505,502,497,480,-1],[467,467,468,468,468,469,469,470,471,472,473,475,476,478,479,481,483,484,487,489,491,493,496,498,500,501,503,504,504,503,500,493,-1,-1],[467,467,468,468,468,469,469,470,471,472,473,475,477,478,480,481,482,484,486,488,490,492,494,496,498,500,501,502,502,500,496,487,-1,-1],[-1,-1,468,468,469,469,470,470,470,471,472,473,475,476,478,480,481,483,484,486,488,490,492,494,496,497,498,499,498,496,489,470,-1,-1],[467,467,467,468,468,469,470,470,471,471,472,473,473,475,476,478,479,481,483,485,486,488,490,491,493,494,495,494,493,488,478,-1,-1,-1],[467,467,467,467,468,468,469,469,470,471,472,472,473,474,475,476,478,479,481,483,484,486,487,489,490,491,490,489,486,479,446,-1,-1,-1],[467,467,467,467,468,468,468,469,469,470,471,471,472,473,51,51,51,477,479,480,482,483,484,485,486,485,484,482,477,464,-1,-1,-1,-1],[467,467,467,467,468,468,468,468,469,469,469,470,471,472,472,473,474,475,476,477,479,480,481,481,481,480,478,474,463,-1,-1,-1,-1,-1],[467,467,467,467,468,468,468,468,468,468,469,470,470,471,471,472,473,473,473,475,476,477,477,477,475,474,471,463,445,-1,-1,-1,-1,-1],[467,467,467,467,467,467,467,467,467,468,468,469,469,470,470,471,471,472,472,472,473,473,473,472,470,468,463,451,-1,-1,-1,-1,-1,-1],[467,467,467,467,467,467,467,467,467,467,467,467,468,469,469,470,470,470,470,471,470,470,469,467,466,461,453,424,-1,-1,-1,-1,-1,-1],[467,467,467,467,467,467,467,467,467,467,467,467,467,468,468,468,468,468,468,469,468,467,466,464,460,453,441,-1,-1,-1,-1,-1,-1,-1],[467,467,467,467,467,467,467,467,467,467,467,467,467,466,466,466,466,466,467,467,466,465,463,460,454,445,425,-1,-1,-1,-1,-1,-1,-1],[665,665,665,665,467,467,467,467,467,467,467,466,466,466,466,465,465,465,465,464,463,462,459,455,448,438,-1,-1,-1,-1,-1,-1,-1,-1],[590,665,665,665,665,665,469,468,466,466,466,466,466,466,465,465,465,464,464,463,462,459,456,451,443,429,-1,-1,-1,-1,-1,-1,-1,-1],[665,665,665,665,665,660,481,475,471,468,467,466,466,465,465,465,464,464,463,461,460,456,453,447,437,418,-1,-1,-1,-1,-1,-1,-1,-1],[-1,665,665,665,664,636,598,491,481,474,469,467,466,465,465,464,464,463,462,460,458,455,450,443,433,404,-1,-1,-1,-1,-1,-1,-1,-1],[664,664,664,664,646,614,574,513,489,479,473,468,466,465,464,464,463,462,461,459,457,453,449,442,431,-1,-1,-1,-1,-1,-1,-1,-1,-1],[663,663,663,652,628,595,553,509,488,478,472,468,466,465,464,463,462,462,461,459,456,452,448,439,428,-1,-1,-1,-1,-1,-1,-1,-1,-1],[661,660,657,638,611,-1,-1,498,484,476,470,468,466,465,464,463,462,461,461,458,456,452,448,440,426,-1,-1,-1,-1,-1,-1,-1,-1,-1],[657,658,646,627,-1,-1,517,492,481,473,470,467,465,464,464,463,462,461,460,458,456,452,448,441,428,-1,-1,-1,-1,-1,-1,-1,-1,-1],[654,651,636,615,-1,-1,506,488,479,472,469,466,465,464,463,462,462,461,460,458,456,452,448,441,429,-1,-1,-1,-1,-1,-1,-1,-1,-1],[649,643,626,-1,-1,-1,497,483,475,471,468,465,465,464,463,462,461,461,460,458,455,453,449,441,429,-1,-1,-1,-1,-1,-1,-1,-1,-1],[641,634,616,591,558,518,491,480,473,470,467,465,464,464,463,462,461,460,460,458,455,452,448,441,429,-1,-1,-1,-1,-1,-1,-1,-1,-1],[634,627,607,580,546,508,487,477,471,468,466,465,464,463,462,462,461,460,459,457,454,451,447,440,426,-1,-1,-1,-1,-1,-1,-1,-1,-1],[626,619,597,570,536,501,483,475,470,467,465,464,464,463,462,461,460,459,458,456,454,450,445,437,421,-1,-1,-1,-1,-1,-1,-1,-1,-1],[618,611,588,560,524,495,481,473,469,467,465,464,463,462,462,461,460,459,458,456,453,448,443,435,418,-1,-1,-1,-1,-1,-1,-1,-1,-1],[610,602,580,549,513,489,479,471,469,466,465,464,463,462,462,461,460,459,458,456,452,448,443,435,414,-1,-1,-1,-1,-1,-1,-1,-1,-1],[602,594,571,540,505,486,476,470,468,466,466,466,465,464,463,462,461,460,459,457,453,449,446,437,421,-1,-1,-1,-1,-1,-1,-1,-1,-1],[594,586,562,530,499,482,474,470,468,467,467,467,467,466,466,465,464,463,462,460,458,454,450,444,432,-1,-1,-1,-1,-1,-1,-1,-1,-1],[587,579,553,520,493,481,474,470,468,468,468,468,468,468,468,467,467,466,466,465,464,461,458,453,447,432,-1,-1,-1,-1,-1,-1,-1,-1],[579,571,545,510,488,479,472,470,468,468,469,469,470,470,470,470,470,470,470,470,469,468,466,464,459,453,439,-1,-1,-1,-1,-1,-1,-1],[571,563,536,502,485,476,471,470,469,469,469,470,471,472,472,473,473,474,474,475,475,475,475,473,471,468,462,448,-1,-1,-1,-1,-1,-1],[563,556,527,495,482,475,471,470,469,470,471,472,472,473,474,475,476,478,479,480,480,481,481,481,480,479,477,471,460,-1,-1,-1,-1,-1],[556,548,517,489,480,473,470,469,470,472,473,474,474,475,476,477,479,480,481,483,484,486,487,487,488,488,486,485,479,468,-1,-1,-1,-1],[548,540,507,486,476,471,470,470,471,472,473,474,475,476,478,479,480,482,484,486,488,489,491,492,493,494,494,493,491,486,472,-1,-1,-1],[540,531,498,482,475,471,469,470,471,472,473,474,475,477,478,480,482,484,486,487,489,491,494,495,496,498,499,499,498,494,489,464,-1,-1],[532,523,491,478,472,469,469,470,471,472,473,474,476,478,479,481,483,485,487,489,491,493,495,497,499,501,502,501,502,500,495,484,-1,-1],[523,513,484,474,469,468,468,469,470,471,472,473,474,476,478,480,482,484,486,488,491,493,495,497,499,501,502,503,503,502,496,486,-1,-1],[512,504,478,469,465,464,465,466,468,469,470,471,472,474,476,478,480,482,484,486,489,491,493,496,498,500,501,501,501,499,494,484,-1,-1],[502,492,471,463,460,460,461,462,463,464,465,466,467,469,471,473,476,478,480,483,485,487,490,492,494,496,496,497,495,493,488,473,-1,-1],[490,481,463,456,454,454,455,456,457,459,460,461,462,464,466,468,470,472,475,477,479,482,484,486,488,489,490,490,489,486,478,-1,-1,-1],[478,469,453,448,446,447,448,449,451,452,453,454,456,458,460,461,464,466,469,471,473,476,478,480,482,482,482,482,480,473,458,-1,-1,-1],[465,456,444,439,439,440,440,441,442,443,445,447,448,450,452,454,457,459,461,463,465,468,469,470,472,473,472,470,466,455,-1,-1,-1,-1],[451,444,434,431,430,431,432,433,434,435,437,438,440,442,444,446,449,451,453,455,457,459,460,461,462,462,461,456,448,-1,-1,-1,-1,-1],[437,431,423,421,422,423,423,424,425,426,428,429,431,433,435,437,439,441,443,445,447,449,450,451,450,449,445,438,-1,-1,-1,-1,-1,-1],[423,417,412,411,412,412,413,414,415,416,418,420,422,424,426,427,429,431,433,434,436,437,438,437,436,432,425,-1,-1,-1,-1,-1,-1,-1],[409,403,401,401,402,403,404,405,405,406,408,410,411,413,415,416,418,419,420,422,423,424,424,422,419,412,-1,-1,-1,-1,-1,-1,-1,-1],[395,391,390,390,391,392,393,394,394,396,397,398,400,401,403,405,406,407,408,409,408,409,408,404,397,-1,-1,-1,-1,-1,-1,-1,-1,-1],[381,379,379,379,380,380,381,382,383,385,386,387,389,390,391,392,393,394,395,395,395,393,389,379,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[367,367,367,368,368,369,370,371,372,373,374,375,376,377,378,379,380,381,380,379,377,371,358,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[355,356,356,356,357,357,358,359,360,360,361,362,363,364,365,365,365,364,363,360,353,328,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[343,344,344,344,345,345,346,346,347,348,348,349,350,350,351,350,349,346,342,332,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[331,332,332,332,333,333,334,334,335,335,335,336,336,335,335,331,328,322,295,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[319,319,320,320,320,321,321,321,322,322,322,322,320,319,315,310,297,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[312,312,312,313,313,313,314,314,315,315,314,314,312,308,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]],"bot":[[174,174,174,174,174,174,174,174,175,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[99,99,99,99,99,99,99,99,99,99,99,99,99,101,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[92,92,92,92,92,92,92,92,92,92,92,92,92,92,93,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[85,85,85,85,85,85,85,85,85,85,85,85,85,85,85,90,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,140,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[74,74,74,74,74,74,74,74,74,74,74,74,74,74,74,74,76,158,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[69,69,69,69,69,69,69,69,69,69,69,69,69,69,69,69,69,102,176,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,65,75,128,196,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[61,61,61,61,61,61,61,61,61,61,61,61,61,61,61,61,61,62,102,153,221,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[58,58,58,58,58,58,58,58,58,58,58,58,58,58,58,58,58,58,85,127,178,251,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[56,56,56,56,56,56,56,56,56,56,56,56,56,56,56,56,56,56,71,111,153,206,291,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[54,54,54,54,54,54,54,54,54,54,54,54,54,54,54,54,54,54,63,97,137,180,238,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,55,89,123,166,206,272,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[51,51,51,51,51,51,51,51,51,51,51,51,51,51,51,51,51,51,51,80,113,150,188,235,301,-1,-1,-1,-1,-1,-1,-1,-1,-1],[50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,75,107,142,175,220,262,343,-1,-1,-1,-1,-1,-1,-1,-1],[50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,72,100,132,164,201,242,291,368,-1,-1,-1,-1,-1,-1,-1],[49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,69,96,126,155,188,223,268,315,405,-1,-1,-1,-1,-1,-1],[445,445,445,445,444,444,445,445,446,446,447,447,448,49,49,49,49,49,49,66,93,119,459,179,212,461,288,342,-1,-1,-1,-1,-1,-1],[451,451,451,450,450,450,450,451,451,452,453,453,455,49,49,49,49,49,49,66,90,116,469,170,202,233,269,313,377,-1,-1,-1,-1,-1],[456,456,456,456,456,456,456,456,457,458,458,459,461,49,49,49,49,49,49,66,88,112,137,164,477,477,255,293,336,391,-1,-1,-1,-1],[459,459,459,459,459,459,460,460,461,462,463,464,465,49,49,49,49,49,49,65,88,110,134,159,186,214,244,278,317,360,418,-1,-1,-1],[462,463,463,463,463,463,463,464,465,466,467,467,469,49,49,49,49,49,49,65,86,108,131,155,180,208,237,268,302,341,386,-1,-1,-1],[464,464,464,465,465,465,466,466,467,468,469,470,471,49,49,49,49,49,49,66,86,106,130,153,177,203,230,261,292,327,368,417,-1,-1],[465,465,466,466,466,467,467,467,468,470,471,472,474,49,49,49,49,49,49,67,87,107,127,150,175,200,227,254,286,320,354,399,-1,-1],[465,465,466,466,466,467,467,468,469,470,471,473,474,49,49,49,49,49,49,67,87,107,494,497,174,200,226,254,284,315,500,390,444,-1],[465,465,466,466,466,467,467,468,469,471,472,473,474,49,49,49,49,49,49,66,86,107,128,150,175,201,227,253,284,315,347,387,436,-1],[465,465,466,466,466,467,467,469,470,471,472,473,475,49,49,49,49,49,49,66,86,108,129,151,176,202,228,253,284,315,349,389,444,-1],[465,465,466,466,466,467,467,468,469,470,471,473,474,49,49,49,49,49,49,66,87,109,130,152,178,203,229,257,287,318,354,395,-1,-1],[465,465,466,466,466,467,467,468,469,470,471,473,474,49,49,49,49,49,49,66,87,108,131,155,180,205,233,262,292,326,363,412,-1,-1],[-1,-1,466,466,467,467,467,468,468,469,470,471,473,49,49,49,49,49,49,66,87,108,133,158,182,209,238,268,300,335,375,434,-1,-1],[465,465,465,466,466,467,468,468,469,469,470,471,471,49,49,49,49,49,49,65,87,109,134,159,186,215,243,275,310,346,395,-1,-1,-1],[465,465,465,465,466,466,467,467,468,469,470,470,471,49,49,49,49,49,49,63,88,110,135,162,191,220,249,285,321,366,437,-1,-1,-1],[465,465,465,465,466,466,466,467,467,468,469,469,470,49,49,49,49,49,49,61,87,110,137,166,195,224,258,294,335,391,-1,-1,-1,-1],[465,465,465,465,466,466,466,466,467,467,467,468,469,49,49,49,49,49,49,60,85,113,141,169,199,231,267,306,357,-1,-1,-1,-1,-1],[465,465,465,465,466,466,466,466,466,466,467,468,468,49,49,49,49,49,49,58,85,114,143,173,205,239,280,322,392,-1,-1,-1,-1,-1],[465,465,465,465,465,465,465,465,465,466,466,467,467,49,49,49,49,49,49,57,86,116,145,177,212,248,291,346,-1,-1,-1,-1,-1,-1],[465,465,465,465,465,465,465,465,465,465,465,465,466,49,49,49,49,49,49,56,88,118,147,181,217,260,306,384,-1,-1,-1,-1,-1,-1],[465,465,465,465,465,465,465,465,465,465,465,465,465,49,49,49,49,49,49,55,87,118,150,185,227,268,326,-1,-1,-1,-1,-1,-1,-1],[465,465,465,465,465,465,465,465,465,465,465,465,465,49,49,49,49,49,49,54,86,118,153,192,233,281,351,-1,-1,-1,-1,-1,-1,-1],[465,465,465,465,465,465,465,465,465,465,465,464,464,49,49,49,49,49,49,53,85,119,155,197,445,296,-1,-1,-1,-1,-1,-1,-1,-1],[474,474,473,471,470,468,466,465,464,464,464,464,464,49,49,49,49,49,49,52,85,121,159,199,247,315,-1,-1,-1,-1,-1,-1,-1,-1],[663,663,663,506,493,485,478,473,469,466,465,464,464,49,49,49,49,49,49,52,87,122,160,206,255,327,-1,-1,-1,-1,-1,-1,-1,-1],[-1,663,663,663,659,629,505,488,480,472,467,465,464,49,49,49,49,49,49,51,88,123,162,210,265,368,-1,-1,-1,-1,-1,-1,-1,-1],[662,662,662,662,639,607,565,504,486,477,470,466,464,49,49,49,49,49,49,51,87,124,164,213,271,-1,-1,-1,-1,-1,-1,-1,-1,-1],[661,661,661,648,621,587,544,501,485,476,470,466,464,49,49,49,49,49,49,51,87,124,165,216,276,-1,-1,-1,-1,-1,-1,-1,-1,-1],[659,658,653,633,606,-1,-1,495,482,474,469,465,463,49,49,49,49,49,49,51,86,123,166,217,280,-1,-1,-1,-1,-1,-1,-1,-1,-1],[655,656,643,621,-1,-1,509,489,478,472,467,464,463,49,49,49,49,49,49,51,86,123,166,217,280,-1,-1,-1,-1,-1,-1,-1,-1,-1],[652,648,632,609,-1,-1,500,485,475,470,466,464,463,49,49,49,49,49,49,51,86,123,166,216,278,-1,-1,-1,-1,-1,-1,-1,-1,-1],[647,639,621,-1,-1,-1,493,480,473,468,465,463,463,49,49,49,49,49,49,51,86,123,165,217,277,-1,-1,-1,-1,-1,-1,-1,-1,-1],[639,631,611,584,550,510,489,478,472,466,464,463,462,49,49,49,49,49,49,51,86,123,165,217,278,-1,-1,-1,-1,-1,-1,-1,-1,-1],[632,623,601,574,539,500,484,475,469,466,464,463,462,49,49,49,49,49,49,51,86,124,169,218,284,-1,-1,-1,-1,-1,-1,-1,-1,-1],[624,614,592,563,527,494,481,473,468,465,463,463,462,49,49,49,49,49,49,51,87,125,170,222,291,-1,-1,-1,-1,-1,-1,-1,-1,-1],[616,606,583,553,515,489,478,472,466,465,463,462,461,49,49,49,49,49,49,50,87,125,170,223,297,-1,-1,-1,-1,-1,-1,-1,-1,-1],[608,597,573,542,506,487,475,470,466,464,463,462,461,49,49,49,49,49,49,51,87,125,169,223,294,-1,-1,-1,-1,-1,-1,-1,-1,-1],[600,589,564,532,498,484,473,469,465,464,464,464,463,49,49,49,49,49,49,52,87,125,169,222,289,-1,-1,-1,-1,-1,-1,-1,-1,-1],[592,581,556,522,493,479,472,467,465,465,465,464,464,49,49,49,49,49,49,53,85,124,165,215,271,-1,-1,-1,-1,-1,-1,-1,-1,-1],[585,574,547,512,488,478,471,468,466,465,465,465,465,49,49,49,49,49,49,54,85,122,159,205,249,316,-1,-1,-1,-1,-1,-1,-1,-1],[577,566,538,503,486,475,471,467,466,466,467,467,468,49,49,49,49,49,49,56,85,118,155,194,238,286,347,-1,-1,-1,-1,-1,-1,-1],[569,558,529,496,481,474,469,467,467,467,468,469,469,49,49,49,49,49,49,57,86,116,150,185,226,265,310,366,-1,-1,-1,-1,-1,-1],[561,550,519,492,479,472,470,467,467,468,469,470,471,49,49,49,49,49,49,58,86,113,146,179,212,250,290,328,382,-1,-1,-1,-1,-1],[554,542,510,486,476,472,468,467,468,469,470,471,472,49,49,49,49,49,49,59,87,114,145,174,204,236,272,308,346,397,-1,-1,-1,-1],[546,533,500,483,474,469,468,468,469,470,471,472,473,49,49,49,49,49,49,60,87,114,489,169,199,228,259,291,326,483,420,-1,-1,-1],[538,525,493,480,472,468,467,468,469,470,471,472,473,49,49,49,49,49,49,61,87,112,138,165,195,224,251,280,312,347,388,445,-1,-1],[530,516,486,475,470,467,467,468,469,470,471,472,474,49,49,49,49,49,49,61,86,111,136,162,190,217,245,272,304,336,373,418,-1,-1],[520,506,481,472,467,466,466,467,468,469,470,471,472,49,49,49,49,49,49,62,86,110,135,160,185,213,240,267,299,331,367,411,-1,-1],[510,496,475,467,463,462,463,464,466,467,468,469,470,49,49,49,49,49,49,63,86,110,134,158,183,209,236,264,295,328,365,410,-1,-1],[500,485,468,461,458,458,459,460,461,462,463,464,465,49,49,49,49,49,49,68,89,110,134,158,182,491,237,263,297,330,366,422,-1,-1],[488,475,460,454,452,452,453,454,455,457,458,459,460,49,49,49,49,49,51,72,93,113,482,158,184,210,237,488,298,334,378,-1,-1,-1],[49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,57,76,96,117,476,162,188,215,241,480,307,346,405,-1,-1,-1],[49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,63,82,102,123,145,168,194,222,251,284,321,371,-1,-1,-1,-1],[49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,52,70,90,110,131,152,176,204,233,265,301,348,-1,-1,-1,-1,-1],[49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,61,80,99,119,140,163,188,216,247,286,330,-1,-1,-1,-1,-1,-1],[49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,53,71,90,109,131,153,177,204,233,270,318,-1,-1,-1,-1,-1,-1,-1],[49,49,49,49,49,49,49,49,49,49,49,49,49,49,49,52,63,82,101,123,146,168,196,224,259,311,-1,-1,-1,-1,-1,-1,-1,-1],[49,49,49,49,49,49,49,49,49,49,49,49,49,50,52,60,76,95,117,139,162,188,217,253,301,-1,-1,-1,-1,-1,-1,-1,-1,-1],[49,49,49,49,49,49,49,49,49,49,49,49,50,53,59,71,91,111,134,157,183,212,248,295,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[49,49,49,49,49,49,49,49,49,49,50,51,54,61,71,88,108,130,154,181,209,246,298,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[49,49,49,49,49,49,49,49,49,50,53,57,63,72,86,107,128,153,179,210,248,308,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[50,50,50,50,50,50,51,52,54,57,61,67,76,89,107,129,153,179,212,254,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[288,289,289,289,289,290,290,290,290,290,290,289,287,130,134,154,181,216,268,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[289,289,289,290,290,290,290,291,291,291,290,290,288,283,263,244,245,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],[305,305,305,305,305,305,305,305,305,305,305,305,305,306,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]]}/*BODY*/;
+
+// ---------- state (declared first: init code calls into the render loop) ----------
+let pending = false;      // a frame is already requested
+let occTimer = null;      // pending marker-occlusion check
+let tween = null;         // camera animation
+let selected = null;      // 't:topic' | 'c:component' | 'n:net'
+let hovered = null;
+let mode = 'outside';     // outside | inside | exploded | cut
+let explode = 0, explodeTarget = 0;
+let netFocus = null;      // isolate one cable type
+let cutOn = false;
+let showTags = true, showHotspots = true;
+
+// ---------- coordinates ----------
+// Page: x forward from the wheelbase midpoint, y up from the ground, z right; mm.
+// CAD:  x left, y rearward from the nose datum, z up; ground at z = -49.
+const P = (xc, yc, zc) => new THREE.Vector3(1593 - yc, zc + 49, -xc);
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const G = {
+  axleF: 766.5, axleR: -766.5, wheelR: 257.5, wheelZ: 591.5, nose: 1486, tail: -1329,
+  domeTop: 823, tsalX: 83.5, plateX: 425, plateY: 511, zedX: 193, zedY: 737, chassisTop: 408, outerZ: 714,
+};
+// Where each part moves to in the exploded view (multiplied by 0..1).
+const ANCHOR = {
+  c: V(0, 0, 0), b: V(0, 650, 0), p: V(0, 330, 0), r: V(-430, 150, 0),
+  wFL: V(0, 0, -280), wFR: V(0, 0, 280), wRL: V(0, 0, -280), wRR: V(0, 0, 280),
+};
+const LAYER_ANCHOR = { body: 'b', tsal: 'b', zed: 'b', plate: 'p', rear: 'r' };
+const at = (p, a = 'c') => p.clone().addScaledVector(ANCHOR[a], explode);
+
+// Half-width of the bodywork outline at (x, y): used to put switches and the screen on the skin.
+function skinZ(x, y) {
+  if (!BODY) return 320;
+  const { xs, zs, top, bot } = BODY;
+  let i = 0, best = Infinity;
+  xs.forEach((v, k) => { const d = Math.abs(v - x); if (d < best) { best = d; i = k; } });
+  for (let j = zs.length - 1; j >= 0; j--) {
+    const t = top[i][j], b = bot[i][j];
+    if (t >= 0 && y <= t && y >= b) return zs[j] + 6;
+  }
+  return 320;
+}
+
+// ---------- topics (markers + inspector) ----------
+const R = (ref, label) => `<a class="src" data-ref="${ref}">${label}</a>`;
+const TOPICS = [
+  { id: 'tsal', title: 'TSAL / ASSI light dome', pos: V(G.tsalX, G.domeTop + 22, 0), loc: 'cad',
+    where: 'Top of the "shark fin" behind the sensor plate. The dome top is the highest point of the car, 823 mm above the ground (CAD).',
+    facts: [
+      `Green: LV on, tractive system off. Red: tractive system active ${R('um:150', 'UM')} ${R('um:212', 'UM')}`,
+      `Red + yellow: AS_READY; flashing blue is added after the 5 s timer, then the ASR can press Go ${R('um:231-233', 'UM §6.2')}`,
+      `2021 meanings: yellow flashing = AS_DRIVING, blue steady = AS_FINISHED, blue flashing = EMERGENCY_BRAKE ${R('um21', '2021 §3.2')}`,
+      `The dome top is the apex of the T 1.3.3 sensor envelope ${R('cad:87-97', 'CAD README')}`,
+    ], more: 'sec-safety', layer: 'tsal' },
+  { id: 'zed', title: 'ZED2 stereo camera', pos: V(235, 770, 0), loc: 'cad',
+    where: 'On the front of the TSAL post, pitched 15° down. Its optical axis meets the ground about 2750 mm ahead, which puts it about 737 mm up.',
+    facts: [
+      `Fitted to the shared cars as standard. It is the end-of-life ZED2, not the ZED2i ${R('compr:34-40', 'Compute README')}`,
+      `120 mm baseline; up to 2208×1242 @ 15 fps, 1920×1080 @ 30, 1280×720 @ 60, 672×376 @ 100; FOV up to 110° × 70° × 120°; depth 0.3–20 m ${R('zed2', 'datasheet')}`,
+      `Built-in IMU, barometer and magnetometer; USB 3.0; the ZED SDK needs an NVIDIA GPU ${R('zedcmp', 'Stereolabs')}`,
+      `175 mm wide in the CAD ${R('step', 'CAD')}`,
+    ], more: 'sec-sensors', layer: 'zed' },
+  { id: 'plate', title: 'Front sensor plate & posts', pos: V(G.plateX + 60, 560, 175), loc: 'cad',
+    where: 'Example plate 350 × 350 mm with its top 511 mm above the ground, 100 mm above the chassis, centred 342 mm behind the front axle line (CAD).',
+    facts: [
+      `4 spacer posts (Ø30 × 100 mm) with M6 threaded rods at 300 mm (across) × 200 mm (along) (CAD) ${R('step', 'CAD')}`,
+      `RS 188-3461 quick-release knobs, Ø40 mm; use at least 3 of the 4 posts; Ø6.5 mm holes; plate at most 5 mm thick; centre post removed for 2026 ${R('cad:118-131', 'CAD README')}`,
+      `Your own computer can go here too, on the same power + CAN plug ${R('compr:50', 'Compute README')}`,
+      `Needs IMechE approval with CAD in the ASF (T1.1.6, T4.4.3) ${R('cad:184-200', 'CAD README')}`,
+    ], more: 'sec-mount', layer: 'plate' },
+  { id: 'frontconn', title: 'Front connectors', pos: V(225, 485, -70), loc: 'approx',
+    where: 'Just behind the sensor plate, near the TSAL neck: the region IMechE circles in its CAD image. The vehicle-side harness can move a little within that zone.',
+    facts: [
+      `Compute power + CAN: 7W2 combo D-sub. 13.7 V nominal, 30 A fused (shared with the rear plug and sensor power), CAN 500 kbit/s. Pins A1 +12 V, A2 0 V, 1 CAN-H, 2 CAN-L ${R('comp:72-131', 'Compute §Electrical')}`,
+      `Sensor power: TE DT06-2S on the car, you fit a DT04-2P. 11.5–14.5 V, up to 5 A ${R('cad:154-160', 'CAD README')}`,
+      `1 × Cat5e RJ45 and 2 × USB 3.0 Type-A, all running to the rear compute bay ${R('cad:162-172', 'CAD README')}`,
+      `Strain relief on both sides of every connector ${R('cad:144', 'CAD README')} ${R('cadconn', 'location image')} ${R('cadphoto', 'photo')}`,
+    ], more: 'sec-compute' },
+  { id: 'rear', title: 'Rear compute bay', pos: V(-1055, 395, 0), loc: 'cad',
+    where: 'Behind the rear axle. Plate 330 × 250 mm, top about 167 mm above the ground, centred 289 mm behind the rear axle line (CAD).',
+    facts: [
+      `Shared cars carry the InCarPC here: i7-8700T, GTX 1060-class GPU, 32 GB, PEAK CAN, 4 × USB 3, 2 × GbE ${R('compr:8-26', 'Compute README')}`,
+      `Own plate: 2–5 mm thick, 4 × Ø6.4 holes at 310 × 230 mm, Ø40 knobs, max 8 kg with plate, recommended box 280 × 200 × 200 mm (orange outline), nothing above the rear bodywork ${R('comp:25-69', 'Compute §Mechanical')}`,
+      `Same 7W2 power + CAN plug as the front ${R('comp:74', 'Compute')}`,
+      `Not waterproof: no running in rain ${R('ops:137-149', 'Op. Safety §7')}`,
+    ], more: 'sec-compute', layer: 'rear' },
+  { id: 'rearpanel', title: 'Rear panel: AI Power Switch, MPP, charge port', pos: V(-1225, 150, 0), loc: 'approx',
+    where: 'Rear of the car, around the rear compute bracket. The 2021 manual places the AI Master Switch, the MPP and the charging connection at the rear.',
+    facts: [
+      `AI Power Switch (AIMS) powers the compute platform; turn it off for storage even with no computer fitted ${R('um:197-201', 'UM §6.2')} ${R('glos:41', 'Glossary')}`,
+      `MPP: the MPP dongle must be fitted to drive autonomously; it is part of the E-stop loop. Also takes the joystick umbilical, the charger comms lead and the CAN diagnostics harness ${R('um21', '2021 §2.3–2.5')}`,
+      `Charge port: charger lead with an Amphenol ELP02A04 connector, red latch ${R('um:339-341', 'UM §8.2')}`,
+      `Pushbar spigot on the rear chassis bulkhead ${R('um21', '2021 §4')}`,
+    ], more: 'sec-safety' },
+  { id: 'switches', title: 'Master switches & touchscreen', pos: V(-250, 420, 330), loc: 'approx',
+    where: 'Right-hand side of the car. The exact position along the side is not published.',
+    facts: [
+      `Three key switches: LVMS (low voltage), ASMS (autonomous system), TSMS (tractive system) ${R('um21', '2021 §3.1')}`,
+      `4.3" touchscreen: mission select (AMI), diagnostics, battery and brake pages; Service page for Brake Discharge and Charge Enable ${R('um21', '2021 §3.3')} ${R('um:303-308', 'UM §7.2')}`,
+      `3 switch keys + 1 spare come with the car ${R('um:36-46', 'UM §2')}`,
+    ], more: 'sec-safety' },
+  { id: 'estop', title: 'Side emergency stops (×2)', pos: V(113, 300, 340), loc: 'approx',
+    where: 'One on each side. The position is read from IMechE\'s side-view render; the button is not a CAD part.',
+    facts: [
+      `Twist clockwise to release ("Out") ${R('um:144-145', 'UM §5.2')}`,
+      `Part of the E-stop loop with the RES, the MPP dongle and the inertia switch ${R('glos:50', 'Glossary')}`,
+      `Pressing either one opens the shutdown circuit → EMERGENCY_BRAKE ${R('sis', 'SIS §3.5')}`,
+    ], more: 'sec-safety' },
+  { id: 'inertia', title: 'Inertia switch', pos: V(1150, 270, 0), loc: 'approx',
+    where: 'Under the front bodywork panel. The exact position is not published.',
+    facts: [
+      `Trips on impact and opens the E-stop loop ${R('sis', 'SIS §3.5')}`,
+      `Reset: remove the front panel and press the switch down; a click means it had tripped ${R('um:413-427', 'UM §9')}`,
+    ], more: 'sec-safety' },
+  { id: 'steer', title: 'Steering (by wire)', pos: V(G.axleF, 330, 0), loc: 'approx',
+    where: 'Front axle. The steering motor and rack are not in the released CAD.',
+    facts: [
+      `DC Electronics Microsteer motor, Shiftec ZE102-1 controller ${R('spec:42-48', 'Spec §3')}`,
+      `Microsteer: 13.8 V, up to 37 Nm column torque, 80 A max, 860°/s, IP67 ${R('msteer', 'datasheet')}`,
+      `CAN: road-wheel angle request −21.0 to +21.0°, + = left ${R('sis', 'SIS p.4')}`,
+      `Static caster 6°, camber 2° ${R('spec:64-79', 'Spec §5')}`,
+    ], more: 'sec-power' },
+  { id: 'drive', title: 'Drive: motor, belt, diff', pos: V(G.axleR, 330, 0), loc: 'approx',
+    where: 'Rear axle. The motor and belt are not in the released CAD; the belt drives sit under the bodywork.',
+    facts: [
+      `Single Saietta 119R-68 motor → 3.5:1 belt → open diff → rear wheels ${R('spec:30-40', 'Spec §2')} ${R('hil:9-17', 'HiL')}`,
+      `55.7 Nm peak, 4000 rpm max, 5 kW max electrical power; Sevcon Gen4 DC controller ${R('spec:30-40', 'Spec §2')}`,
+      `Axle torque request 0–195 Nm (= 55.7 × 3.5) ${R('sis', 'SIS p.4')}`,
+    ], more: 'sec-power' },
+  { id: 'wheels', title: 'Wheels, tyres & wheel speed', pos: V(G.axleF, G.wheelR, G.outerZ + 25), loc: 'cad',
+    where: 'Ø515 mm tyres on 13 × 7 wheels; wheel centres 1533 mm apart along the car and 1183 mm across (CAD).',
+    facts: [
+      `Toyo Proxes R888R 225/45 R13 84V; 20–22 psi ${R('spec:64-79', 'Spec §5')} ${R('insp:59', 'Inspection')}`,
+      `Wheel speed sensors on all four: rpm on 525h and raw pulse counts on 526h, every 10 ms ${R('sis', 'SIS p.9–10')}`,
+      `Do not remove wheels or the nosecone without IMechE technical support ${R('insp:69-75', 'Inspection')}`,
+      `Store on the skateboard trolleys to avoid flat spots ${R('insp:87', 'Inspection')}`,
+    ], more: 'sec-dims', layer: 'wheels' },
+  { id: 'brakes', title: 'Hydraulic brakes & EBS', pos: V(G.axleR, G.wheelR, G.outerZ + 25), loc: 'approx',
+    where: 'Hydraulic brakes at all four wheels. Calipers and the EBS hardware are not in the released CAD.',
+    facts: [
+      `Separate front / rear pressure requests 0–100 % on 514h ${R('sis', 'SIS p.5')}`,
+      `EBS must be ARMED before AS_READY; a pump charges it at start-up ${R('um:216-221', 'UM §6.2')}`,
+      `Torque and brake requested together = brake plausibility fault = emergency stop ${R('sis', 'SIS §4')}`,
+      `Brake Discharge before storage, from the Service page ${R('um:303-321', 'UM §7.2')}`,
+    ], more: 'sec-power' },
+  { id: 'chassis', title: 'Chassis, bodywork & suspension', pos: V(560, 150, 470), loc: 'cad',
+    where: 'Monocoque tub with double wishbones and pull rods to inboard rockers (CAD parts). Tub underside about 51 mm above the ground.',
+    facts: [
+      `300 kg in total, about 75 kg per wheel ${R('ops:58', 'Op. Safety §4')}`,
+      `Lift only with the Quick Lift Jack under the chassis, never by the bodywork, nosecone or suspension ${R('ops:50-60', 'Op. Safety §4')}`,
+      `Low ground clearance: use the supplied ramps ${R('ops:52', 'Op. Safety')}`,
+      `The only modifications allowed are mounting sensors and the computer (T1.1.2) ${R('rules', 'Rules p.10')}`,
+    ], more: 'sec-dims', layer: 'chassis' },
+  { id: 'power', title: 'Batteries & low-voltage power', loc: 'none',
+    where: 'Location not published.',
+    facts: [
+      `Traction: lead acid 4 × 12 V 100 Ah, 50.0 V nominal, 5.10 kWh ${R('spec:50-62', 'Spec §4')}`,
+      `Do not drive below 47.5 V; store at 50.0 V or more ${R('um:164-166', 'UM §5.2')}`,
+      `LV battery charged by DC-DC from traction: 13.5–14.5 V when on ${R('um:160-163', 'UM §5.2')}`,
+      `Computer supply: 13.7 V nominal, 30 A fused, shared ${R('comp:100-103', 'Compute')}`,
+    ], more: 'sec-power' },
+  { id: 'res', title: 'Remote Emergency Stop (RES)', loc: 'none',
+    where: 'Hand-held transmitter worn by the ASR; the receiver position in the car is not published.',
+    facts: [
+      `GrossFunk; 430–440 MHz ${R('ops:150-158', 'Op. Safety §8')}`,
+      `Go switch 0 → 1 starts AS_DRIVING; E-stop button → EBS ${R('sis', 'SIS §3')}`,
+      `NiMH battery, about 4 h ${R('um21', '2021 §2.2')}`,
+    ], more: 'sec-safety' },
+  { id: 'imu', title: 'PCAN-GPS (IMU + GNSS)', loc: 'none',
+    where: 'On the vehicle CAN bus; the mounting position is not published.',
+    facts: [
+      `u-blox MAX-7W GNSS, ST L3GD20 gyro, Bosch BMC050 accelerometer + magnetometer ${R('pcan', 'PCAN-GPS manual')}`,
+      `CAN IDs 600h–657h; read with fs_ai_api_imu_get_data / gps_get_data ${R('api:85-96', 'API README')}`,
+    ], more: 'sec-sensors' },
+  { id: 'vcu', title: 'VCU & CAN interface', loc: 'none',
+    where: 'The VCU runs the motor, steering, brakes and the AS state machine. The AI only sends requests over CAN.',
+    facts: [
+      `AI sends 510h–514h every 10 ms; handshake within 50 ms (T1.1.8) ${R('sis', 'SIS')} ${R('rules', 'Rules')}`,
+      `Reference library: FS-AI API (C, SocketCAN, MIT) ${R('api:52-110', 'API README')}`,
+    ], more: 'sec-can' },
+  { id: 'logger', title: 'GEMS DA3 data logger', loc: 'none',
+    where: 'Location not published. Its memory card must be in and logging (two green LEDs) before a mission.',
+    facts: [
+      `Officials and the team can read the logged AI targets (T1.2.1) ${R('rules', 'Rules p.11')}`,
+      `Card inserted before mission select ${R('um:225-228', 'UM §6.2')}`,
+    ], more: 'sec-ops' },
+];
+const TOPIC = Object.fromEntries(TOPICS.map((t, i) => [t.id, Object.assign(t, { n: i + 1 })]));
+
+const TOPIC_ANCHOR = { tsal: 'b', zed: 'b', plate: 'p', rear: 'r', wheels: 'wFR', brakes: 'wRR' };
+
+// ---------- cable types ----------
+const NETS = [
+  { id: 'can', name: 'AI CAN bus', color: 0xf08c2e, r: 6,
+    chips: ['CAN 2.0B · 500 kbit/s', 'terminated in the car', 'AI sends 510h–514h every 10 ms'],
+    lead: 'The only data link between your computer and the car. Your computer joins it on pins 1–2 of the front or rear 7W2 plug.',
+    refs: [['comp:104-108', 'Compute §Electrical'], ['sis', 'SIS v4.0'], ['dbc', 'DBC 2026']] },
+  { id: 'ai12', name: '12 V AI power', color: 0xe5484d, r: 6,
+    chips: ['13.7 V nominal', 'one 30 A fuse for front + rear + sensor power', 'AI master switch'],
+    lead: 'Feeds the computer plugs (pins A1/A2) and the front sensor plug. The AI master switch at the rear turns it on.',
+    refs: [['comp:100-103', 'Compute §Electrical'], ['cad:154-160', 'CAD README'], ['um:197-201', 'UM §6.2']] },
+  { id: 'usb', name: 'USB 3.0', color: 0x3b82f6, r: 4.5,
+    chips: ['2 × Type-A at the front', 'cables run to the rear bay', 'ZED2 is USB 3.0'],
+    lead: 'Two USB 3.0 extension runs from the front plug area to the rear compute bay, plus the ZED2 camera lead.',
+    refs: [['cad:168-172', 'CAD README'], ['compr:28-32', 'Compute README']] },
+  { id: 'eth', name: 'Ethernet', color: 0x22a06b, r: 4.5,
+    chips: ['1 × Cat5e RJ45', 'front → rear bay'],
+    lead: 'One Ethernet run from the front plug area to the rear compute bay, e.g. for a lidar.',
+    refs: [['cad:162-166', 'CAD README']] },
+  { id: 'hv', name: '48 V traction', color: 0x9b51e0, r: 10,
+    chips: ['48–52 V', '200 A peak · 100 A cont.', 'live when TSAL is red'],
+    lead: 'Battery to motor controller and motor, battery to the DC-DC converter, and the charge port. Not for teams to touch.',
+    refs: [['spec:50-62', 'Spec §4'], ['um:324-411', 'UM §8']] },
+  { id: 'lv', name: '12 V vehicle', color: 0xd9467a, r: 5,
+    chips: ['DC-DC keeps it at 13.5–14.5 V', 'LVMS switches it'],
+    lead: 'The car\'s own low-voltage system: DC-DC converter, LV battery and the master switches.',
+    refs: [['um:160-163', 'UM §5.2'], ['glos', 'Glossary']] },
+  { id: 'estop', name: 'Shutdown (E-stop) loop', color: 0xe3b505, r: 4,
+    chips: ['RES · side E-stops · MPP dongle · inertia switch', 'loop open → EBS brakes the car'],
+    lead: 'A series loop. Breaking it anywhere triggers the emergency brake. The order of the parts in the loop is not published.',
+    refs: [['um:153-158', 'UM §5.2'], ['glos:50', 'Glossary'], ['sis', 'SIS §3.5']] },
+  { id: 'hyd', name: 'Brake hydraulics', color: 0x9a6324, r: 3.5,
+    chips: ['front + rear circuits', 'AI asks 0–100 % per axle', 'EBS accumulators'],
+    lead: 'Brake-by-wire unit to the four calipers. The AI sets front and rear pressure on CAN 514h.',
+    refs: [['sis', 'SIS p.5'], ['um:216-221', 'UM §6.2']] },
+  { id: 'vcu', name: 'VCU control & sensors', color: 0x94a3b8, r: 3,
+    chips: ['not on the AI bus', 'wheel speed ×4 → VCU'],
+    lead: 'The VCU drives the motor controller, steering and brakes itself, and reads the wheel-speed sensors. You only talk to the VCU.',
+    refs: [['rules', 'Rules p.3'], ['sis', 'SIS']] },
+  { id: 'rf', name: 'Antenna leads', color: 0x475569, r: 3,
+    chips: ['RES aerial', 'GPS antenna on the tower'],
+    lead: 'Leads from the RES receiver / PCAN-GPS enclosure up to the antennas in the top bodywork.',
+    refs: [['um21', '2021 manual §9']] },
+];
+const NET = Object.fromEntries(NETS.map((n) => [n.id, n]));
+const hex = (c) => '#' + c.toString(16).padStart(6, '0');
+
+// ---------- components (interfaces and internals) ----------
+// kind: 'cad' = official CAD, 'photo' = position from an IMechE photo or drawing, 'unpub' = inside, position not published.
+const SR = skinZ(161, 228), SW = skinZ(-56, 228), SC = skinZ(-120, 558);
+const COMPS = [
+  // front interface cluster (IMechE CAD image + photo)
+  { id: 'fc_7w2', tag: '7W2 power + CAN', name: 'Front compute plug (7W2 D-sub)', kind: 'photo', group: 'ext', anchor: 'c', at: [205, 486, -45], prio: 1,
+    nets: ['can', 'ai12'], build: 'dsub',
+    chips: ['13.7 V · 30 A fused (shared)', 'CAN 500 kbit/s', 'same plug as the rear'],
+    lead: 'Plug your computer in here when it sits on the front sensor plate. Vehicle side: Harting 09 69 202 0072 or Norcomp 680M7W2203L401 socket; you fit the matching plug.',
+    extra: 'pin7w2', refs: [['comp:72-131', 'Compute §Electrical'], ['cadphoto', 'photo'], ['cadconn', 'location image']] },
+  { id: 'fc_dt', tag: 'DT 12 V 5 A', name: 'Front sensor power (TE DT06-2S)', kind: 'photo', group: 'ext', anchor: 'c', at: [205, 486, 15], prio: 1,
+    nets: ['ai12'], build: 'dt',
+    chips: ['11.5–14.5 V', '5 A max', 'pin 1 +12 V · pin 2 GND'],
+    lead: 'Power for sensors on the plate. The car has the DT06-2S; you fit a DT04-2P.', extra: 'pindt',
+    refs: [['cad:154-160', 'CAD README']] },
+  { id: 'fc_usb', tag: 'USB 3.0 ×2', name: 'Front USB 3.0 sockets (×2)', kind: 'photo', group: 'ext', anchor: 'c', at: [205, 486, 58], prio: 1,
+    nets: ['usb'], build: 'usb',
+    chips: ['2 × Type-A socket', 'run to the rear bay'],
+    lead: 'For USB sensors on the plate when the computer is at the rear.', refs: [['cad:168-172', 'CAD README']] },
+  { id: 'fc_rj45', tag: 'RJ45', name: 'Front Ethernet socket (RJ45, Cat5e)', kind: 'photo', group: 'ext', anchor: 'c', at: [205, 486, 100], prio: 1,
+    nets: ['eth'], build: 'rj45',
+    chips: ['1 × Cat5e', 'runs to the rear bay'],
+    lead: 'For an Ethernet sensor (e.g. lidar) on the plate when the computer is at the rear.', refs: [['cad:162-166', 'CAD README']] },
+  // rear
+  { id: 'incarpc', tag: 'InCarPC', name: 'InCarPC (fitted to shared cars)', kind: 'photo', group: 'ext', anchor: 'r', at: [-1055, 225, 0], prio: 1,
+    nets: ['can', 'ai12', 'usb', 'eth'], build: 'incarpc',
+    chips: ['i7-8700T', 'GTX 1060-class GPU', '32 GB', 'PEAK CAN'],
+    lead: 'Sits on the 330 × 250 mm quick-change plate. Swap it for your own computer on a plate of the same size (max 8 kg).',
+    refs: [['compr:8-26', 'Compute README'], ['incarphoto', 'photo'], ['comp:25-69', 'plate rules']] },
+  { id: 'r_7w2', tag: '7W2 (rear)', name: 'Rear compute plug (7W2 D-sub)', kind: 'photo', group: 'ext', anchor: 'c', at: [-925, 215, 140], prio: 1,
+    nets: ['can', 'ai12'], build: 'dsub',
+    chips: ['13.7 V · 30 A fused (shared)', 'CAN 500 kbit/s'],
+    lead: 'Same plug and pinout as the front one. Exact spot in the bay is approximate.', extra: 'pin7w2',
+    refs: [['comp:72-131', 'Compute §Electrical']] },
+  { id: 'charge', tag: 'Charge port', name: 'Traction charge port', kind: 'photo', group: 'ext', anchor: 'c', at: [-1214, 150, -110], prio: 1,
+    nets: ['hv'], build: 'charge',
+    chips: ['Amphenol connector, red latch', 'turn on Charge Enable first'],
+    lead: 'Charger: TC Charger HK-J-H66-40. Charging runs from about 52 V to 58 V.',
+    refs: [['um:335-411', 'UM §8.2'], ['um21', '2021 manual Fig. 13']] },
+  { id: 'mpp', tag: 'MPP', name: 'Multi-Purpose Port (MPP)', kind: 'photo', group: 'ext', anchor: 'c', at: [-1214, 150, -35], prio: 1,
+    nets: ['estop', 'can'], build: 'mpp',
+    chips: ['MPP dongle must be in to drive', 'joystick · charger comms · CAN diagnostics'],
+    lead: 'The dongle is part of the shutdown loop: pull it and the car brakes.',
+    refs: [['um21', '2021 manual §2.3–2.5, Fig. 13'], ['glos:50', 'Glossary']] },
+  { id: 'aims', tag: 'AI master switch', name: 'AI Power Switch (AIMS)', kind: 'photo', group: 'ext', anchor: 'c', at: [-1214, 150, 35], prio: 1,
+    nets: ['ai12'], build: 'aims',
+    chips: ['turns on 12 V AI power', 'off for storage'],
+    lead: 'Switch it on before ASMS/TSMS so the computer boots and starts sending CAN.',
+    refs: [['um:197-201', 'UM §6.2'], ['um:252-256', 'UM §6.2'], ['um21', '2021 manual Fig. 13']] },
+  { id: 'ign', tag: 'AI ignition', name: 'AI computer ignition switch', kind: 'photo', group: 'ext', anchor: 'c', at: [-1214, 150, 105], prio: 2,
+    nets: ['ai12'], build: 'toggle',
+    chips: ['on/off signal to the InCarPC'],
+    lead: 'A toggle on the rear panel next to the AI master switch (2021 photo).', refs: [['um21', '2021 manual Fig. 13']] },
+  // light tower (on the bodywork fin)
+  { id: 'tower', tag: 'TSAL / ASSI lights', topic: 'tsal', kind: 'cad', group: 'ext', anchor: 'b', at: [G.tsalX, 712, 0], prio: 1, nets: [] },
+  { id: 'gpsant', tag: 'GPS antenna', name: 'PCAN-GPS antenna', kind: 'photo', group: 'ext', anchor: 'b', at: [G.tsalX, 826, 0], prio: 2,
+    nets: ['rf'], build: 'gpsant',
+    chips: ['top of the light tower'],
+    lead: 'Antenna for the PCAN-GPS. A siren is also under the tower cover.', refs: [['um21', '2021 manual Fig. 14']] },
+  { id: 'logger', tag: 'GEMS DA3 logger', name: 'GEMS DA3 CAN data logger', kind: 'photo', group: 'ext', anchor: 'b', at: [G.tsalX - 68, 722, 0], prio: 2,
+    nets: ['can'], build: 'logger',
+    chips: ['logs the CAN bus', 'card in + 2 green LEDs before a mission'],
+    lead: 'Mounted on the back of the light tower. Officials and the team can read the data.',
+    refs: [['um21', '2021 manual Fig. 14'], ['um:225-228', 'UM §6.2'], ['rules', 'Rules T1.2']] },
+  { id: 'zedc', tag: 'ZED2 camera', topic: 'zed', kind: 'cad', group: 'ext', anchor: 'b', at: [G.zedX + 10, G.zedY + 18, 0], prio: 1, nets: ['usb'] },
+  // under the top bodywork
+  { id: 'resgps', tag: 'RES receiver + PCAN-GPS', name: 'RES receiver + PCAN-GPS enclosure', kind: 'photo', group: 'int', anchor: 'c', at: [-200, 436, -80], prio: 1,
+    nets: ['can', 'estop', 'rf'], build: 'resgps',
+    chips: ['RES 430–440 MHz', 'GNSS + gyro + accel/mag', 'unplug 2 leads (left side) before lifting the top body'],
+    lead: 'One enclosure under the top bodywork. Exact spot is approximate; the 2021 manual shows it on the chassis with its plugs on the left.',
+    refs: [['um21', '2021 manual §9, Fig. 21'], ['pcan', 'PCAN-GPS manual'], ['ops:150-158', 'Op. Safety §8']] },
+  // right side (2018 drawing + 2021 photo): LV, TS, AS, E-stop from rear to front
+  { id: 'lvms', tag: 'LVMS', name: 'Low Voltage Master Switch', kind: 'photo', group: 'ext', anchor: 'c', at: [-140, 228, skinZ(-140, 228)], prio: 1,
+    nets: ['lv'], build: 'key:0x18191b',
+    chips: ['key switch', 'first on: TSAL goes green'],
+    lead: 'Right side of the car, first of three key switches (rear to front: LV, TS, AS).', refs: [['um21', '2021 manual Fig. 12'], ['arch', '2018 drawing']] },
+  { id: 'tsms', tag: 'TSMS', name: 'Tractive System Master Switch', kind: 'photo', group: 'ext', anchor: 'c', at: [-56, 228, SW], prio: 1,
+    nets: ['hv'], build: 'key:0xf05a28',
+    chips: ['orange ring', 'enables the 48 V drive'],
+    lead: 'Right side, middle key switch.', refs: [['um21', '2021 manual Fig. 12']] },
+  { id: 'asms', tag: 'ASMS', name: 'Autonomous System Master Switch', kind: 'photo', group: 'ext', anchor: 'c', at: [28, 228, skinZ(28, 228)], prio: 1,
+    nets: ['estop'], build: 'key:0x1d4ed8',
+    chips: ['blue ring', 'off → AS_OFF; off while driving → emergency brake'],
+    lead: 'Right side, third key switch.', refs: [['um21', '2021 manual Fig. 12'], ['sis', 'SIS §3']] },
+  { id: 'estop_r', tag: 'E-stop', name: 'Side emergency stop (right)', kind: 'photo', group: 'ext', anchor: 'c', at: [161, 228, SR], prio: 1,
+    nets: ['estop'], build: 'estop:1',
+    chips: ['press = emergency brake', 'twist to release'],
+    lead: 'Red button next to the key switches. There is one on each side.', refs: [['um21', '2021 manual Fig. 12'], ['um:144-145', 'UM §5.2']] },
+  { id: 'estop_l', tag: 'E-stop (left)', name: 'Side emergency stop (left)', kind: 'photo', group: 'ext', anchor: 'c', at: [161, 228, -SR], prio: 2,
+    nets: ['estop'], build: 'estop:-1',
+    chips: ['press = emergency brake', 'twist to release'],
+    lead: 'Mirror of the right-hand button (assumed same position).', refs: [['um:144-145', 'UM §5.2']] },
+  { id: 'screen', tag: 'Touchscreen', name: '4.3" touchscreen (mission select)', kind: 'photo', group: 'ext', anchor: 'b', at: [-120, 558, SC], prio: 1,
+    nets: ['can'], build: 'screen',
+    chips: ['select mission (AMI)', 'Service page: brake discharge, charge enable'],
+    lead: 'Right-hand side of the cowl behind the light tower (2018 drawing).', refs: [['um21', '2021 manual §3.3'], ['arch', '2018 drawing']] },
+  // inside: positions not published
+  { id: 'batt', tag: 'Traction battery', name: 'Traction battery (4 × 12 V 100 Ah)', kind: 'unpub', group: 'int', anchor: 'c', at: [-130, 172, 0], prio: 1,
+    nets: ['hv'], build: 'battery',
+    chips: ['50 V nominal · 5.1 kWh', 'lead acid', 'drive only above 47.5 V'],
+    lead: 'Four 12 V blocks in series.', refs: [['spec:50-62', 'Spec §4'], ['um:164-166', 'UM §5.2']] },
+  { id: 'dcdc', tag: 'DC-DC', name: 'DC-DC converter (48 V → 12 V)', kind: 'unpub', group: 'int', anchor: 'c', at: [-300, 335, -110], prio: 2,
+    nets: ['hv', 'lv'], build: 'box:120,50,100:0x64748b',
+    chips: ['charges the LV battery', '13.5–14.5 V when on'], lead: 'Keeps the 12 V side charged while the car is on.',
+    refs: [['um:160-163', 'UM §5.2'], ['glos', 'Glossary']] },
+  { id: 'lvbatt', tag: 'LV battery', name: 'LV (12 V) battery', kind: 'unpub', group: 'int', anchor: 'c', at: [-700, 350, -110], prio: 2,
+    nets: ['lv', 'ai12'], build: 'box:150,90,100:0x334155',
+    chips: ['< 13.0 V → stop', '15 min on per week'], lead: 'Also feeds the 30 A AI supply, so a computer left on drains it.',
+    refs: [['um:160-163', 'UM §5.2'], ['um:252-256', 'UM §6.2'], ['insp:77-87', 'Inspection §5']] },
+  { id: 'fuse', tag: '30 A fuse', name: 'AI supply fuse (30 A)', kind: 'unpub', group: 'int', anchor: 'c', at: [-880, 320, -130], prio: 2,
+    nets: ['ai12'], build: 'box:50,40,50:0xb91c1c',
+    chips: ['one fuse: front + rear + sensor power'], lead: 'Total draw of everything you plug in must stay under 30 A.',
+    refs: [['comp:103', 'Compute §Electrical']] },
+  { id: 'vcu', tag: 'VCU', name: 'Vehicle Control Unit (VCU)', kind: 'unpub', group: 'int', anchor: 'c', at: [330, 300, 110], prio: 1,
+    nets: ['can', 'vcu', 'estop'], build: 'box:180,50,140:0x0f766e',
+    chips: ['runs motor, steering, brakes', 'AS state machine', 'handshake ≤ 50 ms'],
+    lead: 'Your software only ever talks to the VCU, over the AI CAN bus.', refs: [['sis', 'SIS'], ['rules', 'Rules T1.1.8']] },
+  { id: 'sevcon', tag: 'Motor controller', name: 'Sevcon Gen4 DC motor controller', kind: 'unpub', group: 'int', anchor: 'c', at: [-560, 360, 110], prio: 2,
+    nets: ['hv', 'vcu'], build: 'box:227,73,138:0x1f2937',
+    chips: ['CANopen', 'IP66 · 2 kg'], lead: 'Commanded by the VCU.', refs: [['spec:30-40', 'Spec §2'], ['sevcon', 'datasheet']] },
+  { id: 'motor', tag: 'Motor → belt → diff', name: 'Saietta 119R-68 motor, 3.5:1 belt, open diff', kind: 'unpub', group: 'int', anchor: 'c', at: [-560, 170, 40], prio: 1,
+    nets: ['hv'], build: 'drive',
+    chips: ['55.7 Nm · 4000 rpm · 5 kW', '3.5:1 belt', 'open diff · RWD'],
+    lead: 'One motor drives the rear axle. 55.7 × 3.5 = 195 Nm, the axle torque limit on CAN.',
+    refs: [['spec:30-40', 'Spec §2'], ['hil:9-17', 'HiL'], ['insp:61-65', 'Inspection §4']] },
+  { id: 'steer', tag: 'Steering motor + rack', name: 'Microsteer EPAS + Shiftec controller', kind: 'unpub', group: 'int', anchor: 'c', at: [874, 330, 60], prio: 1,
+    nets: ['vcu'], build: 'steer',
+    chips: ['±21° road-wheel angle', '37 Nm column torque', '13.8 V'],
+    lead: 'The VCU turns your CAN angle request into motor commands. Tie rods are from the CAD; motor and controller spots are indicative.',
+    refs: [['spec:42-48', 'Spec §3'], ['msteer', 'datasheet'], ['sis', 'SIS p.4']] },
+  { id: 'brake', tag: 'Brake / EBS unit', name: 'Brake-by-wire and EBS unit', kind: 'unpub', group: 'int', anchor: 'c', at: [1050, 235, 0], prio: 1,
+    nets: ['hyd', 'vcu'], build: 'box:160,110,150:0x7c2d12',
+    chips: ['front + rear circuits', 'EBS: armed / triggered', 'discharge before storage'],
+    lead: 'Holds pressure in accumulators so the car can always stop.', refs: [['sis', 'SIS p.5, §3'], ['um:303-321', 'UM §7.2']] },
+  { id: 'inertia', tag: 'Inertia switch', name: 'Inertia (crash) switch', kind: 'unpub', group: 'int', anchor: 'c', at: [1180, 255, 70], prio: 2,
+    nets: ['estop'], build: 'box:40,40,40:0xe3b505',
+    chips: ['under the front body panel', 'press down to reset'], lead: 'Trips on impact and opens the shutdown loop.',
+    refs: [['um:413-427', 'UM §9']] },
+  { id: 'wss', tag: 'Wheel speed ×4', name: 'Wheel speed sensors (×4)', kind: 'unpub', group: 'int', anchor: 'wFR', at: [G.axleF, 205, 470], prio: 2,
+    nets: ['vcu'], build: 'box:20,20,20:0x0ea5e9',
+    chips: ['rpm on 525h', 'pulse counts on 526h'], lead: 'One per wheel; read them from the VCU messages.',
+    refs: [['sis', 'SIS p.9–10']] },
+];
+const COMP = Object.fromEntries(COMPS.map((c) => [c.id, c]));
+
+// Cable runs: [x, y, z, anchor?]. Routes inside the car are schematic.
+const CABLES = [
+  // AI CAN bus trunk and branches
+  { net: 'can', pts: [[-925, 215, 140], [-880, 385, 165], [-300, 395, 168], [250, 400, 165], [270, 440, 20], [205, 486, -45]] },
+  { net: 'can', pts: [[-925, 215, 130], [-960, 215, 110, 'r'], [-960, 240, 60, 'r']] },
+  { net: 'can', pts: [[330, 398, 165], [330, 330, 110]] },
+  { net: 'can', pts: [[-200, 395, 168], [-200, 420, 30], [-200, 445, -20]] },
+  { net: 'can', pts: [[40, 398, 166], [40, 560, 60, 'b'], [G.tsalX - 60, 715, 0, 'b']] },
+  { net: 'can', pts: [[-120, 395, 168], [-120, 480, 160], [-120, 545, 70, 'b'], [-120, 558, SC - 6, 'b']] },
+  { net: 'can', pts: [[-925, 215, 140], [-1050, 170, 40], [-1200, 150, -35]] },
+  // 12 V AI power
+  { net: 'ai12', pts: [[-700, 350, -160], [-880, 320, -130]] },
+  { net: 'ai12', pts: [[-880, 320, -130], [-1100, 210, 0], [-1200, 150, 35]] },
+  { net: 'ai12', pts: [[-1200, 150, 35], [-1080, 200, 90], [-925, 215, 150]] },
+  { net: 'ai12', pts: [[-925, 215, 150], [-965, 215, 125, 'r'], [-965, 240, 75, 'r']] },
+  { net: 'ai12', pts: [[-1200, 150, 35], [-1060, 230, -60], [-880, 385, -165], [-300, 395, -170], [250, 400, -165], [265, 445, -90], [205, 486, -45]] },
+  { net: 'ai12', pts: [[250, 400, -165], [270, 450, -20], [205, 486, 15]] },
+  { net: 'ai12', pts: [[-1200, 150, 105], [-1080, 200, 100], [-965, 245, 90, 'r']] },
+  // USB, Ethernet, ZED
+  { net: 'usb', pts: [[205, 486, 52], [262, 440, 70], [200, 390, 128], [-880, 372, 128], [-962, 262, 40, 'r']] },
+  { net: 'usb', pts: [[205, 486, 64], [258, 436, 82], [190, 384, 116], [-880, 362, 116], [-962, 258, 25, 'r']] },
+  { net: 'usb', pts: [[G.zedX - 20, G.zedY, 0, 'b'], [110, 700, 0, 'b'], [60, 560, 40, 'b'], [40, 395, 104], [-880, 352, 104], [-962, 254, 10, 'r']] },
+  { net: 'eth', pts: [[205, 486, 100], [262, 440, 120], [200, 392, 142], [-880, 380, 142], [-962, 266, 60, 'r']] },
+  // 48 V traction
+  { net: 'hv', pts: [[-200, 282, 60], [-350, 300, 110], [-560, 323, 110]] },
+  { net: 'hv', pts: [[-560, 323, 70], [-560, 290, 40], [-560, 268, 40]] },
+  { net: 'hv', pts: [[-200, 282, -60], [-280, 300, -110], [-300, 310, -110]] },
+  { net: 'hv', pts: [[-1200, 150, -110], [-1080, 120, -150], [-700, 80, -165], [-465, 110, -150]] },
+  // 12 V vehicle
+  { net: 'lv', pts: [[-300, 335, -110], [-500, 365, -125], [-640, 350, -110]] },
+  { net: 'lv', pts: [[-700, 305, -110], [-400, 230, 150], [-140, 228, skinZ(-140, 228) - 10]] },
+  // shutdown loop (series; order not published)
+  { net: 'estop', pts: [[330, 300, 180], [200, 240, SR - 30], [161, 228, SR - 8]] },
+  { net: 'estop', pts: [[161, 228, SR - 8], [140, 160, 0], [161, 228, -SR + 8]] },
+  { net: 'estop', pts: [[161, 228, -SR + 8], [-100, 380, -160], [-200, 430, -140]] },
+  { net: 'estop', pts: [[-200, 430, -140], [-700, 260, -60], [-1050, 150, -40], [-1200, 150, -35]] },
+  { net: 'estop', pts: [[-1200, 150, -35], [-1000, 50, 0], [800, 50, 0], [1180, 230, 70]] },
+  { net: 'estop', pts: [[1180, 255, 70], [800, 320, 120], [420, 300, 110]] },
+  { net: 'estop', pts: [[28, 228, skinZ(28, 228) - 8], [150, 260, 180], [330, 300, 170]] },
+  // brake hydraulics
+  { net: 'hyd', pts: [[1050, 235, 60], [900, 210, 260], [G.axleF, 230, 470, 'wFR']] },
+  { net: 'hyd', pts: [[1050, 235, -60], [900, 210, -260], [G.axleF, 230, -470, 'wFL']] },
+  { net: 'hyd', pts: [[970, 200, 40], [800, 55, 190], [-650, 55, 230], [G.axleR, 230, 470, 'wRR']] },
+  { net: 'hyd', pts: [[970, 200, -40], [800, 55, -190], [-650, 55, -230], [G.axleR, 230, -470, 'wRL']] },
+  // VCU control and sensors
+  { net: 'vcu', pts: [[330, 300, 40], [0, 300, 190], [-450, 380, 190], [-560, 397, 140]] },
+  { net: 'vcu', pts: [[420, 300, 80], [700, 330, 40], [874, 340, 0]] },
+  { net: 'vcu', pts: [[420, 290, 60], [800, 260, 30], [970, 235, 0]] },
+  { net: 'vcu', pts: [[G.axleF, 205, 470, 'wFR'], [600, 200, 300], [400, 290, 160]] },
+  { net: 'vcu', pts: [[G.axleF, 205, -470, 'wFL'], [600, 200, -300], [400, 290, 60]] },
+  { net: 'vcu', pts: [[G.axleR, 205, 470, 'wRR'], [-600, 45, 260], [300, 45, 200], [330, 275, 140]] },
+  { net: 'vcu', pts: [[G.axleR, 205, -470, 'wRL'], [-600, 45, -260], [300, 45, -200], [330, 275, 80]] },
+  // antenna leads
+  { net: 'rf', pts: [[-200, 448, -30], [-60, 560, -30, 'b'], [G.tsalX, 800, 0, 'b']] },
+];
+
+// ---------- renderer / scene ----------
+const viewer = document.getElementById('viewer');
+const canvas = document.getElementById('c');
+const labelsEl = document.getElementById('labels');
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+} catch (e) {
+  document.getElementById('nogl').style.display = 'grid';
+  throw e;
+}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.localClippingEnabled = true;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(32, 1, 10, 80000);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.12;
+controls.minDistance = 150;
+controls.maxDistance = 16000;
+controls.maxPolarAngle = Math.PI * 0.495;
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8f96, 1.6));
+const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+sun.position.set(2500, 5000, 3000);
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0xffffff, 0.6);
+fill.position.set(-3000, 2000, -2500);
+scene.add(fill);
+const clipPlane = new THREE.Plane(V(0, 0, -1), 0);
+const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+// ---------- layers ----------
+const VEHICLE = ['body', 'chassis', 'susp', 'wheels', 'tsal', 'zed', 'plate', 'rear'];
+const LAYER_KEYS = [...VEHICLE, 'ext', 'int', 'dims', 'envelope', 'zone', 'sight', 'grid'];
+const layers = {};
+for (const k of LAYER_KEYS) {
+  const g = new THREE.Group();
+  g.name = k;
+  g.add(Object.assign(new THREE.Group(), { name: 'proxy' }));
+  g.add(Object.assign(new THREE.Group(), { name: 'cad', visible: false }));
+  layers[k] = g;
+  scene.add(g);
+}
+const proxy = (k) => layers[k].children[0];
+const cadG = (k) => layers[k].children[1];
+const anchorGroups = { ext: {}, int: {} };
+for (const L of ['ext', 'int']) for (const a of Object.keys(ANCHOR)) {
+  const g = new THREE.Group();
+  anchorGroups[L][a] = g;
+  proxy(L).add(g);
+}
+const cableGroup = new THREE.Group();
+proxy('int').add(cableGroup);
+
+function mat(color, opts = {}) {
+  return new THREE.MeshStandardMaterial(Object.assign({ color, roughness: 0.55, metalness: 0.1 }, opts));
+}
+function setKey(obj, key, extra = {}) {
+  obj.traverse((o) => { if (o.isMesh) Object.assign(o.userData, { key }, extra); });
+  return obj;
+}
+function add(layer, mesh, topic) {
+  setKey(mesh, 't:' + topic);
+  proxy(layer).add(mesh);
+  return mesh;
+}
+function boxAt(w, h, d, x, y, z, m) {
+  const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+  b.position.set(x, y, z);
+  return b;
+}
+function cylY(r, y0, y1, x, z, m, seg = 24) {
+  const c = new THREE.Mesh(new THREE.CylinderGeometry(r, r, y1 - y0, seg), m);
+  c.position.set(x, (y0 + y1) / 2, z);
+  return c;
+}
+function cylAxis(r, len, axis, m, seg = 24) {
+  const g = new THREE.CylinderGeometry(r, r, len, seg);
+  if (axis === 'x') g.rotateZ(Math.PI / 2);
+  if (axis === 'z') g.rotateX(Math.PI / 2);
+  return new THREE.Mesh(g, m);
+}
+function rod(a, b, r, m) {
+  const dir = new THREE.Vector3().subVectors(b, a);
+  const len = dir.length();
+  const c = new THREE.Mesh(new THREE.CylinderGeometry(r, r, len, 10), m);
+  c.position.copy(a).addScaledVector(dir, 0.5);
+  c.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
+  return c;
+}
+
+// ---------- simplified vehicle ----------
+const COLORS = {
+  body: 0xc4302b, chassis: 0x2f343b, susp: 0x9aa3ad, tyre: 0x23262a, rim: 0x8c939b, tsal: 0x30353c,
+  zed: 0x3b3f45, plate: 0x8fc3e6, steel: 0xc9ced4, knob: 0x18191b, bracket: 0xb9c0c7,
+};
+function fillGaps(a, jmax) {
+  for (let j = 0; j <= jmax; j++) {
+    if (a[j] >= 0) continue;
+    let p = j - 1; while (p >= 0 && a[p] < 0) p--;
+    let n = j + 1; while (n <= jmax && a[n] < 0) n++;
+    if (p >= 0 && n <= jmax) a[j] = a[p] + (a[n] - a[p]) * (j - p) / (n - p);
+    else a[j] = p >= 0 ? a[p] : a[n];
+  }
+}
+function resample(loop, N) {
+  const pts = loop.concat([loop[0]]);
+  const cum = [0];
+  for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  const total = cum[cum.length - 1], out = [];
+  let s = 0;
+  for (let k = 0; k < N; k++) {
+    const t = (k / N) * total;
+    while (s < cum.length - 2 && cum[s + 1] < t) s++;
+    const f = (t - cum[s]) / Math.max(1e-9, cum[s + 1] - cum[s]);
+    out.push([pts[s][0] + (pts[s + 1][0] - pts[s][0]) * f, pts[s][1] + (pts[s + 1][1] - pts[s][1]) * f]);
+  }
+  return out;
+}
+function bodyGeometry() {
+  const { xs, zs, top, bot } = BODY, N = 96, rings = [];
+  for (let i = 0; i < xs.length; i++) {
+    const T = top[i].slice(), B = bot[i].slice();
+    let jmax = -1;
+    T.forEach((v, j) => { if (v >= 0) jmax = j; });
+    if (jmax < 1) continue;
+    fillGaps(T, jmax); fillGaps(B, jmax);
+    // drop thin overhanging lips at the outer edge (they render as spikes)
+    while (jmax > 1 && T[jmax] - B[jmax] < 20 && B[jmax] > B[jmax - 1] + 60) jmax--;
+    let floor = Infinity;
+    for (let j = 0; j <= jmax; j++) floor = Math.min(floor, B[j]);
+    let jf = 0;
+    while (jf <= jmax && B[jf] > floor + 30) jf++;
+    const Bf = B.map((b, j) => (j < jf ? floor : b));
+    const half = [];
+    for (let j = 0; j <= jmax; j++) half.push([zs[j], Bf[j]]);
+    half.push([zs[jmax] + 5, (Bf[jmax] + T[jmax]) / 2]);
+    for (let j = jmax; j >= 0; j--) half.push([zs[j], T[j]]);
+    const loop = half.concat(half.slice(1, -1).reverse().map(([z, y]) => [-z, y]));
+    rings.push({ x: xs[i], pts: resample(loop, N) });
+  }
+  const pos = [], idx = [];
+  rings.forEach((r) => r.pts.forEach(([z, y]) => pos.push(r.x, y, z)));
+  for (let i = 0; i < rings.length - 1; i++) {
+    for (let k = 0; k < N; k++) {
+      const a = i * N + k, b = i * N + ((k + 1) % N), c = (i + 1) * N + k, d = (i + 1) * N + ((k + 1) % N);
+      idx.push(a, c, b, b, c, d);
+    }
+  }
+  // nose cap only: the real tail is open (rear compute bay and rear panel are reached from behind)
+  for (const [ri, flip] of [[0, false]]) {
+    const r = rings[ri];
+    let cy = 0; r.pts.forEach(([, y]) => (cy += y)); cy /= N;
+    const ci = pos.length / 3;
+    pos.push(r.x, cy, 0);
+    for (let k = 0; k < N; k++) {
+      const a = ri * N + k, b = ri * N + ((k + 1) % N);
+      if (flip) idx.push(ci, a, b); else idx.push(ci, b, a);
+    }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  return g;
+}
+
+function buildProxy() {
+  if (BODY) add('body', new THREE.Mesh(bodyGeometry(), mat(COLORS.body, { roughness: 0.42, side: THREE.DoubleSide })), 'chassis');
+  add('chassis', boxAt(1830, 357, 448, 0, 229.5, 0, mat(COLORS.chassis, { roughness: 0.7, side: THREE.DoubleSide })), 'chassis');
+
+  const prof = [[165, -100], [232, -112], [250, -104], [257.5, -80], [257.5, 80], [250, 104], [232, 112], [165, 100]]
+    .map(([r, w]) => new THREE.Vector2(r, w));
+  const tyreGeo = new THREE.LatheGeometry(prof, 56).rotateX(Math.PI / 2);
+  const rimGeo = new THREE.CylinderGeometry(166, 166, 190, 40).rotateX(Math.PI / 2);
+  const hubGeo = new THREE.CylinderGeometry(55, 55, 216, 20).rotateX(Math.PI / 2);
+  for (const x of [G.axleF, G.axleR]) for (const s of [1, -1]) {
+    const w = new THREE.Group();
+    w.position.set(x, G.wheelR, s * G.wheelZ);
+    w.userData.sign = s;
+    w.userData.baseZ = s * G.wheelZ;
+    w.add(new THREE.Mesh(tyreGeo, mat(COLORS.tyre, { roughness: 0.9, side: THREE.DoubleSide })));
+    w.add(new THREE.Mesh(rimGeo, mat(COLORS.rim, { metalness: 0.5, roughness: 0.4 })));
+    w.add(new THREE.Mesh(hubGeo, mat(COLORS.knob)));
+    setKey(w, 't:wheels');
+    proxy('wheels').add(w);
+  }
+
+  // Suspension from CAD part bounding boxes (CAD coords, one side, mirrored): indicative.
+  const sm = mat(COLORS.susp, { metalness: 0.4, roughness: 0.4 });
+  const corner = (yc, yi0, yi1, pull, tie) => [
+    [[140, yi0, 90], [535, yc, 90]], [[140, yi1, 90], [535, yc, 90]],
+    [[230, yi0, 310], [494, yc + 14, 318]], [[230, yi1, 310], [494, yc + 14, 318]],
+    [[535, yc, 90], [494, yc + 14, 318]], pull, tie,
+  ];
+  const arms = [
+    ...corner(826, 700, 972, [[460, 840, 300], [26, 721, 20]], [[230, 719, 221], [541, 730, 230]]),
+    ...corner(2359, 2214, 2486, [[460, 2347, 300], [26, 2465, 20]], [[230, 2467, 221], [541, 2456, 230]]),
+  ];
+  for (const s of [1, -1]) for (const [a, b] of arms) add('susp', rod(P(s * a[0], a[1], a[2]), P(s * b[0], b[1], b[2]), 8, sm), 'chassis');
+  for (const yc of [742, 2443]) add('susp', boxAt(65, 71, 90, 1593 - yc, 90.5, 0, sm), 'chassis');
+
+  // Light tower: ASSI ring, TSAL ring, cap (2021 photo order, 2026 CAD size)
+  add('tsal', cylY(55, 665, 702, G.tsalX, 0, mat(0xf2b01e, { emissive: 0x7a5200, emissiveIntensity: 0.5 })), 'tsal');
+  add('tsal', cylY(55, 702, 756, G.tsalX, 0, mat(0x58d68d, { emissive: 0x1f8a4c, emissiveIntensity: 0.6, transparent: true, opacity: 0.92 })), 'tsal');
+  const cap = new THREE.Mesh(new THREE.SphereGeometry(55, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), mat(0x24272c));
+  cap.scale.y = 67 / 55;
+  cap.position.set(G.tsalX, 756, 0);
+  add('tsal', cap, 'tsal');
+
+  // ZED2 on an arm in front of the tower, pitched 15° down
+  const zedM = mat(COLORS.zed);
+  const zed = new THREE.Group();
+  zed.position.set(G.zedX, G.zedY, 0);
+  zed.rotation.z = -15 * Math.PI / 180;
+  zed.add(boxAt(30, 33, 175, 0, 0, 0, zedM));
+  for (const s of [1, -1]) {
+    const lens = cylAxis(9, 4, 'x', mat(0x0b0c0e, { metalness: 0.6, roughness: 0.2 }), 20);
+    lens.position.set(16, 0, s * 60);
+    zed.add(lens);
+  }
+  setKey(zed, 't:zed');
+  proxy('zed').add(zed);
+  add('zed', boxAt(G.zedX - 15 - (G.tsalX + 40), 20, 40, (G.zedX - 15 + G.tsalX + 40) / 2, G.zedY - 8, 0, zedM), 'zed');
+
+  // Front sensor plate, spacer posts, M6 studs, knobs
+  add('plate', boxAt(350, 3, 350, G.plateX, G.plateY - 1.5, 0, mat(COLORS.plate, { transparent: true, opacity: 0.92 })), 'plate');
+  for (const xc of [1018, 1218]) for (const s of [1, -1]) {
+    const x = 1593 - xc, z = s * 150;
+    add('plate', cylY(15, G.chassisTop, G.plateY - 3, x, z, mat(COLORS.steel, { metalness: 0.6, roughness: 0.35 })), 'plate');
+    add('plate', cylY(3, G.chassisTop, 538, x, z, mat(COLORS.steel, { metalness: 0.7, roughness: 0.3 }), 10), 'plate');
+    add('plate', cylY(20, G.plateY, 539, x, z, mat(COLORS.knob)), 'plate');
+  }
+
+  // Rear compute bay: plate, knobs, bracket sides, rear panel, recommended max box
+  const rx = 1593 - 2648;
+  add('rear', boxAt(250, 3, 330, rx, 165.5, 0, mat(COLORS.plate)), 'rear');
+  for (const xc of [2533, 2763]) for (const s of [1, -1]) add('rear', cylY(20, 167, 196, 1593 - xc, s * 155, mat(COLORS.knob)), 'rear');
+  const brM = mat(COLORS.bracket, { metalness: 0.5, roughness: 0.4, side: THREE.DoubleSide });
+  for (const s of [1, -1]) add('rear', boxAt(290, 200, 3, 1593 - 2653, 194, s * 216, brM), 'rear');
+  add('rear', boxAt(3, 105, 300, 1593 - 2796, 146, 0, brM), 'rear');
+  const clr = boxAt(200, 200, 280, rx, 267, 0, new THREE.MeshBasicMaterial({ color: 0xf08c2e, transparent: true, opacity: 0.1, depthWrite: false }));
+  clr.userData.noPick = true;
+  proxy('rear').add(clr);
+  const clrEdges = new THREE.LineSegments(new THREE.EdgesGeometry(clr.geometry), new THREE.LineBasicMaterial({ color: 0xf08c2e }));
+  clrEdges.position.copy(clr.position);
+  proxy('rear').add(clrEdges);
+}
+
+// ---------- components ----------
+function ghostify(group, color) {
+  group.traverse((o) => {
+    if (!o.isMesh) return;
+    o.material = new THREE.MeshStandardMaterial({ color, transparent: true, opacity: 0.38, depthWrite: false, roughness: 0.6 });
+    const e = new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry, 30), new THREE.LineDashedMaterial({ color, dashSize: 14, gapSize: 9 }));
+    e.computeLineDistances();
+    e.position.copy(o.position); e.quaternion.copy(o.quaternion); e.scale.copy(o.scale);
+    e.userData.noPick = true;
+    o.parent.add(e);
+  });
+}
+const BUILD = {
+  // harness ends lying on the bodywork, mating face up
+  dsub(g) {
+    g.add(boxAt(40, 22, 58, 0, 0, 0, mat(0x111214)));
+    g.add(boxAt(18, 5, 44, 2, 13, 0, mat(0x9ca3af, { metalness: 0.8, roughness: 0.3 })));
+    for (const dz of [-14, 14]) g.add(boxAt(8, 3, 8, 2, 16, dz, mat(dz < 0 ? 0xe5484d : 0x3f3f46)));
+  },
+  dt(g) { g.add(boxAt(30, 20, 22, 0, 0, 0, mat(0x9ca3af))); g.add(boxAt(16, 3, 14, 0, 11, 0, mat(0x14b8a6))); },
+  usb(g) { for (const dz of [-8, 8]) { g.add(boxAt(34, 9, 14, 0, 0, dz, mat(0x111214))); g.add(boxAt(12, 2, 9, 4, 5.5, dz, mat(0x2563eb))); } },
+  rj45(g) { g.add(boxAt(32, 15, 17, 0, 0, 0, mat(0x111214))); g.add(boxAt(12, 2, 12, 4, 8.5, 0, mat(0xd1d5db))); },
+  incarpc(g) {
+    g.add(boxAt(200, 110, 270, 0, 0, 0, mat(0x1b1d21, { roughness: 0.8 })));
+    for (let i = -6; i <= 6; i++) g.add(boxAt(200, 8, 4, 0, 59, i * 20, mat(0x2a2d33)));
+  },
+  charge(g) { g.add(boxAt(30, 46, 54, 0, 0, 0, mat(0xf97316))); },
+  mpp(g) { const c = cylAxis(15, 26, 'x', mat(0x27272a, { metalness: 0.6 })); g.add(c); },
+  aims(g) { g.add(cylAxis(14, 20, 'x', mat(0x111214))); g.add(boxAt(10, 42, 10, -14, 0, 0, mat(0x111214))); },
+  toggle(g) { g.add(boxAt(12, 24, 18, 0, 0, 0, mat(0xb91c1c))); g.add(rod(V(-6, 0, 0), V(-24, 10, 0), 2.5, mat(0xd1d5db, { metalness: 0.8 }))); },
+  gpsant(g) { g.add(cylY(14, -4, 8, 0, 0, mat(0x111214))); },
+  logger(g) { g.add(boxAt(26, 36, 50, 0, 0, 0, mat(0x2a2d33))); g.add(boxAt(30, 4, 22, -10, 20, 0, mat(0xfacc15))); },
+  resgps(g) { g.add(boxAt(230, 45, 130, 0, 0, 0, mat(0xd4d8dd, { metalness: 0.6, roughness: 0.35 }))); },
+  screen(g) {
+    g.add(boxAt(110, 74, 10, 0, 0, 0, mat(0x111214)));
+    g.add(boxAt(95, 56, 1, 0, 0, 5.5, mat(0x1e3a5f, { emissive: 0x1d4ed8, emissiveIntensity: 0.5 })));
+  },
+  battery(g) {
+    for (const dx of [-170, 170]) for (const dz of [-90, 90]) g.add(boxAt(330, 220, 172, dx, 0, dz, mat(0x475569)));
+  },
+  drive(g) {
+    // motor along z, belt to the diff on the rear axle, driveshafts to the wheels (positions indicative)
+    g.add(cylAxis(100, 200, 'z', mat(0x334155)));
+    const dx = G.axleR - (-560), dy = G.wheelR - 170;
+    const diff = cylAxis(70, 120, 'z', mat(0x52525b));
+    diff.position.set(dx, dy, -40);
+    g.add(diff);
+    for (const s of [1, -1]) g.add(rod(V(dx, dy, -40 + s * 60), V(dx, dy, -40 + s * (G.wheelZ - 60)), 14, mat(0x71717a, { metalness: 0.6 })));
+    const pulleyA = cylAxis(30, 22, 'z', mat(0x111214)); pulleyA.position.set(0, 0, -122); g.add(pulleyA);
+    const pulleyB = cylAxis(105, 22, 'z', mat(0x111214)); pulleyB.position.set(dx, dy, -122); g.add(pulleyB);
+    const belt = beltCurve(V(0, 0, -122), 34, V(dx, dy, -122), 109);
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(belt, 80, 5, 6, true), mat(0x0a0a0a)));
+  },
+  steer(g) {
+    g.add(cylAxis(16, 460, 'z', mat(0x6b7280, { metalness: 0.6 })));
+    g.children[g.children.length - 1].position.set(0, -60, -60);
+    g.add(boxAt(90, 90, 120, 0, 10, 0, mat(0x1f2937)));
+    g.add(boxAt(100, 40, 80, 110, 0, -140, mat(0x0f172a)));
+  },
+};
+function beltCurve(a, ra, b, rb) {
+  const pts = [];
+  // a is ahead of b: wrap the front side of a and the rear side of b
+  for (let i = 0; i <= 24; i++) { const t = -Math.PI / 2 + (i / 24) * Math.PI; pts.push(V(a.x + ra * Math.cos(t), a.y + ra * Math.sin(t), a.z)); }
+  for (let i = 0; i <= 24; i++) { const t = Math.PI / 2 + (i / 24) * Math.PI; pts.push(V(b.x + rb * Math.cos(t), b.y + rb * Math.sin(t), b.z)); }
+  return new THREE.CatmullRomCurve3(pts, true);
+}
+function buildComps() {
+  for (const c of COMPS) {
+    c.pos = V(...c.at);
+    if (!c.build) continue;
+    const g = new THREE.Group();
+    g.position.copy(c.pos);
+    const parts = c.build.split(':'), kind = parts[0], arg = parts[1];
+    const col = kind === 'box' ? Number(parts[2]) || 0x64748b : 0x64748b;
+    if (kind === 'box') {
+      const [sx, sy, sz] = arg.split(',').map(Number);
+      g.add(boxAt(sx, sy, sz, 0, 0, 0, mat(col)));
+    } else if (kind === 'key') {
+      // key switch facing out of the right side
+      const ring = cylAxis(20, 4, 'z', mat(Number(arg))); g.add(ring);
+      const k = boxAt(42, 8, 6, 12, 0, 8, mat(0xdc2626)); g.add(k);
+    } else if (kind === 'estop') {
+      const s = Number(arg);
+      const b = cylAxis(17, 16, 'z', mat(0xdc2626, { emissive: 0x7f1d1d, emissiveIntensity: 0.3 }));
+      b.position.z = s * 6; g.add(b);
+    } else if (kind === 'screen') {
+      BUILD.screen(g);
+    } else BUILD[kind](g);
+    if (c.kind === 'unpub') ghostify(g, col);
+    setKey(g, 'c:' + c.id, { nets: c.nets });
+    anchorGroups[c.group][c.anchor].add(g);
+    c.obj = g;
+  }
+}
+
+// ---------- cables ----------
+function buildCables() {
+  for (const m of cableGroup.children) m.geometry.dispose();
+  cableGroup.clear();
+  for (const cab of CABLES) {
+    const n = NET[cab.net];
+    const pts = cab.pts.map(([x, y, z, a]) => at(V(x, y, z), a || 'c'));
+    const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal');
+    const segs = Math.min(160, Math.max(16, Math.round(curve.getLength() / 22)));
+    const mesh = new THREE.Mesh(new THREE.TubeGeometry(curve, segs, n.r * 1.6, 8, false), cab.mat || (cab.mat = mat(n.color, { roughness: 0.45, emissive: n.color, emissiveIntensity: 0.12 })));
+    mesh.userData.key = 'n:' + cab.net;
+    mesh.userData.net = cab.net;
+    cableGroup.add(mesh);
+  }
+}
+
+// ---------- overlays ----------
+const labelItems = []; // {el, pos, obj}
+function addLabel(text, pos, obj, cls = '') {
+  const el = document.createElement('div');
+  el.className = 'dim-label ' + cls;
+  el.textContent = text;
+  labelsEl.appendChild(el);
+  labelItems.push({ el, pos: pos.clone(), obj });
+  return el;
+}
+function lineMat(color, dashed = false) {
+  return dashed ? new THREE.LineDashedMaterial({ color, dashSize: 40, gapSize: 28 }) : new THREE.LineBasicMaterial({ color });
+}
+function polyline(pts, m) {
+  const l = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), m);
+  if (m.isLineDashedMaterial) l.computeLineDistances();
+  return l;
+}
+function dimension(group, a, b, off, text, t = 0.5, color = 0x1f5fbf) {
+  const m = lineMat(color), a2 = a.clone().add(off), b2 = b.clone().add(off);
+  const ext = off.clone().normalize().multiplyScalar(40);
+  group.add(polyline([a, a2.clone().add(ext)], m));
+  group.add(polyline([b, b2.clone().add(ext)], m));
+  group.add(polyline([a2, b2], m));
+  const dir = new THREE.Vector3().subVectors(b2, a2).normalize();
+  for (const [p, d] of [[a2, dir], [b2, dir.clone().negate()]]) {
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(14, 60, 12), new THREE.MeshBasicMaterial({ color }));
+    cone.position.copy(p).addScaledVector(d, 30);
+    cone.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), d);
+    group.add(cone);
+  }
+  addLabel(text, a2.clone().lerp(b2, t), group);
+}
+function buildOverlays() {
+  const dg = proxy('dims');
+  dimension(dg, V(G.tail, 0, 0), V(G.nose, 0, 0), V(0, 0, 1200), 'Length 2815', 0.3);
+  dimension(dg, V(G.axleR, 0, G.outerZ), V(G.axleF, 0, G.outerZ), V(0, 0, 200), 'Wheelbase 1530 (CAD 1533)', 0.62);
+  dimension(dg, V(G.nose, 0, -G.outerZ), V(G.nose, 0, G.outerZ), V(380, 0, 0), 'Width 1430');
+  dimension(dg, V(G.axleR, 0, -G.wheelZ), V(G.axleR, 0, G.wheelZ), V(-950, 0, 0), 'Track 1200 (CAD hubs 1183)');
+  dimension(dg, V(G.tsalX, 0, 0), V(G.tsalX, G.domeTop, 0), V(0, 0, -900), 'Height 823 (TSAL top)');
+  dimension(dg, V(G.plateX + 175, 0, -175), V(G.plateX + 175, G.plateY, -175), V(0, 0, -260), 'Plate top 511');
+  dimension(dg, V(G.axleF, 0, -G.outerZ), V(G.axleF, 2 * G.wheelR, -G.outerZ), V(0, 0, -180), 'Tyre Ø515');
+
+  const eg = proxy('envelope');
+  const apex = V(G.tsalX, G.domeTop, 0);
+  const tangent = (cx, front) => {
+    const dx = apex.x - cx, dy = apex.y - G.wheelR, d = Math.hypot(dx, dy);
+    const phi = Math.atan2(dy, dx), al = Math.acos(G.wheelR / d);
+    const cands = [phi + al, phi - al].map((t) => [cx + G.wheelR * Math.cos(t), G.wheelR + G.wheelR * Math.sin(t)]);
+    return cands.sort((p, q) => (front ? q[0] - p[0] : p[0] - q[0]))[0];
+  };
+  const [fx, fy] = tangent(G.axleF, true), [rx2, ry] = tangent(G.axleR, false);
+  const FL = V(fx, fy, -G.outerZ), FR = V(fx, fy, G.outerZ), RL = V(rx2, ry, -G.outerZ), RR = V(rx2, ry, G.outerZ);
+  const envGeo = new THREE.BufferGeometry().setFromPoints([apex, FL, FR, apex, RR, RL, apex, FR, RR, apex, RL, FL]);
+  eg.add(new THREE.Mesh(envGeo, new THREE.MeshBasicMaterial({ color: 0x3d7be0, transparent: true, opacity: 0.13, side: THREE.DoubleSide, depthWrite: false })));
+  const em = lineMat(0x3d7be0);
+  for (const p of [FL, FR, RL, RR]) eg.add(polyline([apex, p], em));
+  eg.add(polyline([FL, FR, RR, RL, FL], em));
+  addLabel('T 1.3.3 envelope: sensors inside, or within 100 mm of the bodywork', apex.clone().add(V(0, 120, 0)), eg, 'env');
+
+  const zg = proxy('zone');
+  const x0 = G.axleF + G.wheelR, x1 = x0 + 700;
+  const zbox = boxAt(700, 500, 2 * G.outerZ, (x0 + x1) / 2, 250, 0, new THREE.MeshBasicMaterial({ color: 0xd93025, transparent: true, opacity: 0.12, depthWrite: false }));
+  zg.add(zbox);
+  const ze = new THREE.LineSegments(new THREE.EdgesGeometry(zbox.geometry), new THREE.LineBasicMaterial({ color: 0xd93025 }));
+  ze.position.copy(zbox.position);
+  zg.add(ze);
+  addLabel('T 1.3.4 zone: 700 ahead × 500 high. Not allowed on shared cars', V(x1, 560, 0), zg, 'zone');
+
+  const sg = proxy('sight');
+  const t15 = Math.tan(15 * Math.PI / 180), start = V(G.zedX + 16, G.zedY, 0), end = V(G.zedX + 16 + G.zedY / t15, 0, 0);
+  sg.add(polyline([start, end], lineMat(0x7a4fc4, true)));
+  addLabel('ZED axis 15° down → ground ≈2.75 m ahead', start.clone().lerp(end, 0.62).add(V(0, 60, 0)), sg, 'sight');
+
+  const gg = proxy('grid');
+  const grid = new THREE.GridHelper(8000, 80, 0x999999, 0x999999);
+  grid.material.transparent = true;
+  grid.material.opacity = 0.5;
+  grid.position.y = -0.5;
+  gg.add(grid);
+  gg.add(new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), V(G.nose + 250, 2, 0), 500, 0xc4302b, 120, 70));
+  addLabel('FRONT', V(G.nose + 900, 0, 0), gg);
+}
+
+// ---------- markers and tags ----------
+const hotspots = [];
+function buildHotspots() {
+  for (const t of TOPICS) {
+    if (!t.pos) continue;
+    const el = document.createElement('button');
+    el.type = 'button';
+    el.className = 'hs' + (t.loc === 'approx' ? ' approx' : '');
+    el.innerHTML = `<span class="n">${t.n}</span><span class="t">${t.title}${t.loc === 'approx' ? ' (approx.)' : ''}</span>`;
+    el.setAttribute('aria-label', `${t.n}. ${t.title}`);
+    el.addEventListener('click', (e) => { e.stopPropagation(); select('t:' + t.id, true); });
+    labelsEl.appendChild(el);
+    hotspots.push({ el, t, key: 't:' + t.id });
+  }
+}
+const tags = [];
+function buildTags() {
+  for (const c of COMPS) {
+    const el = document.createElement('button');
+    el.type = 'button';
+    el.className = 'tag' + (c.kind === 'unpub' ? ' ghost' : '');
+    const n = c.nets[0] && NET[c.nets[0]];
+    if (n) el.style.setProperty('--tagc', hex(n.color));
+    el.textContent = c.tag;
+    const key = c.topic ? 't:' + c.topic : 'c:' + c.id;
+    el.addEventListener('click', (e) => { e.stopPropagation(); select(key, false); });
+    labelsEl.appendChild(el);
+    tags.push({ el, c, key, w: c.tag.length * 6.6 + 18 });
+  }
+}
+
+// ---------- inspector ----------
+const insp = document.getElementById('inspector');
+const BADGE = {
+  cad: '<span class="badge cad">Position from official CAD</span>',
+  photo: '<span class="badge approx">Position from IMechE photo / drawing</span>',
+  approx: '<span class="badge approx">Approximate location</span>',
+  unpub: '<span class="badge none">Inside · position not published</span>',
+  none: '<span class="badge none">Location not published</span>',
+};
+const PIN7W2 = `<svg class="pinsvg" viewBox="0 0 300 110" role="img" aria-label="7W2 pinout, compute side, front view">
+  <path d="M14 14 H286 Q294 14 292 22 L272 92 Q270 98 262 98 H38 Q30 98 28 92 L8 22 Q6 14 14 14 Z" fill="var(--surface-2)" stroke="var(--muted)" stroke-width="2"/>
+  <circle cx="62" cy="56" r="25" fill="#e5484d"/><text x="62" y="60" text-anchor="middle" style="fill:#fff">A1 +12 V</text>
+  <circle cx="238" cy="56" r="25" fill="#3f3f46"/><text x="238" y="60" text-anchor="middle" style="fill:#fff">A2 0 V</text>
+  <circle cx="132" cy="38" r="8" fill="#f08c2e"/><text x="132" y="24" text-anchor="middle">1 CAN-H</text>
+  <circle cx="168" cy="38" r="8" fill="#f08c2e"/><text x="168" y="24" text-anchor="middle" dx="14">2 CAN-L</text>
+  <circle cx="118" cy="74" r="6" fill="var(--muted)"/><circle cx="150" cy="74" r="6" fill="var(--muted)"/><circle cx="182" cy="74" r="6" fill="var(--muted)"/>
+  <text x="150" y="96" text-anchor="middle">3 · 4 · 5 reserved</text></svg>`;
+const PINDT = `<svg class="pinsvg" viewBox="0 0 300 70" role="img" aria-label="DT 2-pin">
+  <rect x="80" y="8" width="140" height="54" rx="12" fill="var(--surface-2)" stroke="var(--muted)" stroke-width="2"/>
+  <circle cx="122" cy="35" r="11" fill="#e5484d"/><text x="122" y="39" text-anchor="middle" style="fill:#fff">1</text>
+  <circle cx="178" cy="35" r="11" fill="#3f3f46"/><text x="178" y="39" text-anchor="middle" style="fill:#fff">2</text>
+  <text x="60" y="39" text-anchor="end">+12 V</text><text x="240" y="39">GND</text></svg>`;
+const src = (refs) => refs.map(([r, l]) => `<a class="src" data-ref="${r}">${l}</a>`).join(' ');
+const netPill = (id) => { const n = NET[id]; return `<button class="pill" type="button" data-net="${id}"><span class="sw" style="background:${hex(n.color)}"></span>${n.name}</button>`; };
+const compPill = (c) => `<button class="pill" type="button" data-key="${c.topic ? 't:' + c.topic : 'c:' + c.id}">${c.tag}</button>`;
+
+function wireInspector() {
+  window.resolveRefs(insp);
+  insp.querySelectorAll('[data-net]').forEach((b) => b.addEventListener('click', () => select('n:' + b.dataset.net)));
+  insp.querySelectorAll('[data-key]').forEach((b) => b.addEventListener('click', () => select(b.dataset.key, true)));
+  const ib = insp.querySelector('#indexBtn');
+  if (ib) ib.addEventListener('click', () => select(null));
+  insp.querySelectorAll('[data-open]').forEach((a) => a.addEventListener('click', () => { const d = document.getElementById(a.dataset.open); if (d) d.open = true; }));
+}
+function renderIndex() {
+  const ext = COMPS.filter((c) => c.group === 'ext' && c.prio === 1);
+  const int = COMPS.filter((c) => c.kind === 'unpub' || c.id === 'resgps');
+  insp.innerHTML = `
+    <div class="kicker">What is where</div>
+    <h2>Find a part</h2>
+    <p class="lead" style="color:var(--muted)">Use <b>See-through</b> or <b>Exploded</b> to see cables and internals. Click any part, tag or cable.</p>
+    <div class="grouphead">Plugs, switches &amp; lights</div><div class="pills">${ext.map(compPill).join('')}</div>
+    <div class="grouphead">Inside the car</div><div class="pills">${int.map(compPill).join('')}</div>
+    <div class="grouphead">Cable types</div><div class="pills">${NETS.map((n) => netPill(n.id)).join('')}</div>
+    <div class="grouphead">Topics</div><div class="pills">${TOPICS.map((t) => `<button class="pill" type="button" data-key="t:${t.id}">${t.title}</button>`).join('')}</div>`;
+  wireInspector();
+}
+function renderComp(c) {
+  insp.innerHTML = `
+    <div class="kicker">${BADGE[c.kind]}</div>
+    <h2>${c.name}</h2>
+    <div class="chips">${c.chips.map((x) => `<span class="chip">${x}</span>`).join('')}</div>
+    ${c.extra === 'pin7w2' ? PIN7W2 : c.extra === 'pindt' ? PINDT : ''}
+    <p class="lead">${c.lead}</p>
+    ${c.nets.length ? `<div class="grouphead">Cables</div><div class="pills">${c.nets.map(netPill).join('')}</div>` : ''}
+    <div class="actions"><button class="btn" type="button" id="focusBtn">Centre view here</button><button class="btn" type="button" id="indexBtn">All parts</button></div>
+    <details class="more"><summary>Sources</summary><p>${src(c.refs)}</p></details>`;
+  wireInspector();
+  insp.querySelector('#focusBtn').addEventListener('click', () => flyTo(null, at(c.pos, c.anchor)));
+}
+function renderNet(n) {
+  const comps = COMPS.filter((c) => c.nets.includes(n.id));
+  insp.innerHTML = `
+    <div class="kicker">Cable type</div>
+    <h2><span class="sw" style="display:inline-block;width:26px;height:8px;border-radius:4px;vertical-align:middle;background:${hex(n.color)}"></span> ${n.name}</h2>
+    <div class="chips">${n.chips.map((x) => `<span class="chip">${x}</span>`).join('')}</div>
+    <p class="lead">${n.lead}</p>
+    <div class="grouphead">Connects</div><div class="pills">${comps.map(compPill).join('')}</div>
+    <p style="color:var(--muted);font-size:.84rem">Routes inside the car are drawn schematically; IMechE publishes what connects, not the harness path.</p>
+    <div class="actions"><button class="btn" type="button" id="indexBtn">All parts</button></div>
+    <details class="more"><summary>Sources</summary><p>${src(n.refs)}</p></details>`;
+  wireInspector();
+}
+function renderTopic(t) {
+  insp.innerHTML = `
+    <div class="kicker">${t.pos ? '#' + t.n + ' · ' : ''}${BADGE[t.loc]}</div>
+    <h2>${t.title}</h2>
+    <div class="where">${t.where}</div>
+    <ul>${t.facts.map((f) => `<li>${f}</li>`).join('')}</ul>
+    <div class="actions">
+      <a class="btn" href="#${t.more}" data-open="${t.more}">Full details below ↓</a>
+      ${t.pos ? '<button class="btn" type="button" id="focusBtn">Centre view here</button>' : ''}
+      <button class="btn" type="button" id="indexBtn">All parts</button>
+    </div>`;
+  wireInspector();
+  const fb = insp.querySelector('#focusBtn');
+  if (fb) fb.addEventListener('click', () => flyTo(null, at(t.pos, TOPIC_ANCHOR[t.id])));
+}
+function select(key, focus) {
+  selected = key;
+  const [kind, id] = key ? key.split(':') : [null, null];
+  if (kind === 'n') { netFocus = id; if (mode === 'outside') setMode('inside', false); } else netFocus = null;
+  hotspots.forEach((h) => h.el.classList.toggle('sel', h.key === key));
+  tags.forEach((t) => t.el.classList.toggle('sel', t.key === key));
+  updateLegend();
+  applyNetFocus();
+  applyHighlight();
+  if (!key) renderIndex();
+  else if (kind === 'c') { renderComp(COMP[id]); if (focus) flyTo(null, at(COMP[id].pos, COMP[id].anchor)); }
+  else if (kind === 'n') renderNet(NET[id]);
+  else { const t = TOPIC[id]; renderTopic(t); if (focus && t.pos) flyTo(null, at(t.pos, TOPIC_ANCHOR[t.id])); }
+  requestRender();
+}
+
+// ---------- highlight & isolation ----------
+function forEachKeyed(fn) { scene.traverse((o) => { if (o.isMesh && o.userData.key) fn(o); }); }
+function applyHighlight() {
+  const selNet = selected && selected.startsWith('n:') ? selected.slice(2) : null;
+  forEachKeyed((o) => {
+    const m = o.material;
+    if (!m.emissive) return;
+    if (m.userData.baseEmissive === undefined) { m.userData.baseEmissive = m.emissive.getHex(); m.userData.baseEI = m.emissiveIntensity; }
+    const k = o.userData.key;
+    const sel = k === selected || (selNet && o.userData.nets && o.userData.nets.includes(selNet));
+    const hov = k === hovered;
+    if (sel || hov) { m.emissive.setHex(sel ? 0xff7a1a : 0x3d7be0); m.emissiveIntensity = sel ? 0.3 : 0.28; }
+    else { m.emissive.setHex(m.userData.baseEmissive); m.emissiveIntensity = m.userData.baseEI; }
+  });
+}
+function applyNetFocus() {
+  for (const m of cableGroup.children) {
+    const on = !netFocus || m.userData.net === netFocus;
+    m.visible = on;
+  }
+  for (const c of COMPS) {
+    if (!c.obj) continue;
+    const on = !netFocus || c.nets.includes(netFocus);
+    c.obj.traverse((o) => {
+      if (!o.material) return;
+      const mm = o.material;
+      if (mm.userData.baseOp === undefined) { mm.userData.baseOp = mm.opacity; mm.userData.baseTr = mm.transparent; }
+      mm.transparent = on ? mm.userData.baseTr : true;
+      mm.opacity = on ? mm.userData.baseOp : 0.12;
+      mm.needsUpdate = true;
+    });
+  }
+}
+
+// ---------- modes, explode, cut ----------
+function setLayerOpacity(k, v) {
+  layers[k].traverse((o) => {
+    if (!o.isMesh || o.userData.noPick) return;
+    const m = o.material;
+    if (m.userData.baseOp === undefined) { m.userData.baseOp = m.opacity; m.userData.baseTr = m.transparent; }
+    const op = m.userData.baseOp * v;
+    m.transparent = op < 1 || m.userData.baseTr;
+    m.opacity = op;
+    m.depthWrite = op >= 0.95;
+    m.needsUpdate = true;
+  });
+}
+let bodyOp = 1, chassisOp = 1;
+function applyMaterials() {
+  setLayerOpacity('body', bodyOp);
+  setLayerOpacity('chassis', chassisOp);
+  for (const k of VEHICLE) layers[k].traverse((o) => {
+    if (!o.material) return;
+    o.material.clippingPlanes = cutOn ? [clipPlane] : null;
+    o.material.needsUpdate = true;
+  });
+  scheduleOcclusion();
+  requestRender();
+}
+function applyExplode() {
+  for (const [k, a] of Object.entries(LAYER_ANCHOR)) layers[k].position.copy(ANCHOR[a]).multiplyScalar(explode);
+  for (const g of [proxy('wheels'), cadG('wheels')]) for (const o of g.children) {
+    const s = o.userData.sign || 0;
+    o.position.z = (o.userData.baseZ || 0) + s * 280 * explode;
+  }
+  for (const L of ['ext', 'int']) for (const [a, g] of Object.entries(anchorGroups[L])) g.position.copy(ANCHOR[a]).multiplyScalar(explode);
+  buildCables();
+  applyNetFocus();
+  applyHighlight();
+}
+const MODES = {
+  outside: { explode: 0, body: 1, chassis: 1, cut: false, int: false, dims: true, legend: false },
+  inside: { explode: 0, body: 0.08, chassis: 0.18, cut: false, int: true, dims: false, legend: true, cam: [V(-60, 300, 0), V(2500, 1500, 2300)] },
+  exploded: { explode: 1, body: 0.16, chassis: 0.25, cut: false, int: true, dims: false, legend: true, cam: [V(-120, 480, 0), V(3100, 2000, 2900)] },
+  cut: { explode: 0, body: 1, chassis: 1, cut: true, int: true, dims: false, legend: true, cam: [V(0, 280, 0), V(700, 1500, 4300)] },
+};
+const layerBoxes = {};
+document.querySelectorAll('#layerBody input[type=checkbox]').forEach((cb) => (layerBoxes[cb.dataset.layer] = cb));
+function setCheck(k, v) { const cb = layerBoxes[k]; if (cb && cb.checked !== v) { cb.checked = v; cb.dispatchEvent(new Event('change')); } }
+function setMode(m, fly) {
+  mode = m;
+  const p = MODES[m];
+  document.querySelectorAll('[data-mode]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.mode === m));
+  explodeTarget = p.explode;
+  bodyOp = p.body; chassisOp = p.chassis; cutOn = p.cut;
+  opacityEl.value = p.body;
+  setCheck('int', p.int);
+  setCheck('dims', p.dims);
+  document.getElementById('legend').hidden = !p.legend;
+  document.getElementById('cutGrp').hidden = !p.cut;
+  if (m === 'outside') netFocus = null;
+  applyMaterials();
+  updateLegend();
+  applyNetFocus();
+  if (p.cam && fly !== false) flyToPose(p.cam[0], p.cam[0].clone().add(p.cam[1].clone().multiplyScalar(aspectScale())));
+  requestRender();
+}
+document.querySelectorAll('[data-mode]').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
+document.getElementById('cutZ').addEventListener('input', (e) => { clipPlane.constant = +e.target.value; requestRender(); });
+
+// ---------- legend ----------
+const legendBody = document.getElementById('legendBody');
+function buildLegend() {
+  legendBody.innerHTML = NETS.map((n) => `<button class="netrow" type="button" data-net="${n.id}"><span class="sw" style="background:${hex(n.color)}"></span>${n.name}</button>`).join('')
+    + '<button class="netrow" type="button" data-net="">Show all</button>';
+  legendBody.querySelectorAll('[data-net]').forEach((b) => b.addEventListener('click', () => {
+    const id = b.dataset.net;
+    select(id && netFocus !== id ? 'n:' + id : null);
+  }));
+}
+function updateLegend() {
+  legendBody.querySelectorAll('[data-net]').forEach((b) => {
+    const id = b.dataset.net;
+    b.classList.toggle('on', !!id && id === netFocus);
+    b.classList.toggle('dim', !!netFocus && !!id && id !== netFocus);
+  });
+}
+
+// ---------- camera ----------
+const VIEWS = {
+  iso: { pos: V(4300, 2700, 3900), target: V(-100, 250, 150) },
+  side: { pos: V(0, 650, 5600), target: V(150, 400, 0) },
+  front: { pos: V(5600, 750, 0), target: V(0, 400, 0) },
+  rear: { pos: V(-5600, 850, 0), target: V(0, 400, 0) },
+  top: { pos: V(0, 7400, 1), target: V(0, 0, 0) },
+};
+const GOTO = {
+  front: { target: V(205, 486, 30), off: V(150, 520, 520), key: 'c:fc_7w2' },
+  tower: { target: V(70, 740, 0), off: V(700, 220, 560), key: 't:tsal', anchor: 'b' },
+  switches: { target: V(10, 250, 330), off: V(350, 260, 1800), key: 'c:lvms' },
+  rearpanel: { target: V(-1214, 160, 0), off: V(-760, 230, 420), key: 'c:mpp', mode: 'inside' },
+  bay: { target: V(-1000, 260, 0), off: V(-700, 750, 850), key: 'c:incarpc', mode: 'inside', anchor: 'r' },
+  drive: { target: V(-420, 230, 0), off: V(-600, 1300, 1500), key: 'c:motor', mode: 'inside' },
+  steer: { target: V(880, 260, 0), off: V(800, 1000, 1200), key: 'c:steer', mode: 'inside' },
+};
+function aspectScale() { return Math.min(2.2, Math.max(1, 1.3 / camera.aspect)); }
+function flyToPose(target, camPos) {
+  tween = { t0: performance.now(), dur: 700, fromPos: camera.position.clone(), fromTarget: controls.target.clone(), toPos: camPos.clone(), toTarget: target.clone() };
+  requestRender();
+}
+function flyTo(viewKey, newTarget) {
+  if (viewKey) {
+    const v = VIEWS[viewKey];
+    flyToPose(v.target, v.target.clone().add(v.pos.clone().sub(v.target).multiplyScalar(aspectScale())));
+  } else flyToPose(newTarget, camera.position.clone().add(newTarget.clone().sub(controls.target)));
+}
+document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => flyTo(b.dataset.view)));
+document.querySelectorAll('[data-goto]').forEach((b) => b.addEventListener('click', () => {
+  const g = GOTO[b.dataset.goto];
+  if (g.mode && mode === 'outside') setMode(g.mode, false);
+  const t = at(g.target, g.anchor || 'c');
+  flyToPose(t, t.clone().add(g.off.clone().multiplyScalar(Math.min(1.8, aspectScale()))));
+  select(g.key, false);
+}));
+
+// ---------- layer checkboxes ----------
+for (const [k, cb] of Object.entries(layerBoxes)) {
+  const apply = () => {
+    if (k === 'hotspots') showHotspots = cb.checked;
+    else if (k === 'tags') showTags = cb.checked;
+    else layers[k].visible = cb.checked;
+    scheduleOcclusion();
+    requestRender();
+  };
+  cb.addEventListener('change', apply);
+  apply();
+}
+const opacityEl = document.getElementById('bodyOpacity');
+opacityEl.addEventListener('input', () => { bodyOp = +opacityEl.value; applyMaterials(); });
+
+// ---------- picking, hover, readout ----------
+const ray = new THREE.Raycaster();
+const ndc = new THREE.Vector2();
+const readout = document.getElementById('readout');
+function shown(o) { while (o) { if (!o.visible) return false; o = o.parent; } return true; }
+function keyOf(o) { while (o) { if (o.userData.key) return o.userData.key; o = o.parent; } return null; }
+function nameOf(key) {
+  if (!key) return '';
+  const [k, id] = key.split(':');
+  return k === 'c' ? COMP[id].name : k === 'n' ? NET[id].name : TOPIC[id].title;
+}
+function pick(ev) {
+  const r = canvas.getBoundingClientRect();
+  ndc.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
+  ray.setFromCamera(ndc, camera);
+  const objs = [...VEHICLE, 'ext', 'int'].filter((k) => layers[k].visible).map((k) => layers[k]);
+  const hits = ray.intersectObjects(objs, true).filter((h) => {
+    if (!h.object.isMesh || h.object.userData.noPick || !shown(h.object)) return false;
+    const m = h.object.material;
+    if (cutOn && m.clippingPlanes && h.point.z > clipPlane.constant) return false;
+    return !(m.transparent && m.opacity < 0.3);
+  });
+  return hits[0] || null;
+}
+let down = null;
+canvas.addEventListener('pointerdown', (e) => { down = { x: e.clientX, y: e.clientY }; });
+canvas.addEventListener('pointerup', (e) => {
+  if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 5) return;
+  const h = pick(e);
+  select(h ? keyOf(h.object) : null);
+});
+let hoverPending = false, lastMove = null;
+canvas.addEventListener('pointermove', (e) => {
+  lastMove = e;
+  if (hoverPending) return;
+  hoverPending = true;
+  requestAnimationFrame(() => {
+    hoverPending = false;
+    const h = pick(lastMove);
+    const key = h ? keyOf(h.object) : null;
+    canvas.style.cursor = key ? 'pointer' : '';
+    if (h) {
+      const p = h.point;
+      readout.innerHTML = `${key ? `<b>${nameOf(key)}</b> · ` : ''}x ${Math.round(p.x)} · y ${Math.round(p.y)} · z ${Math.round(p.z)} mm`;
+    } else readout.textContent = 'x forward from wheelbase centre · y up from ground · z right (mm)';
+    if (key !== hovered) { hovered = key; applyHighlight(); requestRender(); }
+  });
+});
+
+// ---------- official CAD loading (runtime, from IMechE's GitHub) ----------
+const OCCT = 'https://cdn.jsdelivr.net/npm/occt-import-js@0.0.23/dist/';
+const CAD_FILES = [
+  { url: 'https://raw.githubusercontent.com/FS-AI/FS-AI_ADS-DV_CAD/main/FS-AI_ADS-DV_CAD_2026.step', label: 'ADS-DV CAD (≈20 MB)' },
+  { url: 'https://raw.githubusercontent.com/FS-AI/FS-AI_Compute/master/CAD/ADS-DV_Rear_Compute_Installation.stp', label: 'rear compute CAD (≈5 MB)' },
+];
+const KNOWN = ['ZED Camera', 'Bodywork', 'Chassis', 'Suspension', 'Copyright Notice', 'Team Additional Sensor Mounting', 'Rear Compute Installation'];
+const PARAMS = { linearUnit: 'millimeter', linearDeflectionType: 'bounding_box_ratio', linearDeflection: 0.003, angularDeflection: 0.5 };
+const WORKER_SRC = `
+importScripts('${OCCT}occt-import-js.js');
+const ready = occtimportjs({ locateFile: (p) => '${OCCT}' + p });
+onmessage = async (e) => {
+  try {
+    const occt = await ready;
+    const res = occt.ReadStepFile(new Uint8Array(e.data.buf), ${JSON.stringify(PARAMS)});
+    const owner = [];
+    const walk = (n, path) => { n.meshes.forEach((i) => (owner[i] = path)); n.children.forEach((c) => walk(c, path.concat([c.name]))); };
+    walk(res.root, []);
+    const out = res.meshes.map((m, i) => ({ name: m.name || '', path: owner[i] || [],
+      pos: new Float32Array(m.attributes.position.array), idx: new Uint32Array(m.index.array) }));
+    postMessage({ ok: res.success, meshes: out }, out.flatMap((m) => [m.pos.buffer, m.idx.buffer]));
+  } catch (err) { postMessage({ ok: false, error: String(err) }); }
+};`;
+const statusEl = document.getElementById('cadStatus');
+const loadBtn = document.getElementById('loadCad');
+const mProxy = document.getElementById('mProxy'), mCad = document.getElementById('mCad');
+let worker = null, cadLoaded = 0;
+function tessellate(buf) {
+  return new Promise((resolve, reject) => {
+    try {
+      if (!worker) worker = new Worker(URL.createObjectURL(new Blob([WORKER_SRC], { type: 'text/javascript' })));
+    } catch (e) { reject(e); return; }
+    worker.onmessage = (e) => (e.data.ok ? resolve(e.data.meshes) : reject(new Error(e.data.error || 'STEP read failed')));
+    worker.onerror = (e) => reject(new Error(e.message || 'worker error'));
+    worker.postMessage({ buf }, [buf]);
+  });
+}
+async function download(url, label) {
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error(`${resp.status} for ${url}`);
+  const reader = resp.body.getReader(), chunks = [];
+  let n = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(value); n += value.length;
+    statusEl.textContent = `Downloading ${label}: ${(n / 1048576).toFixed(1)} MB`;
+  }
+  const buf = new Uint8Array(n);
+  let o = 0;
+  for (const c of chunks) { buf.set(c, o); o += c.length; }
+  return buf.buffer;
+}
+function classify(name, path) {
+  const owner = path.find((p) => KNOWN.includes(p)) || '';
+  if (owner === 'Rear Compute Installation') return name === 'Clearance Volume' ? ['rear', 'clear'] : ['rear', name === 'SOLID' ? 'plate' : /knob/i.test(name) ? 'knob' : 'bracket'];
+  if (owner === 'ZED Camera') return ['zed', 'zed'];
+  if (owner === 'Bodywork') return name === 'TSAL' ? ['tsal', 'tsal'] : name === 'Dome' ? ['tsal', 'dome'] : ['body', 'body'];
+  if (owner === 'Chassis') return ['chassis', 'chassis'];
+  if (owner === 'Suspension') return /WHEEL/.test(name) ? ['wheels', 'tyre'] : ['susp', 'susp'];
+  if (owner === 'Team Additional Sensor Mounting') return ['plate', name === 'Example Plate' ? 'plate' : /Knob/.test(name) ? 'knob' : 'steel'];
+  if (owner === 'Copyright Notice') return ['body', 'copyright'];
+  return [null, null];
+}
+const CAD_MAT = {
+  body: () => mat(COLORS.body, { roughness: 0.42, side: THREE.DoubleSide }),
+  chassis: () => mat(COLORS.chassis, { roughness: 0.7, side: THREE.DoubleSide }),
+  susp: () => mat(COLORS.susp, { metalness: 0.4, roughness: 0.4 }),
+  tyre: () => mat(0x2a2d31, { roughness: 0.8, side: THREE.DoubleSide }),
+  tsal: () => mat(0x58d68d, { emissive: 0x1f8a4c, emissiveIntensity: 0.6 }), dome: () => mat(0x24272c),
+  zed: () => mat(COLORS.zed), plate: () => mat(COLORS.plate, { side: THREE.DoubleSide }), knob: () => mat(COLORS.knob),
+  steel: () => mat(COLORS.steel, { metalness: 0.6, roughness: 0.35 }), bracket: () => mat(COLORS.bracket, { metalness: 0.5, roughness: 0.4, side: THREE.DoubleSide }),
+  clear: () => new THREE.MeshBasicMaterial({ color: 0xf08c2e, transparent: true, opacity: 0.1, depthWrite: false }),
+  copyright: () => mat(0x777777),
+};
+const TOPIC_OF = { body: 'chassis', chassis: 'chassis', susp: 'chassis', wheels: 'wheels', tsal: 'tsal', zed: 'zed', plate: 'plate', rear: 'rear' };
+function addCadMeshes(meshes) {
+  let added = 0;
+  for (const m of meshes) {
+    const [layer, kind] = classify(m.name, m.path);
+    if (!layer) continue;
+    const s = m.pos, n = s.length / 3, d = new Float32Array(s.length);
+    for (let i = 0; i < n; i++) { d[3 * i] = 1593 - s[3 * i + 1]; d[3 * i + 1] = s[3 * i + 2] + 49; d[3 * i + 2] = -s[3 * i]; }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(d, 3));
+    g.setIndex(new THREE.BufferAttribute(m.idx, 1));
+    g.computeVertexNormals();
+    g.computeBoundingSphere();
+    const mesh = new THREE.Mesh(g, CAD_MAT[kind]());
+    if (kind === 'clear') mesh.userData.noPick = true;
+    else mesh.userData.key = 't:' + TOPIC_OF[layer];
+    if (layer === 'wheels') { mesh.userData.sign = Math.sign(g.boundingSphere.center.z); mesh.userData.baseZ = 0; }
+    cadG(layer).add(mesh);
+    added++;
+  }
+  return added;
+}
+function setModel(which) {
+  const cad = which === 'cad';
+  for (const k of VEHICLE) {
+    const hasCad = cadG(k).children.length > 0;
+    proxy(k).visible = !(cad && hasCad);
+    cadG(k).visible = cad && hasCad;
+  }
+  mProxy.setAttribute('aria-pressed', !cad);
+  mCad.setAttribute('aria-pressed', cad);
+  applyMaterials();
+  applyExplode();
+}
+mProxy.addEventListener('click', () => setModel('proxy'));
+mCad.addEventListener('click', () => setModel('cad'));
+async function loadBuffers(items) {
+  loadBtn.disabled = true;
+  const t0 = performance.now();
+  try {
+    for (const it of items) {
+      const buf = it.buf || await download(it.url, it.label);
+      statusEl.textContent = `Building 3D mesh from ${it.label} in your browser (20–60 s)…`;
+      cadLoaded += addCadMeshes(await tessellate(buf));
+    }
+    mCad.disabled = false;
+    setModel('cad');
+    statusEl.textContent = `Official CAD loaded (${cadLoaded} parts, ${((performance.now() - t0) / 1000).toFixed(0)} s). © IMechE, streamed from github.com/FS-AI.`;
+    loadBtn.style.display = 'none';
+  } catch (err) {
+    console.error(err);
+    statusEl.textContent = `Could not load the CAD (${err.message}). You can open a local copy with "Local STEP…".`;
+    loadBtn.disabled = false;
+  }
+}
+loadBtn.addEventListener('click', () => loadBuffers(CAD_FILES));
+document.getElementById('cadFile').addEventListener('change', async (e) => {
+  const items = [];
+  for (const f of e.target.files) items.push({ buf: await f.arrayBuffer(), label: f.name });
+  if (items.length) loadBuffers(items);
+});
+
+// ---------- render loop (on demand) ----------
+function requestRender() {
+  if (pending) return;
+  pending = true;
+  requestAnimationFrame(frame);
+}
+const tmp = new THREE.Vector3();
+function project(pos) {
+  tmp.copy(pos).project(camera);
+  if (tmp.z > 1 || tmp.z < -1) return null;
+  return [((tmp.x + 1) / 2) * canvas.clientWidth, ((1 - tmp.y) / 2) * canvas.clientHeight];
+}
+function placeLabels() {
+  const put = (el, xy) => {
+    if (!xy) { el.style.display = 'none'; return; }
+    el.style.display = '';
+    el.style.left = `${xy[0]}px`;
+    el.style.top = `${xy[1]}px`;
+  };
+  for (const l of labelItems) put(l.el, shown(l.obj) ? project(l.pos) : null);
+  for (const h of hotspots) {
+    const vis = (mode === 'outside' && showHotspots) || h.key === selected;
+    put(h.el, vis ? project(at(h.t.pos, TOPIC_ANCHOR[h.t.id])) : null);
+  }
+  // name tags: greedy de-clutter, important and selected first
+  const placed = [];
+  const cands = [];
+  for (const t of tags) {
+    const c = t.c;
+    const grp = layers[c.group].visible && (c.group === 'ext' || layers.int.visible);
+    const layerOk = !c.topic || layers[c.topic === 'tsal' ? 'tsal' : 'zed'].visible;
+    const netOk = !netFocus || c.nets.includes(netFocus);
+    const want = t.key === selected || (showTags && mode !== 'outside' && grp && layerOk && netOk);
+    const xy = want ? project(at(c.pos, c.anchor).add(V(0, 28, 0))) : null;
+    if (!xy) { t.el.style.display = 'none'; continue; }
+    const pri = t.key === selected ? -1 : c.prio;
+    cands.push({ t, xy, pri, d: camera.position.distanceTo(c.pos) });
+  }
+  cands.sort((a, b) => a.pri - b.pri || a.d - b.d);
+  for (const { t, xy } of cands) {
+    const r = [xy[0] - t.w / 2 - 3, xy[1] - 27, xy[0] + t.w / 2 + 3, xy[1]];
+    const clash = placed.some((q) => r[0] < q[2] && r[2] > q[0] && r[1] < q[3] && r[3] > q[1]);
+    if (clash && t.key !== selected) { t.el.style.display = 'none'; continue; }
+    placed.push(r);
+    put(t.el, [xy[0], xy[1] - 7]);
+  }
+}
+function frame(now) {
+  pending = false;
+  let moving = false;
+  if (tween) {
+    const k = Math.min(1, (now - tween.t0) / tween.dur), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    camera.position.lerpVectors(tween.fromPos, tween.toPos, e);
+    controls.target.lerpVectors(tween.fromTarget, tween.toTarget, e);
+    if (k >= 1) { tween = null; scheduleOcclusion(); } else moving = true;
+  }
+  if (Math.abs(explode - explodeTarget) > 1e-3) {
+    explode += (explodeTarget - explode) * 0.16;
+    if (Math.abs(explode - explodeTarget) < 0.004) explode = explodeTarget;
+    applyExplode();
+    moving = true;
+  }
+  if (controls.update()) moving = true;
+  renderer.render(scene, camera);
+  placeLabels();
+  if (moving) requestRender();
+}
+controls.addEventListener('change', () => { requestRender(); scheduleOcclusion(); });
+
+// Fade numbered markers and dimension labels that sit behind opaque parts.
+function scheduleOcclusion() { clearTimeout(occTimer); occTimer = setTimeout(updateOcclusion, 160); }
+function updateOcclusion() {
+  const objs = VEHICLE.filter((k) => layers[k].visible).map((k) => layers[k]);
+  const occluder = (h) => h.object.isMesh && shown(h.object) && !(h.object.material.transparent && h.object.material.opacity < 0.5);
+  const test = (pos) => {
+    const dir = pos.clone().sub(camera.position), dist = dir.length();
+    ray.set(camera.position, dir.normalize());
+    ray.far = dist - 30;
+    return ray.intersectObjects(objs, true).some(occluder);
+  };
+  for (const h of hotspots) h.el.classList.toggle('behind', mode === 'outside' && test(at(h.t.pos, TOPIC_ANCHOR[h.t.id])));
+  for (const l of labelItems) if (shown(l.obj)) l.el.classList.toggle('behind', test(l.pos));
+  ray.far = Infinity;
+}
+
+function resize() {
+  const w = viewer.clientWidth, h = viewer.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  requestRender();
+}
+new ResizeObserver(resize).observe(viewer);
+function applyTheme() {
+  scene.background = new THREE.Color(css('--viewer-bg'));
+  const grid = proxy('grid').children[0];
+  if (grid) grid.material.color = new THREE.Color(css('--grid-a'));
+  requestRender();
+}
+window.addEventListener('themechange', applyTheme);
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+
+// ---------- init ----------
+// Topic markers that sit on the right side follow the 2018 drawing / 2021 photo positions.
+if (TOPIC.switches) TOPIC.switches.pos = V(-56, 300, SW + 40);
+if (TOPIC.estop) TOPIC.estop.pos = V(161, 300, SR + 40);
+if (TOPIC.rearpanel) TOPIC.rearpanel.pos = V(-1240, 230, 0);
+buildProxy();
+buildComps();
+buildOverlays();
+buildHotspots();
+buildTags();
+buildLegend();
+renderIndex();
+applyTheme();
+resize();
+if (window.innerWidth < 640) document.getElementById('legend').open = false;
+const v0 = VIEWS.iso;
+controls.target.copy(v0.target);
+camera.position.copy(v0.target.clone().add(v0.pos.clone().sub(v0.target).multiplyScalar(aspectScale())));
+controls.update();
+setMode('outside');
+applyExplode();
+renderer.render(scene, camera);
+placeLabels();
+scheduleOcclusion();
+window.__adsdv = { scene, camera, select, setMode, setModel, get mode() { return mode; } };
+</script>
+</body>
+</html>
