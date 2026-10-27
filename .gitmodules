@@ -1490,3 +1490,55 @@
 	path = 01_fsd_open_source_code/individual_modules_and_theses/zalandemeter__Sideslip-Estimation
 	url = https://github.com/zalandemeter/Sideslip-Estimation.git
 	shallow = true
+[submodule "01_fsd_open_source_code/simulators_datasets_tools/Cedric-Perauer__Semi_Automatic_Keypoint_Labeling"]
+	path = 01_fsd_open_source_code/simulators_datasets_tools/Cedric-Perauer__Semi_Automatic_Keypoint_Labeling
+	url = https://github.com/Cedric-Perauer/Semi_Automatic_Keypoint_Labeling.git
+	shallow = true
+[submodule "01_fsd_open_source_code/simulators_datasets_tools/FS-Driverless__Formula-Student-Driverless-Simulator"]
+	path = 01_fsd_open_source_code/simulators_datasets_tools/FS-Driverless__Formula-Student-Driverless-Simulator
+	url = https://github.com/FS-Driverless/Formula-Student-Driverless-Simulator.git
+	shallow = true
+[submodule "01_fsd_open_source_code/simulators_datasets_tools/FS-Driverless__fs_msgs"]
+	path = 01_fsd_open_source_code/simulators_datasets_tools/FS-Driverless__fs_msgs
+	url = https://github.com/FS-Driverless/fs_msgs.git
+	shallow = true
+[submodule "01_fsd_open_source_code/simulators_datasets_tools/Functionhx__BITFSD-Annotator"]
+	path = 01_fsd_open_source_code/simulators_datasets_tools/Functionhx__BITFSD-Annotator
+	url = https://github.com/Functionhx/BITFSD-Annotator.git
+	shallow = true
+[submodule "01_fsd_open_source_code/simulators_datasets_tools/Functionhx__bitfsd-generator"]
+	path = 01_fsd_open_source_code/simulators_datasets_tools/Functionhx__bitfsd-generator
+	url = https://github.com/Functionhx/bitfsd-generator.git
+	shallow = true
+[submodule "01_fsd_open_source_code/simulators_datasets_tools/PacSim__pacsim"]
+	path = 01_fsd_open_source_code/simulators_datasets_tools/PacSim__pacsim
+	url = https://github.com/PacSim/pacsim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/simulators_datasets_tools/fs-itmo__irt-sim"]
+	path = 01_fsd_open_source_code/simulators_datasets_tools/fs-itmo__irt-sim
+	url = https://github.com/fs-itmo/irt-sim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/simulators_datasets_tools/fsoco__fsoco-dataset"]
+	path = 01_fsd_open_source_code/simulators_datasets_tools/fsoco__fsoco-dataset
+	url = https://github.com/fsoco/fsoco-dataset.git
+	shallow = true
+[submodule "01_fsd_open_source_code/simulators_datasets_tools/fsoco__fsoco-devkit"]
+	path = 01_fsd_open_source_code/simulators_datasets_tools/fsoco__fsoco-devkit
+	url = https://github.com/fsoco/fsoco-devkit.git
+	shallow = true
+[submodule "01_fsd_open_source_code/simulators_datasets_tools/iisys-hof__formula-student-dataset"]
+	path = 01_fsd_open_source_code/simulators_datasets_tools/iisys-hof__formula-student-dataset
+	url = https://github.com/iisys-hof/formula-student-dataset.git
+	shallow = true
+[submodule "01_fsd_open_source_code/simulators_datasets_tools/jpvolt__fsdviewer"]
+	path = 01_fsd_open_source_code/simulators_datasets_tools/jpvolt__fsdviewer
+	url = https://github.com/jpvolt/fsdviewer.git
+	shallow = true
+[submodule "01_fsd_open_source_code/simulators_datasets_tools/matlab-deep-learning__Cone-Detection-Using-Deep-Learning-for-Formula-Student-Driverless"]
+	path = 01_fsd_open_source_code/simulators_datasets_tools/matlab-deep-learning__Cone-Detection-Using-Deep-Learning-for-Formula-Student-Driverless
+	url = https://github.com/matlab-deep-learning/Cone-Detection-Using-Deep-Learning-for-Formula-Student-Driverless.git
+	shallow = true
+[submodule "01_fsd_open_source_code/simulators_datasets_tools/mgschoen__driverless-cockpit"]
+	path = 01_fsd_open_source_code/simulators_datasets_tools/mgschoen__driverless-cockpit
+	url = https://github.com/mgschoen/driverless-cockpit.git
+	shallow = true
