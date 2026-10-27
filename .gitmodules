@@ -1554,3 +1554,19 @@
 	path = 01_fsd_open_source_code/related_reference_not_fs_specific/alexliniger__MPCC
 	url = https://github.com/alexliniger/MPCC.git
 	shallow = true
+[submodule "03_fsuk_ddt_ads-dv/community_ads-dv_code/EUFS__ros_can"]
+	path = 03_fsuk_ddt_ads-dv/community_ads-dv_code/EUFS__ros_can
+	url = https://gitlab.com/eufs/public/ros_can.git
+	shallow = true
+[submodule "03_fsuk_ddt_ads-dv/community_ads-dv_code/Look-No-Hands-Simulator__ads_dv_msgs"]
+	path = 03_fsuk_ddt_ads-dv/community_ads-dv_code/Look-No-Hands-Simulator__ads_dv_msgs
+	url = https://github.com/Look-No-Hands-Simulator/ads_dv_msgs.git
+	shallow = true
+[submodule "03_fsuk_ddt_ads-dv/community_ads-dv_code/NewcastleRacingAI__nrai_ADS-DV_CAN-API"]
+	path = 03_fsuk_ddt_ads-dv/community_ads-dv_code/NewcastleRacingAI__nrai_ADS-DV_CAN-API
+	url = https://github.com/NewcastleRacingAI/nrai_ADS-DV_CAN-API.git
+	shallow = true
+[submodule "03_fsuk_ddt_ads-dv/community_ads-dv_code/RandevRanjit__FSAI-Simulation-C"]
+	path = 03_fsuk_ddt_ads-dv/community_ads-dv_code/RandevRanjit__FSAI-Simulation-C
+	url = https://github.com/RandevRanjit/FSAI-Simulation-C.git
+	shallow = true
