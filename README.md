@@ -2,14 +2,27 @@
 
 Research archive and design notes for Falcon's Formula Student UK FS-AI entry (DDT class, on the IMechE ADS-DV).
 
-Open these in a browser:
+Open `index.html` in a browser. It links every doc, and each doc has a bar to move between them. The same pages are public at https://falcone-racing.github.io/ddt_docs/.
 
-- `sensors_and_autonomy_stack.html` — which sensors and computer to fit, and the autonomy stack we plan to build
-- `ddt_architecture_and_testing.html` — system architecture, vehicle profiles and test plan; FS-AI results, how teams without a car did it, sensors, cones, the ADS-DV vehicle model and landed cost in LKR
-- `xlsx/ddt_essential_costs.xlsx` — essential parts with landed cost, power budget, Jetson vs PC, FSG x86 teams
-- `ddt_compute_options.html` — which computer to fit to the ADS-DV without the Orin: seven options compared, landed cost in LKR
-- `ads_dv_explorer.html` — interactive 3D ADS-DV with see-through, exploded and cut-away views: every plug, switch, internal unit and colour-coded cable, plus dimensions, CAN interface and rules, each linked to its source; self-contained, so it can be shared on its own (the official CAD loads from IMechE's GitHub on request; `figures/src/ads_dv_outline.js` rebuilds the simplified model's outline)
-- `index.html` — inventory of everything collected here, with source URLs and commits (`sources.json` is the same data)
+## Docs
+
+Each doc is an `.html` file in the repository root with these in its `<head>`:
+
+```html
+<title>Short Name</title>
+<meta name="description" content="One sentence for the index.">
+<meta name="doc-section" content="Findings"> <!-- Plan, Findings, Tools or Reference -->
+<meta name="date" content="2026-10-28">
+```
+
+After adding or changing a doc:
+
+```sh
+python3 tools/build_docs.py            # rebuild index.html and the bar on every doc
+python3 tools/build_docs.py --publish  # push the public copy to FalconE-Racing/ddt_docs
+```
+
+The public copy holds only the docs, their figures and the files listed on the index. Links to code go to upstream GitHub at the commit we studied, links to papers go to their public source, and anything else goes to this private repository.
 
 ## Layout
 
@@ -50,7 +63,7 @@ GIT_LFS_SKIP_SMUDGE=1 git submodule update --init --depth 1 --jobs 8
 
 - `GIT_LFS_SKIP_SMUDGE=1` leaves each upstream repo's own LFS files as small pointer files. Without it, a repo whose LFS objects are missing or over quota upstream fails to check out.
 - Leave out `--recursive`: the upstream submodules we studied are already here as their own entries.
-- `git submodule status` lists the pinned commits; `index.html` lists every source with its URL.
+- `git submodule status` lists the pinned commits; `sources.html` lists every source with its URL.
 
 Four repos are stored here as plain files because upstream deleted them or rewrote their history: `Carnegie-Mellon-Racing/driverless-ml-dev`, `Bristol-FS-AI/bristol_fsai_sim-docker`, `Bristol-FS-AI/bristol_fsai_sim2-docker` and `individual_modules_and_theses/bisharahakim__fs_autonomous_controller`.
 
