@@ -1318,3 +1318,175 @@
 	path = 01_fsd_open_source_code/team_stacks/municHMotorsport/fsoco
 	url = https://github.com/ddavid/fsoco.git
 	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/Ashutosh-279__autonomous-stack-sdc"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/Ashutosh-279__autonomous-stack-sdc
+	url = https://github.com/Ashutosh-279/autonomous-stack-sdc.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/DanDavisx__fsds-autonomy"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/DanDavisx__fsds-autonomy
+	url = https://github.com/DanDavisx/fsds-autonomy.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/Danielbril2__Planning"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/Danielbril2__Planning
+	url = https://github.com/Danielbril2/Planning.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/Dhaour9x__Autonomous-Low-Cost-RC_Car"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/Dhaour9x__Autonomous-Low-Cost-RC_Car
+	url = https://github.com/Dhaour9x/Autonomous-Low-Cost-RC_Car.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/F3de22__Steering_MPC"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/F3de22__Steering_MPC
+	url = https://github.com/F3de22/Steering_MPC.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/Galzai__ORM"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/Galzai__ORM
+	url = https://github.com/Galzai/ORM.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/JanusSyrak__ConeSLAM"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/JanusSyrak__ConeSLAM
+	url = https://github.com/JanusSyrak/ConeSLAM.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/KacperSynator__MasterThesis"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/KacperSynator__MasterThesis
+	url = https://github.com/KacperSynator/MasterThesis.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/MatPiech__racecar_state_machine"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/MatPiech__racecar_state_machine
+	url = https://github.com/MatPiech/racecar_state_machine.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/Praticksingh__limit-tracker"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/Praticksingh__limit-tracker
+	url = https://github.com/Praticksingh/limit-tracker.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/TSC-Home__livox-cone-tracker"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/TSC-Home__livox-cone-tracker
+	url = https://github.com/TSC-Home/livox-cone-tracker.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/ajinkyakhoche__image-processing-for-cone-detection"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/ajinkyakhoche__image-processing-for-cone-detection
+	url = https://github.com/ajinkyakhoche/image-processing-for-cone-detection.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/alejanpa17__Learning-by-Imitation-FS"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/alejanpa17__Learning-by-Imitation-FS
+	url = https://github.com/alejanpa17/Learning-by-Imitation-FS.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/alexphieler__fs-e2e-project"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/alexphieler__fs-e2e-project
+	url = https://github.com/alexphieler/fs-e2e-project.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/andreasioannides__Path-Planning-DV"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/andreasioannides__Path-Planning-DV
+	url = https://github.com/andreasioannides/Path-Planning-DV.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/andreicopos__Driverless"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/andreicopos__Driverless
+	url = https://github.com/andreicopos/Driverless.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/arch-yunus__formula_student_autonomous_stack"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/arch-yunus__formula_student_autonomous_stack
+	url = https://github.com/arch-yunus/formula_student_autonomous_stack.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/balojohn__asb-supervisor-2022"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/balojohn__asb-supervisor-2022
+	url = https://github.com/balojohn/asb-supervisor-2022.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/bsridatta__Cone-Detection"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/bsridatta__Cone-Detection
+	url = https://github.com/bsridatta/Cone-Detection.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/ddiannelos__autonomous-racing-fsd"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/ddiannelos__autonomous-racing-fsd
+	url = https://github.com/ddiannelos/autonomous-racing-fsd.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/e-left__state_estimation_racecar"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/e-left__state_estimation_racecar
+	url = https://github.com/e-left/state_estimation_racecar.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/eduardokobata__lidar-perception-node"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/eduardokobata__lidar-perception-node
+	url = https://github.com/eduardokobata/lidar-perception-node.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/h-anton__FSD-prototype"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/h-anton__FSD-prototype
+	url = https://github.com/h-anton/FSD-prototype.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/imhyeonwoo__Formula-Student-Driverless-Planning-Control"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/imhyeonwoo__Formula-Student-Driverless-Planning-Control
+	url = https://github.com/imhyeonwoo/Formula-Student-Driverless-Planning-Control.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/ingtommi__fsd-perception"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/ingtommi__fsd-perception
+	url = https://github.com/ingtommi/fsd-perception.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/karanshah0206__driverless-autocross"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/karanshah0206__driverless-autocross
+	url = https://github.com/karanshah0206/driverless-autocross.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/kerry-he__fsae-mpc"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/kerry-he__fsae-mpc
+	url = https://github.com/kerry-he/fsae-mpc.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/leonardopesce__RL-Driverless-Formula-Student-car"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/leonardopesce__RL-Driverless-Formula-Student-car
+	url = https://github.com/leonardopesce/RL-Driverless-Formula-Student-car.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/lorefargio__Camera_based_Cone_Detection"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/lorefargio__Camera_based_Cone_Detection
+	url = https://github.com/lorefargio/Camera_based_Cone_Detection.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/lorefargio__Lidar_Camera_Calibration_node"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/lorefargio__Lidar_Camera_Calibration_node
+	url = https://github.com/lorefargio/Lidar_Camera_Calibration_node.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/lorefargio__Lidar_Camera_Fusion_node"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/lorefargio__Lidar_Camera_Fusion_node
+	url = https://github.com/lorefargio/Lidar_Camera_Fusion_node.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/lorefargio__Lidar_based_Cone_Detection"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/lorefargio__Lidar_based_Cone_Detection
+	url = https://github.com/lorefargio/Lidar_based_Cone_Detection.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/macstepien__fsd_ekf_slam"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/macstepien__fsd_ekf_slam
+	url = https://github.com/macstepien/fsd_ekf_slam.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/mkamalel__fsds-driverless-system"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/mkamalel__fsds-driverless-system
+	url = https://github.com/mkamalel/fsds-driverless-system.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/mkrupczak3__Coneslayer"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/mkrupczak3__Coneslayer
+	url = https://github.com/mkrupczak3/Coneslayer.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/mostafa7arafa__Autonomous-Formula-Student-Car-PathPlanner"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/mostafa7arafa__Autonomous-Formula-Student-Car-PathPlanner
+	url = https://github.com/mostafa7arafa/Autonomous-Formula-Student-Car-PathPlanner.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/nickowen44__AV-Datalogger"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/nickowen44__AV-Datalogger
+	url = https://github.com/nickowen44/AV-Datalogger.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/nikodemseb__Formula_student_pipeline"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/nikodemseb__Formula_student_pipeline
+	url = https://github.com/nikodemseb/Formula_student_pipeline.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/nitin-sk__driverless_pipeline_ros"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/nitin-sk__driverless_pipeline_ros
+	url = https://github.com/nitin-sk/driverless_pipeline_ros.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/okaynils__fs-cone-kit"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/okaynils__fs-cone-kit
+	url = https://github.com/okaynils/fs-cone-kit.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/tomas-pinto__formula_student_slam"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/tomas-pinto__formula_student_slam
+	url = https://github.com/tomas-pinto/formula_student_slam.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/trouverun__FSDS-MPC"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/trouverun__FSDS-MPC
+	url = https://github.com/trouverun/FSDS-MPC.git
+	shallow = true
+[submodule "01_fsd_open_source_code/individual_modules_and_theses/zalandemeter__Sideslip-Estimation"]
+	path = 01_fsd_open_source_code/individual_modules_and_theses/zalandemeter__Sideslip-Estimation
+	url = https://github.com/zalandemeter/Sideslip-Estimation.git
+	shallow = true
