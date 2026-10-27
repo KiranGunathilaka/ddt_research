@@ -1097,3 +1097,4 @@
 /01_fsd_open_source_code/team_stacks/municHMotorsport/fsoco/labels/GFR/coco/00008.json filter=lfs diff=lfs merge=lfs -text
 /01_fsd_open_source_code/team_stacks/municHMotorsport/fsoco/labels/MitDut/MitDut_NASlabels.csv filter=lfs diff=lfs merge=lfs -text
 /01_fsd_open_source_code/team_stacks/municHMotorsport/fsoco/labels/dhbwengineering/coco_format/export-coco-2019-04-18T07_27_31.344938.json filter=lfs diff=lfs merge=lfs -text
+/xlsx/DV_feasibility_summary.xlsx filter=lfs diff=lfs merge=lfs -text
