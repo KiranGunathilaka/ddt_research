@@ -1,0 +1,1320 @@
+[submodule "01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/amz-rosbag-filter"]
+	path = 01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/amz-rosbag-filter
+	url = https://github.com/AMZ-Racing/amz-rosbag-filter.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/boundary_estimation_ML"]
+	path = 01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/boundary_estimation_ML
+	url = https://github.com/AMZ-Racing/boundary_estimation_ML.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/cim-hil-testing"]
+	path = 01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/cim-hil-testing
+	url = https://github.com/AMZ-Racing/cim-hil-testing.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/fs-trackdraw"]
+	path = 01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/fs-trackdraw
+	url = https://github.com/AMZ-Racing/fs-trackdraw.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/fsd-resources"]
+	path = 01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/fsd-resources
+	url = https://github.com/AMZ-Racing/fsd-resources.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/fsd_skeleton"]
+	path = 01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/fsd_skeleton
+	url = https://github.com/AMZ-Racing/fsd_skeleton.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/fssim"]
+	path = 01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/fssim
+	url = https://github.com/AMZ-Racing/fssim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/laptimes"]
+	path = 01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/laptimes
+	url = https://github.com/AMZ-Racing/laptimes.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/rbb_core"]
+	path = 01_fsd_open_source_code/team_stacks/AMZ_ETH-Zurich/rbb_core
+	url = https://github.com/AMZ-Racing/rbb_core.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Ampera_UFSC/FSDS-LIDAR"]
+	path = 01_fsd_open_source_code/team_stacks/Ampera_UFSC/FSDS-LIDAR
+	url = https://github.com/amperaufsc/FSDS-LIDAR.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Ampera_UFSC/StanleyControllerMethod-SCM-"]
+	path = 01_fsd_open_source_code/team_stacks/Ampera_UFSC/StanleyControllerMethod-SCM-
+	url = https://github.com/amperaufsc/StanleyControllerMethod-SCM-.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Ampera_UFSC/amp_datalogger"]
+	path = 01_fsd_open_source_code/team_stacks/Ampera_UFSC/amp_datalogger
+	url = https://github.com/amperaufsc/amp_datalogger.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Ampera_UFSC/amp_mapping"]
+	path = 01_fsd_open_source_code/team_stacks/Ampera_UFSC/amp_mapping
+	url = https://github.com/amperaufsc/amp_mapping.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Ampera_UFSC/amp_motion"]
+	path = 01_fsd_open_source_code/team_stacks/Ampera_UFSC/amp_motion
+	url = https://github.com/amperaufsc/amp_motion.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Ampera_UFSC/amp_perception"]
+	path = 01_fsd_open_source_code/team_stacks/Ampera_UFSC/amp_perception
+	url = https://github.com/amperaufsc/amp_perception.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Ampera_UFSC/amp_utils"]
+	path = 01_fsd_open_source_code/team_stacks/Ampera_UFSC/amp_utils
+	url = https://github.com/amperaufsc/amp_utils.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Ampera_UFSC/ampera-autonomous-racing-car-simulation"]
+	path = 01_fsd_open_source_code/team_stacks/Ampera_UFSC/ampera-autonomous-racing-car-simulation
+	url = https://github.com/guilherme-mertens/ampera-autonomous-racing-car-simulation.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Ampera_UFSC/fsds-sensors"]
+	path = 01_fsd_open_source_code/team_stacks/Ampera_UFSC/fsds-sensors
+	url = https://github.com/amperaufsc/fsds-sensors.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Ampera_UFSC/mini-pampas"]
+	path = 01_fsd_open_source_code/team_stacks/Ampera_UFSC/mini-pampas
+	url = https://github.com/amperaufsc/mini-pampas.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Ampera_UFSC/pampas"]
+	path = 01_fsd_open_source_code/team_stacks/Ampera_UFSC/pampas
+	url = https://github.com/amperaufsc/pampas.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Ampera_UFSC/ros2-path-planning"]
+	path = 01_fsd_open_source_code/team_stacks/Ampera_UFSC/ros2-path-planning
+	url = https://github.com/amperaufsc/ros2-path-planning.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/FSDriverless"]
+	path = 01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/FSDriverless
+	url = https://github.com/fetty31/FSDriverless.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/LIMO-Velo"]
+	path = 01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/LIMO-Velo
+	url = https://github.com/Huguet57/LIMO-Velo.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/PointNet-FormulaStudent-I2R"]
+	path = 01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/PointNet-FormulaStudent-I2R
+	url = https://github.com/PauMatas/PointNet-FormulaStudent-I2R.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/TILKE"]
+	path = 01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/TILKE
+	url = https://github.com/puigde/TILKE.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/ccat"]
+	path = 01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/ccat
+	url = https://github.com/origovi/ccat.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/cruise_control"]
+	path = 01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/cruise_control
+	url = https://github.com/fetty31/cruise_control.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/fast_LIMO"]
+	path = 01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/fast_LIMO
+	url = https://github.com/fetty31/fast_LIMO.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/tailored_mpc"]
+	path = 01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/tailored_mpc
+	url = https://github.com/fetty31/tailored_mpc.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/urinay"]
+	path = 01_fsd_open_source_code/team_stacks/BCN-eMotorsport_UPC/urinay
+	url = https://github.com/origovi/urinay.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/BIT-FSD_Beijing/ConeDetection"]
+	path = 01_fsd_open_source_code/team_stacks/BIT-FSD_Beijing/ConeDetection
+	url = https://github.com/bitfsd/ConeDetection.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/BIT-FSD_Beijing/FSACOCO"]
+	path = 01_fsd_open_source_code/team_stacks/BIT-FSD_Beijing/FSACOCO
+	url = https://github.com/bitfsd/FSACOCO.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/BIT-FSD_Beijing/darknet_ros"]
+	path = 01_fsd_open_source_code/team_stacks/BIT-FSD_Beijing/darknet_ros
+	url = https://github.com/bitfsd/darknet_ros.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/BIT-FSD_Beijing/fsd_algorithm"]
+	path = 01_fsd_open_source_code/team_stacks/BIT-FSD_Beijing/fsd_algorithm
+	url = https://github.com/bitfsd/fsd_algorithm.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/BIT-FSD_Beijing/fssim"]
+	path = 01_fsd_open_source_code/team_stacks/BIT-FSD_Beijing/fssim
+	url = https://github.com/bitfsd/fssim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Black-Forest-Formula-Team/bfft_formula-student_driverless"]
+	path = 01_fsd_open_source_code/team_stacks/Black-Forest-Formula-Team/bfft_formula-student_driverless
+	url = https://github.com/Black-Forest-Formula-Team/bfft_formula-student_driverless.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Bristol-FS-AI/autonomous-driving-crash-course"]
+	path = 01_fsd_open_source_code/team_stacks/Bristol-FS-AI/autonomous-driving-crash-course
+	url = https://github.com/Formula-Student-AI/autonomous-driving-crash-course.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/CURTFS/AutoRace"]
+	path = 01_fsd_open_source_code/team_stacks/CURTFS/AutoRace
+	url = https://github.com/curtfs/AutoRace.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Camber-Racing_SRM/Driverless-project"]
+	path = 01_fsd_open_source_code/team_stacks/Camber-Racing_SRM/Driverless-project
+	url = https://github.com/10zinten/Driverless-project.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Carnegie-Mellon-Racing/PerceptionsDocs"]
+	path = 01_fsd_open_source_code/team_stacks/Carnegie-Mellon-Racing/PerceptionsDocs
+	url = https://github.com/carnegiemellonracing/PerceptionsDocs.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Carnegie-Mellon-Racing/PerceptionsLibrary22a"]
+	path = 01_fsd_open_source_code/team_stacks/Carnegie-Mellon-Racing/PerceptionsLibrary22a
+	url = https://github.com/carnegiemellonracing/PerceptionsLibrary22a.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Carnegie-Mellon-Racing/driverless-docker"]
+	path = 01_fsd_open_source_code/team_stacks/Carnegie-Mellon-Racing/driverless-docker
+	url = https://github.com/carnegiemellonracing/driverless-docker.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Carnegie-Mellon-Racing/iSAM2_SLAM"]
+	path = 01_fsd_open_source_code/team_stacks/Carnegie-Mellon-Racing/iSAM2_SLAM
+	url = https://github.com/carnegiemellonracing/iSAM2_SLAM.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-action-longitudinal-control"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-action-longitudinal-control
+	url = https://github.com/chalmersfsd/cfsd-action-longitudinal-control.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-autonomous-system-usecases"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-autonomous-system-usecases
+	url = https://github.com/chalmersfsd/cfsd-autonomous-system-usecases.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-cognition-acceleration"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-cognition-acceleration
+	url = https://github.com/chalmersfsd/cfsd-cognition-acceleration.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-cognition-detectconelane"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-cognition-detectconelane
+	url = https://github.com/chalmersfsd/cfsd-cognition-detectconelane.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-cognition-track"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-cognition-track
+	url = https://github.com/chalmersfsd/cfsd-cognition-track.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-cognition-velocity-planner"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-cognition-velocity-planner
+	url = https://github.com/chalmersfsd/cfsd-cognition-velocity-planner.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-cones-path-visualizer"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-cones-path-visualizer
+	url = https://github.com/chalmersfsd/cfsd-cones-path-visualizer.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-example-spline"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-example-spline
+	url = https://github.com/chalmersfsd/cfsd-example-spline.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-logic-aimpoint"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-logic-aimpoint
+	url = https://github.com/chalmersfsd/cfsd-logic-aimpoint.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-logic-lynx-mission-control"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-logic-lynx-mission-control
+	url = https://github.com/chalmersfsd/cfsd-logic-lynx-mission-control.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-logic-lynx-state-machine"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-logic-lynx-state-machine
+	url = https://github.com/chalmersfsd/cfsd-logic-lynx-state-machine.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-logic-pathplanner"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-logic-pathplanner
+	url = https://github.com/chalmersfsd/cfsd-logic-pathplanner.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-logic-recorder"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-logic-recorder
+	url = https://github.com/chalmersfsd/cfsd-logic-recorder.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-matlab-viewer"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-matlab-viewer
+	url = https://github.com/chalmersfsd/cfsd-matlab-viewer.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-message-controller"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-message-controller
+	url = https://github.com/chalmersfsd/cfsd-message-controller.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-microservice-template"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-microservice-template
+	url = https://github.com/chalmersfsd/cfsd-microservice-template.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-opendlv-device-camera-zed"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-opendlv-device-camera-zed
+	url = https://github.com/chalmersfsd/cfsd-opendlv-device-camera-zed.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-opendlv-perception-detect-yolo"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-opendlv-perception-detect-yolo
+	url = https://github.com/chalmersfsd/cfsd-opendlv-perception-detect-yolo.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-perception-cognition-visualization"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-perception-cognition-visualization
+	url = https://github.com/chalmersfsd/cfsd-perception-cognition-visualization.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-perception-detectcone"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-perception-detectcone
+	url = https://github.com/chalmersfsd/cfsd-perception-detectcone.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-perception-imagerecorder"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-perception-imagerecorder
+	url = https://github.com/chalmersfsd/cfsd-perception-imagerecorder.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-perception-skidpad"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-perception-skidpad
+	url = https://github.com/chalmersfsd/cfsd-perception-skidpad.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-perception-slam"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-perception-slam
+	url = https://github.com/chalmersfsd/cfsd-perception-slam.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-perception-ukf"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-perception-ukf
+	url = https://github.com/chalmersfsd/cfsd-perception-ukf.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-performance-test"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-performance-test
+	url = https://github.com/chalmersfsd/cfsd-performance-test.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-proxy-cangw"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-proxy-cangw
+	url = https://github.com/chalmersfsd/cfsd-proxy-cangw.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-proxy-cangw-lynx"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-proxy-cangw-lynx
+	url = https://github.com/chalmersfsd/cfsd-proxy-cangw-lynx.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-proxy-cangw-res"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-proxy-cangw-res
+	url = https://github.com/chalmersfsd/cfsd-proxy-cangw-res.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-proxy-ps3-lynx"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-proxy-ps3-lynx
+	url = https://github.com/chalmersfsd/cfsd-proxy-ps3-lynx.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-sensation-attention"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-sensation-attention
+	url = https://github.com/chalmersfsd/cfsd-sensation-attention.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-sim-cognition-detectcone"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-sim-cognition-detectcone
+	url = https://github.com/chalmersfsd/cfsd-sim-cognition-detectcone.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-sim-globalposition"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-sim-globalposition
+	url = https://github.com/chalmersfsd/cfsd-sim-globalposition.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-sim-visualization"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-sim-visualization
+	url = https://github.com/chalmersfsd/cfsd-sim-visualization.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-speed-estimation"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-speed-estimation
+	url = https://github.com/chalmersfsd/cfsd-speed-estimation.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-standard-message-senderstamps"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-standard-message-senderstamps
+	url = https://github.com/chalmersfsd/cfsd-standard-message-senderstamps.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-ui-conemap"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd-ui-conemap
+	url = https://github.com/chalmersfsd/cfsd-ui-conemap.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd18-acceleration-logic"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd18-acceleration-logic
+	url = https://github.com/chalmersfsd/cfsd18-acceleration-logic.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd18-sim-cognition-vehiclemodel"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd18-sim-cognition-vehiclemodel
+	url = https://github.com/chalmersfsd/cfsd18-sim-cognition-vehiclemodel.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd19-autonomous-system-usecases"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd19-autonomous-system-usecases
+	url = https://github.com/chalmersfsd/cfsd19-autonomous-system-usecases.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd19-logic-lynx-steering"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/cfsd19-logic-lynx-steering
+	url = https://github.com/chalmersfsd/cfsd19-logic-lynx-steering.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/coneScenes"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/coneScenes
+	url = https://github.com/Chalmers-Formula-Student/coneScenes.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/fakeScenes"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/fakeScenes
+	url = https://github.com/Chalmers-Formula-Student/fakeScenes.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-device-stm32-lynx"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-device-stm32-lynx
+	url = https://github.com/chalmersfsd/opendlv-device-stm32-lynx.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-logic-action-brakes-cfsd"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-logic-action-brakes-cfsd
+	url = https://github.com/chalmersfsd/opendlv-logic-action-brakes-cfsd.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-logic-action-motion-cfsd"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-logic-action-motion-cfsd
+	url = https://github.com/chalmersfsd/opendlv-logic-action-motion-cfsd.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-logic-action-steering-cfsd"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-logic-action-steering-cfsd
+	url = https://github.com/chalmersfsd/opendlv-logic-action-steering-cfsd.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-logic-heart-cfsd"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-logic-heart-cfsd
+	url = https://github.com/chalmersfsd/opendlv-logic-heart-cfsd.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-logic-lynx-state-machine-cfsd"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-logic-lynx-state-machine-cfsd
+	url = https://github.com/chalmersfsd/opendlv-logic-lynx-state-machine-cfsd.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-logic-lynx-steering-cfsd"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-logic-lynx-steering-cfsd
+	url = https://github.com/chalmersfsd/opendlv-logic-lynx-steering-cfsd.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-logic-sensation-slam-cfsd"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-logic-sensation-slam-cfsd
+	url = https://github.com/chalmersfsd/opendlv-logic-sensation-slam-cfsd.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-logic-technical-inspection-cfsd"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-logic-technical-inspection-cfsd
+	url = https://github.com/chalmersfsd/opendlv-logic-technical-inspection-cfsd.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-platform-lynx"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-platform-lynx
+	url = https://github.com/chalmersfsd/opendlv-platform-lynx.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-proxy-lynx-analog-cfsd"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-proxy-lynx-analog-cfsd
+	url = https://github.com/chalmersfsd/opendlv-proxy-lynx-analog-cfsd.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-proxy-lynx-gpio2-cfsd"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-proxy-lynx-gpio2-cfsd
+	url = https://github.com/chalmersfsd/opendlv-proxy-lynx-gpio2-cfsd.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-proxy-lynx-pwm-cfsd"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-proxy-lynx-pwm-cfsd
+	url = https://github.com/chalmersfsd/opendlv-proxy-lynx-pwm-cfsd.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-sim-cfsd18-cognition-blackbox"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-sim-cfsd18-cognition-blackbox
+	url = https://github.com/chalmersfsd/opendlv-sim-cfsd18-cognition-blackbox.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-sim-cognition-blackboxcomplete-cfsd"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv-sim-cognition-blackboxcomplete-cfsd
+	url = https://github.com/chalmersfsd/opendlv-sim-cognition-blackboxcomplete-cfsd.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv.os"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/opendlv.os
+	url = https://github.com/chalmersfsd/opendlv.os.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Chalmers-FSD/stm32-service-node"]
+	path = 01_fsd_open_source_code/team_stacks/Chalmers-FSD/stm32-service-node
+	url = https://github.com/chalmersfsd/stm32-service-node.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/E-Agle-Trento/eagle-driverless-orbSLAM"]
+	path = 01_fsd_open_source_code/team_stacks/E-Agle-Trento/eagle-driverless-orbSLAM
+	url = https://github.com/StefanoGenettiUniTN/eagle-driverless-orbSLAM.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/E-Team-Pisa/etdv-ekf-slam"]
+	path = 01_fsd_open_source_code/team_stacks/E-Team-Pisa/etdv-ekf-slam
+	url = https://github.com/E-TeamUnipi/etdv-ekf-slam.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EPFL-Racing-Team/data_visualization"]
+	path = 01_fsd_open_source_code/team_stacks/EPFL-Racing-Team/data_visualization
+	url = https://github.com/EPFL-RT/data_visualization.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EPFL-Racing-Team/fsds_client"]
+	path = 01_fsd_open_source_code/team_stacks/EPFL-Racing-Team/fsds_client
+	url = https://github.com/EPFL-RT/fsds_client.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EPFL-Racing-Team/pyGLIS"]
+	path = 01_fsd_open_source_code/team_stacks/EPFL-Racing-Team/pyGLIS
+	url = https://github.com/EPFL-RT/pyGLIS.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EPFL-Racing-Team/resources"]
+	path = 01_fsd_open_source_code/team_stacks/EPFL-Racing-Team/resources
+	url = https://github.com/EPFL-RT/resources.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EPFL-Racing-Team/track_database"]
+	path = 01_fsd_open_source_code/team_stacks/EPFL-Racing-Team/track_database
+	url = https://github.com/EPFL-RT/track_database.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/EUFS-Electronics"]
+	path = 01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/EUFS-Electronics
+	url = https://github.com/JakubRichardson/EUFS-Electronics.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/datasets"]
+	path = 01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/datasets
+	url = https://github.com/eufsa/datasets.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/ddpg_racecar"]
+	path = 01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/ddpg_racecar
+	url = https://gitlab.com/eufs/ddpg_racecar.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/eufs-sim-foxglove-plugins"]
+	path = 01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/eufs-sim-foxglove-plugins
+	url = https://gitlab.com/eufs/public/eufs-sim-foxglove-plugins.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/eufs_maps"]
+	path = 01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/eufs_maps
+	url = https://gitlab.com/eufs/public/eufs_maps.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/eufs_msgs"]
+	path = 01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/eufs_msgs
+	url = https://gitlab.com/eufs/public/eufs_msgs.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/eufs_rviz_plugins"]
+	path = 01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/eufs_rviz_plugins
+	url = https://gitlab.com/eufs/public/eufs_rviz_plugins.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/eufs_sim"]
+	path = 01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/eufs_sim
+	url = https://gitlab.com/eufs/public/eufs_sim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/eufs_sim2"]
+	path = 01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/eufs_sim2
+	url = https://gitlab.com/eufs/public/eufs_sim2.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/it-mpc"]
+	path = 01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/it-mpc
+	url = https://gitlab.com/eufs/it-mpc.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/map_lib"]
+	path = 01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/map_lib
+	url = https://gitlab.com/eufs/public/map_lib.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/mobile-robotics-crash-course"]
+	path = 01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/mobile-robotics-crash-course
+	url = https://gitlab.com/eufs/admin/mobile-robotics-crash-course.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/mppi_sycl"]
+	path = 01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/mppi_sycl
+	url = https://gitlab.com/eufs/public/mppi_sycl.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/orb_slam2_ros"]
+	path = 01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/orb_slam2_ros
+	url = https://gitlab.com/eufs/orb_slam2_ros.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/point_cloud_auto_labeller"]
+	path = 01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/point_cloud_auto_labeller
+	url = https://gitlab.com/eufs/perception_group/point_cloud_auto_labeller.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/state_lib"]
+	path = 01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/state_lib
+	url = https://gitlab.com/eufs/public/state_lib.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/vehicle_models"]
+	path = 01_fsd_open_source_code/team_stacks/EUFS_Edinburgh/vehicle_models
+	url = https://gitlab.com/eufs/public/vehicle_models.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FS-Bizkaia/FSBDriverless"]
+	path = 01_fsd_open_source_code/team_stacks/FS-Bizkaia/FSBDriverless
+	url = https://github.com/MikeSnow/FSBDriverless.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FS-Bizkaia/fsb_sim"]
+	path = 01_fsd_open_source_code/team_stacks/FS-Bizkaia/fsb_sim
+	url = https://github.com/FSB-AI/fsb_sim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FS-FEUP_Porto/as-integration"]
+	path = 01_fsd_open_source_code/team_stacks/FS-FEUP_Porto/as-integration
+	url = https://github.com/fs-feup/as-integration.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FS-FEUP_Porto/autonomous-systems"]
+	path = 01_fsd_open_source_code/team_stacks/FS-FEUP_Porto/autonomous-systems
+	url = https://github.com/fs-feup/autonomous-systems.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FS-FEUP_Porto/hesai-lidar"]
+	path = 01_fsd_open_source_code/team_stacks/FS-FEUP_Porto/hesai-lidar
+	url = https://github.com/fs-feup/hesai-lidar.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FS-FEUP_Porto/interfaces"]
+	path = 01_fsd_open_source_code/team_stacks/FS-FEUP_Porto/interfaces
+	url = https://github.com/fs-feup/interfaces.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FS-FEUP_Porto/kiss-icp"]
+	path = 01_fsd_open_source_code/team_stacks/FS-FEUP_Porto/kiss-icp
+	url = https://github.com/fs-feup/kiss-icp.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FS-FEUP_Porto/xsens-imu"]
+	path = 01_fsd_open_source_code/team_stacks/FS-FEUP_Porto/xsens-imu
+	url = https://github.com/fs-feup/xsens-imu.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/CAN_DBC"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/CAN_DBC
+	url = https://github.com/FSLART/CAN_DBC.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/CONAlS"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/CONAlS
+	url = https://github.com/FSLART/CONAlS.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/Cone_To_Marker"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/Cone_To_Marker
+	url = https://github.com/FSLART/Cone_To_Marker.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/FaSTTUBe_planner"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/FaSTTUBe_planner
+	url = https://github.com/FSLART/FaSTTUBe_planner.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/GroundSpeedSensor"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/GroundSpeedSensor
+	url = https://github.com/FSLART/GroundSpeedSensor.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/Inspection"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/Inspection
+	url = https://github.com/FSLART/Inspection.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/Spac"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/Spac
+	url = https://github.com/FSLART/Spac.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/Spac2"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/Spac2
+	url = https://github.com/FSLART/Spac2.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/T24e_AckermannStateEstimator"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/T24e_AckermannStateEstimator
+	url = https://github.com/FSLART/T24e_AckermannStateEstimator.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/T26_DBC"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/T26_DBC
+	url = https://github.com/FSLART/T26_DBC.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/WatchedRealSense"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/WatchedRealSense
+	url = https://github.com/FSLART/WatchedRealSense.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/ZED_Bridge"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/ZED_Bridge
+	url = https://github.com/FSLART/ZED_Bridge.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/acceleration_planner"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/acceleration_planner
+	url = https://github.com/FSLART/acceleration_planner.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/bicycle_model"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/bicycle_model
+	url = https://github.com/FSLART/bicycle_model.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/delaunay_path_planner_core"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/delaunay_path_planner_core
+	url = https://github.com/FSLART/delaunay_path_planner_core.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/detection_center"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/detection_center
+	url = https://github.com/FSLART/detection_center.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/driverless_pipeline"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/driverless_pipeline
+	url = https://github.com/FSLART/driverless_pipeline.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/ekf_node"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/ekf_node
+	url = https://github.com/FSLART/ekf_node.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/eufs_sim"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/eufs_sim
+	url = https://github.com/FSLART/eufs_sim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/fsipleiria-ros"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/fsipleiria-ros
+	url = https://github.com/carlostojal/fsipleiria-ros.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/fsoco_sanitizer"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/fsoco_sanitizer
+	url = https://github.com/FSLART/fsoco_sanitizer.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/graph_slam"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/graph_slam
+	url = https://github.com/FSLART/graph_slam.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/image_augmentation"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/image_augmentation
+	url = https://github.com/FSLART/image_augmentation.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/kalman"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/kalman
+	url = https://github.com/FSLART/kalman.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/lart_common"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/lart_common
+	url = https://github.com/FSLART/lart_common.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/lart_lap_counter"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/lart_lap_counter
+	url = https://github.com/FSLART/lart_lap_counter.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/lart_msgs"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/lart_msgs
+	url = https://github.com/FSLART/lart_msgs.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/lart_to_pacsim_bridge"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/lart_to_pacsim_bridge
+	url = https://github.com/FSLART/lart_to_pacsim_bridge.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/local_mapping_lidar"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/local_mapping_lidar
+	url = https://github.com/FSLART/local_mapping_lidar.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/mapper"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/mapper
+	url = https://github.com/FSLART/mapper.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/mapper_speedrun"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/mapper_speedrun
+	url = https://github.com/FSLART/mapper_speedrun.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/mission_controller"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/mission_controller
+	url = https://github.com/FSLART/mission_controller.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/p-puma"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/p-puma
+	url = https://github.com/FSLART/p-puma.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/pure_pursuit_core"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/pure_pursuit_core
+	url = https://github.com/FSLART/pure_pursuit_core.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/pure_pursuit_r2wrapper"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/pure_pursuit_r2wrapper
+	url = https://github.com/FSLART/pure_pursuit_r2wrapper.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/race_director"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/race_director
+	url = https://github.com/FSLART/race_director.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/safety_monitor"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/safety_monitor
+	url = https://github.com/FSLART/safety_monitor.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/sim_bridge"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/sim_bridge
+	url = https://github.com/FSLART/sim_bridge.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/skidpad"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/skidpad
+	url = https://github.com/FSLART/skidpad.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/skidpad_planner"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/skidpad_planner
+	url = https://github.com/FSLART/skidpad_planner.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/startup_system"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/startup_system
+	url = https://github.com/FSLART/startup_system.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/state_controller"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/state_controller
+	url = https://github.com/FSLART/state_controller.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/super_node"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/super_node
+	url = https://github.com/FSLART/super_node.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/t24e_ekf"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/t24e_ekf
+	url = https://github.com/FSLART/t24e_ekf.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FSLART/vehicle_control"]
+	path = 01_fsd_open_source_code/team_stacks/FSLART/vehicle_control
+	url = https://github.com/FSLART/vehicle_control.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FaSTTUBe_TU-Berlin/drawing-to-fsd-layout"]
+	path = 01_fsd_open_source_code/team_stacks/FaSTTUBe_TU-Berlin/drawing-to-fsd-layout
+	url = https://github.com/papalotis/drawing-to-fsd-layout.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FaSTTUBe_TU-Berlin/fsg23-approximate-dv-track"]
+	path = 01_fsd_open_source_code/team_stacks/FaSTTUBe_TU-Berlin/fsg23-approximate-dv-track
+	url = https://github.com/papalotis/fsg23-approximate-dv-track.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FaSTTUBe_TU-Berlin/ft-fsd-path-planning"]
+	path = 01_fsd_open_source_code/team_stacks/FaSTTUBe_TU-Berlin/ft-fsd-path-planning
+	url = https://github.com/papalotis/ft-fsd-path-planning.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FaSTTUBe_TU-Berlin/layout-merchant"]
+	path = 01_fsd_open_source_code/team_stacks/FaSTTUBe_TU-Berlin/layout-merchant
+	url = https://github.com/papalotis/layout-merchant.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FaSTTUBe_TU-Berlin/lfsd"]
+	path = 01_fsd_open_source_code/team_stacks/FaSTTUBe_TU-Berlin/lfsd
+	url = https://github.com/papalotis/lfsd.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/FormulaSlug_UCSC/Driverless"]
+	path = 01_fsd_open_source_code/team_stacks/FormulaSlug_UCSC/Driverless
+	url = https://github.com/formulaslug/Driverless.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/HWU-Dubai_Hydrakon/Formula-Student-AI"]
+	path = 01_fsd_open_source_code/team_stacks/HWU-Dubai_Hydrakon/Formula-Student-AI
+	url = https://github.com/FS-AI-HWUD/Formula-Student-AI.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/HWU-Dubai_Hydrakon/HydrakonSimV1"]
+	path = 01_fsd_open_source_code/team_stacks/HWU-Dubai_Hydrakon/HydrakonSimV1
+	url = https://github.com/FS-AI-HWUD/HydrakonSimV1.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/HWU-Dubai_Hydrakon/HydrakonV1"]
+	path = 01_fsd_open_source_code/team_stacks/HWU-Dubai_Hydrakon/HydrakonV1
+	url = https://github.com/FS-AI-HWUD/HydrakonV1.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/IMT-Driverless/IMT-Driverless-Stack"]
+	path = 01_fsd_open_source_code/team_stacks/IMT-Driverless/IMT-Driverless-Stack
+	url = https://github.com/leandrebtck/IMT-Driverless-Stack.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/ISC-FS/IFS06-DV"]
+	path = 01_fsd_open_source_code/team_stacks/ISC-FS/IFS06-DV
+	url = https://github.com/isc-fs/IFS06-DV.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/ISC-FS/IFS08-DV"]
+	path = 01_fsd_open_source_code/team_stacks/ISC-FS/IFS08-DV
+	url = https://github.com/isc-fs/IFS08-DV.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/ISC-FS/IFS08-DV-STEERING"]
+	path = 01_fsd_open_source_code/team_stacks/ISC-FS/IFS08-DV-STEERING
+	url = https://github.com/isc-fs/IFS08-DV-STEERING.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/ISC-FS/IFS08-DV-uDV"]
+	path = 01_fsd_open_source_code/team_stacks/ISC-FS/IFS08-DV-uDV
+	url = https://github.com/isc-fs/IFS08-DV-uDV.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/ISC-FS/IFS08-DV_AMI"]
+	path = 01_fsd_open_source_code/team_stacks/ISC-FS/IFS08-DV_AMI
+	url = https://github.com/isc-fs/IFS08-DV_AMI.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/ISC-FS/IFS09-DV"]
+	path = 01_fsd_open_source_code/team_stacks/ISC-FS/IFS09-DV
+	url = https://github.com/isc-fs/IFS09-DV.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/ISC-FS/IFS09-DV-PIPELINE"]
+	path = 01_fsd_open_source_code/team_stacks/ISC-FS/IFS09-DV-PIPELINE
+	url = https://github.com/isc-fs/IFS09-DV-PIPELINE.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/ISC-FS/IFS09-DV-uDV"]
+	path = 01_fsd_open_source_code/team_stacks/ISC-FS/IFS09-DV-uDV
+	url = https://github.com/isc-fs/IFS09-DV-uDV.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/ISC-FS/dv-tools"]
+	path = 01_fsd_open_source_code/team_stacks/ISC-FS/dv-tools
+	url = https://github.com/isc-fs/dv-tools.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/KTH-Formula-Student/KTH-Formula-Student-Driverless"]
+	path = 01_fsd_open_source_code/team_stacks/KTH-Formula-Student/KTH-Formula-Student-Driverless
+	url = https://github.com/theoneandonlywoj/KTH-Formula-Student-Driverless.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MIT-Delft_Driverless/DUT20d-Car-Management-System"]
+	path = 01_fsd_open_source_code/team_stacks/MIT-Delft_Driverless/DUT20d-Car-Management-System
+	url = https://github.com/SijmenHuizenga/DUT20d-Car-Management-System.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MIT-Delft_Driverless/MIT-Driverless-CV-TrainingInfra"]
+	path = 01_fsd_open_source_code/team_stacks/MIT-Delft_Driverless/MIT-Driverless-CV-TrainingInfra
+	url = https://github.com/cv-core/MIT-Driverless-CV-TrainingInfra.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MIT-Delft_Driverless/autonomous-racing"]
+	path = 01_fsd_open_source_code/team_stacks/MIT-Delft_Driverless/autonomous-racing
+	url = https://github.com/mvanlobensels/autonomous-racing.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MIT-Delft_Driverless/random-track-generator"]
+	path = 01_fsd_open_source_code/team_stacks/MIT-Delft_Driverless/random-track-generator
+	url = https://github.com/mvanlobensels/random-track-generator.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MIT-Delft_Driverless/tensorrt_ros"]
+	path = 01_fsd_open_source_code/team_stacks/MIT-Delft_Driverless/tensorrt_ros
+	url = https://github.com/cv-core/tensorrt_ros.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MMR-Driverless_UNIMORE/Pure-Pursuit-simulation-for-MMR-Driverless-Race-"]
+	path = 01_fsd_open_source_code/team_stacks/MMR-Driverless_UNIMORE/Pure-Pursuit-simulation-for-MMR-Driverless-Race-
+	url = https://github.com/Turrett/Pure-Pursuit-simulation-for-MMR-Driverless-Race-.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MMR-Driverless_UNIMORE/local_planner"]
+	path = 01_fsd_open_source_code/team_stacks/MMR-Driverless_UNIMORE/local_planner
+	url = https://github.com/enricocovili/local_planner.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MMR-Driverless_UNIMORE/mmr-kria-drive"]
+	path = 01_fsd_open_source_code/team_stacks/MMR-Driverless_UNIMORE/mmr-kria-drive
+	url = https://github.com/mmr-driverless/mmr-kria-drive.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MMR-Driverless_UNIMORE/mmrGlobalPlanner"]
+	path = 01_fsd_open_source_code/team_stacks/MMR-Driverless_UNIMORE/mmrGlobalPlanner
+	url = https://github.com/jacksalici/mmrGlobalPlanner.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MMR-Driverless_UNIMORE/mmr_can"]
+	path = 01_fsd_open_source_code/team_stacks/MMR-Driverless_UNIMORE/mmr_can
+	url = https://github.com/mmr-driverless/mmr_can.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/2024_2025_av_sim_stack"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/2024_2025_av_sim_stack
+	url = https://github.com/MURAutonomous/2024_2025_av_sim_stack.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/BaslerCalibration"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/BaslerCalibration
+	url = https://github.com/MURAutonomous/BaslerCalibration.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/BaslerDriver"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/BaslerDriver
+	url = https://github.com/MURAutonomous/BaslerDriver.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/FMS"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/FMS
+	url = https://github.com/MURAutonomous/FMS.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/Getting-Started"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/Getting-Started
+	url = https://github.com/MURAutonomous/Getting-Started.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/MATLAB-Sim-Control"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/MATLAB-Sim-Control
+	url = https://github.com/MURAutonomous/MATLAB-Sim-Control.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/MUR_Docker"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/MUR_Docker
+	url = https://github.com/MURAutonomous/MUR_Docker.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/OpenCV_calibration"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/OpenCV_calibration
+	url = https://github.com/MURAutonomous/OpenCV_calibration.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/OusterDriver"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/OusterDriver
+	url = https://github.com/MURAutonomous/OusterDriver.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/Stereo_SynthPOC"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/Stereo_SynthPOC
+	url = https://github.com/MURAutonomous/Stereo_SynthPOC.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/YoloColorParse"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/YoloColorParse
+	url = https://github.com/MURAutonomous/YoloColorParse.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/YoloColorParse_Data"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/YoloColorParse_Data
+	url = https://github.com/MURAutonomous/YoloColorParse_Data.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/aionr6_mpc_ros_updated"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/aionr6_mpc_ros_updated
+	url = https://github.com/MURAutonomous/aionr6_mpc_ros_updated.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/both_cam_acq"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/both_cam_acq
+	url = https://github.com/MURAutonomous/both_cam_acq.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/calibration"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/calibration
+	url = https://github.com/MURAutonomous/calibration.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/control_pysim"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/control_pysim
+	url = https://github.com/MURAutonomous/control_pysim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/depth_estimation"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/depth_estimation
+	url = https://github.com/MURAutonomous/depth_estimation.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/follower_exploratory"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/follower_exploratory
+	url = https://github.com/MURAutonomous/follower_exploratory.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/follower_mpcc"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/follower_mpcc
+	url = https://github.com/MURAutonomous/follower_mpcc.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/left_cam_acq"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/left_cam_acq
+	url = https://github.com/MURAutonomous/left_cam_acq.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/lidar-cone-classifier"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/lidar-cone-classifier
+	url = https://github.com/MURAutonomous/lidar-cone-classifier.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/lidar_dev"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/lidar_dev
+	url = https://github.com/MURAutonomous/lidar_dev.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/localisation"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/localisation
+	url = https://github.com/MURAutonomous/localisation.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/mpcc"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/mpcc
+	url = https://github.com/MURAutonomous/mpcc.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/mur2022_full_system"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/mur2022_full_system
+	url = https://github.com/MURAutonomous/mur2022_full_system.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/mur_common"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/mur_common
+	url = https://github.com/MURAutonomous/mur_common.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/mur_docker_launcher"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/mur_docker_launcher
+	url = https://github.com/MURAutonomous/mur_docker_launcher.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/mur_pysim"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/mur_pysim
+	url = https://github.com/MURAutonomous/mur_pysim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/mursim"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/mursim
+	url = https://github.com/MURAutonomous/mursim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/mursim_actuator"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/mursim_actuator
+	url = https://github.com/MURAutonomous/mursim_actuator.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/mursim_init"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/mursim_init
+	url = https://github.com/MURAutonomous/mursim_init.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/mursim_manual_controller"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/mursim_manual_controller
+	url = https://github.com/MURAutonomous/mursim_manual_controller.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/path_follower_ros"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/path_follower_ros
+	url = https://github.com/MURAutonomous/path_follower_ros.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/perception-scripts"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/perception-scripts
+	url = https://github.com/MURAutonomous/perception-scripts.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/piksi"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/piksi
+	url = https://github.com/MURAutonomous/piksi.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/planner_exploratory"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/planner_exploratory
+	url = https://github.com/MURAutonomous/planner_exploratory.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/slam"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/slam
+	url = https://github.com/MURAutonomous/slam.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/slowlap_control"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/slowlap_control
+	url = https://github.com/MURAutonomous/slowlap_control.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/state_machine"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/state_machine
+	url = https://github.com/MURAutonomous/state_machine.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/stereo-calibration"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/stereo-calibration
+	url = https://github.com/MURAutonomous/stereo-calibration.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/stereo_playground"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/stereo_playground
+	url = https://github.com/MURAutonomous/stereo_playground.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/synth_producer"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/synth_producer
+	url = https://github.com/MURAutonomous/synth_producer.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/tkdnn_yolo_ros"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/tkdnn_yolo_ros
+	url = https://github.com/MURAutonomous/tkdnn_yolo_ros.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/MUR_Melbourne/yolo_tensorrt_ros"]
+	path = 01_fsd_open_source_code/team_stacks/MUR_Melbourne/yolo_tensorrt_ros
+	url = https://github.com/MURAutonomous/yolo_tensorrt_ros.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Manchester-FS-AI/fsai-vision-model"]
+	path = 01_fsd_open_source_code/team_stacks/Manchester-FS-AI/fsai-vision-model
+	url = https://github.com/hourlyray1709/fsai-vision-model.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Newcastle-Racing-AI/2425-perception"]
+	path = 01_fsd_open_source_code/team_stacks/Newcastle-Racing-AI/2425-perception
+	url = https://github.com/NewcastleRacingAI/2425-perception.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Newcastle-Racing-AI/carla-2425"]
+	path = 01_fsd_open_source_code/team_stacks/Newcastle-Racing-AI/carla-2425
+	url = https://github.com/NewcastleRacingAI/carla-2425.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Newcastle-Racing-AI/eufs_sim"]
+	path = 01_fsd_open_source_code/team_stacks/Newcastle-Racing-AI/eufs_sim
+	url = https://github.com/NewcastleRacingAI/eufs_sim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Newcastle-Racing-AI/nrai_controller"]
+	path = 01_fsd_open_source_code/team_stacks/Newcastle-Racing-AI/nrai_controller
+	url = https://github.com/NewcastleRacingAI/nrai_controller.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Newcastle-Racing-AI/nrai_pathplanning"]
+	path = 01_fsd_open_source_code/team_stacks/Newcastle-Racing-AI/nrai_pathplanning
+	url = https://github.com/NewcastleRacingAI/nrai_pathplanning.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Newcastle-Racing-AI/nrai_perception"]
+	path = 01_fsd_open_source_code/team_stacks/Newcastle-Racing-AI/nrai_perception
+	url = https://github.com/NewcastleRacingAI/nrai_perception.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Newcastle-Racing-AI/nrai_rosutils"]
+	path = 01_fsd_open_source_code/team_stacks/Newcastle-Racing-AI/nrai_rosutils
+	url = https://github.com/NewcastleRacingAI/nrai_rosutils.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Newcastle-Racing-AI/nrai_simulator"]
+	path = 01_fsd_open_source_code/team_stacks/Newcastle-Racing-AI/nrai_simulator
+	url = https://github.com/NewcastleRacingAI/nrai_simulator.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/OSU_Global-Formula-Racing/OSU-Driverless-Formula-Student"]
+	path = 01_fsd_open_source_code/team_stacks/OSU_Global-Formula-Racing/OSU-Driverless-Formula-Student
+	url = https://github.com/lcsfrey/OSU-Driverless-Formula-Student.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/QUT-Motorsport/QUTMS_AV_Sim"]
+	path = 01_fsd_open_source_code/team_stacks/QUT-Motorsport/QUTMS_AV_Sim
+	url = https://github.com/QUT-Motorsport/QUTMS_AV_Sim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/QUT-Motorsport/QUTMS_Autonomous"]
+	path = 01_fsd_open_source_code/team_stacks/QUT-Motorsport/QUTMS_Autonomous
+	url = https://github.com/QUT-Motorsport/QUTMS_Autonomous.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/QUT-Motorsport/QUTMS_Driverless"]
+	path = 01_fsd_open_source_code/team_stacks/QUT-Motorsport/QUTMS_Driverless
+	url = https://github.com/QUT-Motorsport/QUTMS_Driverless.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/QUT-Motorsport/QUTMS_Embedded_Common"]
+	path = 01_fsd_open_source_code/team_stacks/QUT-Motorsport/QUTMS_Embedded_Common
+	url = https://github.com/QUT-Motorsport/QUTMS_Embedded_Common.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/QUT-Motorsport/QUTMS_Nav_Integration"]
+	path = 01_fsd_open_source_code/team_stacks/QUT-Motorsport/QUTMS_Nav_Integration
+	url = https://github.com/QUT-Motorsport/QUTMS_Nav_Integration.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/QUT-Motorsport/QUTMS_TrackSim"]
+	path = 01_fsd_open_source_code/team_stacks/QUT-Motorsport/QUTMS_TrackSim
+	url = https://github.com/QUT-Motorsport/QUTMS_TrackSim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/QUT-Motorsport/Spacial-MPC"]
+	path = 01_fsd_open_source_code/team_stacks/QUT-Motorsport/Spacial-MPC
+	url = https://github.com/QUT-Motorsport/Spacial-MPC.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/QUT-Motorsport/eufs_sim"]
+	path = 01_fsd_open_source_code/team_stacks/QUT-Motorsport/eufs_sim
+	url = https://github.com/QUT-Motorsport/eufs_sim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/QUT-Motorsport/qutms_msgs"]
+	path = 01_fsd_open_source_code/team_stacks/QUT-Motorsport/qutms_msgs
+	url = https://github.com/QUT-Motorsport/qutms_msgs.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/QUT-Motorsport/vector_pursuit_controller"]
+	path = 01_fsd_open_source_code/team_stacks/QUT-Motorsport/vector_pursuit_controller
+	url = https://github.com/QUT-Motorsport/vector_pursuit_controller.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/RMIT/RMIT_Driverless_sim"]
+	path = 01_fsd_open_source_code/team_stacks/RMIT/RMIT_Driverless_sim
+	url = https://github.com/Ben3599642/RMIT_Driverless_sim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/RMIT/RMIT_FSAE_Driverless"]
+	path = 01_fsd_open_source_code/team_stacks/RMIT/RMIT_FSAE_Driverless
+	url = https://github.com/A-Mc-F/RMIT_FSAE_Driverless.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/SUFST_Southampton/DV.ConeDetection"]
+	path = 01_fsd_open_source_code/team_stacks/SUFST_Southampton/DV.ConeDetection
+	url = https://github.com/sufst/DV.ConeDetection.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/SUFST_Southampton/DV.Sim"]
+	path = 01_fsd_open_source_code/team_stacks/SUFST_Southampton/DV.Sim
+	url = https://github.com/sufst/DV.Sim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/SUFST_Southampton/driverless-pathfinding"]
+	path = 01_fsd_open_source_code/team_stacks/SUFST_Southampton/driverless-pathfinding
+	url = https://github.com/sufst/driverless-pathfinding.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/StarkStrom-Augsburg/fsd_racetrack_dataset"]
+	path = 01_fsd_open_source_code/team_stacks/StarkStrom-Augsburg/fsd_racetrack_dataset
+	url = https://github.com/iv461/fsd_racetrack_dataset.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/AirSim"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/AirSim
+	url = https://github.com/FSTDriverless/AirSim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/Baira_simulators"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/Baira_simulators
+	url = https://github.com/TechnionAVFormula/Baira_simulators.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/Camera"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/Camera
+	url = https://github.com/TechnionAVFormula/Camera.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/Camera-Calibration"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/Camera-Calibration
+	url = https://github.com/TechnionAVFormula/Camera-Calibration.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/ClassicConeDetection"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/ClassicConeDetection
+	url = https://github.com/TechnionAVFormula/ClassicConeDetection.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/DeepConeDetection"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/DeepConeDetection
+	url = https://github.com/TechnionAVFormula/DeepConeDetection.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/FSTD_SLAM"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/FSTD_SLAM
+	url = https://github.com/aslyansky-m/FSTD_SLAM.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/FSTImplementation"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/FSTImplementation
+	url = https://github.com/FSTDriverless/FSTImplementation.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/HWWebDashboard"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/HWWebDashboard
+	url = https://github.com/TechnionAVFormula/HWWebDashboard.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/Hardware_Algo"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/Hardware_Algo
+	url = https://github.com/TechnionAVFormula/Hardware_Algo.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/LIDAR"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/LIDAR
+	url = https://github.com/TechnionAVFormula/LIDAR.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/MPC"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/MPC
+	url = https://github.com/TechnionAVFormula/MPC.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/Onboarding"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/Onboarding
+	url = https://github.com/TechnionAVFormula/Onboarding.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/PerceptionTensorRT"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/PerceptionTensorRT
+	url = https://github.com/TechnionAVFormula/PerceptionTensorRT.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/Perception_Dashboard"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/Perception_Dashboard
+	url = https://github.com/TechnionAVFormula/Perception_Dashboard.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/RLenvironment"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/RLenvironment
+	url = https://github.com/TechnionAVFormula/RLenvironment.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/Software"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/Software
+	url = https://github.com/TechnionAVFormula/Software.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/StateEst_DashBoard"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/StateEst_DashBoard
+	url = https://github.com/TechnionAVFormula/StateEst_DashBoard.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/StateEst_Utilities"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/StateEst_Utilities
+	url = https://github.com/TechnionAVFormula/StateEst_Utilities.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/StateEstimation_Algo"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/StateEstimation_Algo
+	url = https://github.com/TechnionAVFormula/StateEstimation_Algo.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/Study"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/Study
+	url = https://github.com/TechnionAVFormula/Study.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/TechnionSim"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/TechnionSim
+	url = https://github.com/TechnionAVFormula/TechnionSim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/WebDashboard"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/WebDashboard
+	url = https://github.com/TechnionAVFormula/WebDashboard.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/steering-brake"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/steering-brake
+	url = https://github.com/TechnionAVFormula/steering-brake.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Technion-Formula/uv2xyz"]
+	path = 01_fsd_open_source_code/team_stacks/Technion-Formula/uv2xyz
+	url = https://github.com/TechnionAVFormula/uv2xyz.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/UM-Driverless_UMotorsport/ASB"]
+	path = 01_fsd_open_source_code/team_stacks/UM-Driverless_UMotorsport/ASB
+	url = https://github.com/UM-Driverless/ASB.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/UM-Driverless_UMotorsport/driverless"]
+	path = 01_fsd_open_source_code/team_stacks/UM-Driverless_UMotorsport/driverless
+	url = https://github.com/UM-Driverless/driverless.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/UM-Driverless_UMotorsport/dv-hardware"]
+	path = 01_fsd_open_source_code/team_stacks/UM-Driverless_UMotorsport/dv-hardware
+	url = https://github.com/UM-Driverless/dv-hardware.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/UOA-FSAE_Auckland/Autonomous-Dynamic-Drawio-Architecture"]
+	path = 01_fsd_open_source_code/team_stacks/UOA-FSAE_Auckland/Autonomous-Dynamic-Drawio-Architecture
+	url = https://github.com/UOA-FSAE/Autonomous-Dynamic-Drawio-Architecture.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/UOA-FSAE_Auckland/FSAE-Unity-Simulation"]
+	path = 01_fsd_open_source_code/team_stacks/UOA-FSAE_Auckland/FSAE-Unity-Simulation
+	url = https://github.com/UOA-FSAE/FSAE-Unity-Simulation.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/UOA-FSAE_Auckland/autonomous"]
+	path = 01_fsd_open_source_code/team_stacks/UOA-FSAE_Auckland/autonomous
+	url = https://github.com/UOA-FSAE/autonomous.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/UOA-FSAE_Auckland/cantalk"]
+	path = 01_fsd_open_source_code/team_stacks/UOA-FSAE_Auckland/cantalk
+	url = https://github.com/UOA-FSAE/cantalk.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/UOA-FSAE_Auckland/fsae_planning"]
+	path = 01_fsd_open_source_code/team_stacks/UOA-FSAE_Auckland/fsae_planning
+	url = https://github.com/UOA-FSAE/fsae_planning.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/UOA-FSAE_Auckland/moa_msgs"]
+	path = 01_fsd_open_source_code/team_stacks/UOA-FSAE_Auckland/moa_msgs
+	url = https://github.com/UOA-FSAE/moa_msgs.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/UOA-FSAE_Auckland/ros2_msgs"]
+	path = 01_fsd_open_source_code/team_stacks/UOA-FSAE_Auckland/ros2_msgs
+	url = https://github.com/UOA-FSAE/ros2_msgs.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/UOA-FSAE_Auckland/virtual-sensor"]
+	path = 01_fsd_open_source_code/team_stacks/UOA-FSAE_Auckland/virtual-sensor
+	url = https://github.com/UOA-FSAE/virtual-sensor.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/UPM-Racing/SIMULADOR_EUFS"]
+	path = 01_fsd_open_source_code/team_stacks/UPM-Racing/SIMULADOR_EUFS
+	url = https://github.com/UPM-Racing/SIMULADOR_EUFS.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/UTS-Motorsports/utsma-sim-2"]
+	path = 01_fsd_open_source_code/team_stacks/UTS-Motorsports/utsma-sim-2
+	url = https://github.com/minhquanvu0604/utsma-sim-2.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Unicamp-E-Racing/driverless-2019"]
+	path = 01_fsd_open_source_code/team_stacks/Unicamp-E-Racing/driverless-2019
+	url = https://github.com/Unicamp-E-Racing/driverless-2019.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Unicamp-E-Racing/mapping_eracing"]
+	path = 01_fsd_open_source_code/team_stacks/Unicamp-E-Racing/mapping_eracing
+	url = https://github.com/PedroRomeroSantos/mapping_eracing.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Unicamp-E-Racing/path_follower"]
+	path = 01_fsd_open_source_code/team_stacks/Unicamp-E-Racing/path_follower
+	url = https://github.com/Unicamp-E-Racing/path_follower.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Zurich-UAS-Racing/driverless-simulator"]
+	path = 01_fsd_open_source_code/team_stacks/Zurich-UAS-Racing/driverless-simulator
+	url = https://github.com/Beomar97/driverless-simulator.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Zurich-UAS-Racing/path-planning"]
+	path = 01_fsd_open_source_code/team_stacks/Zurich-UAS-Racing/path-planning
+	url = https://github.com/Beomar97/path-planning.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Zurich-UAS-Racing/path-planning-docs"]
+	path = 01_fsd_open_source_code/team_stacks/Zurich-UAS-Racing/path-planning-docs
+	url = https://github.com/Beomar97/path-planning-docs.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/Zurich-UAS-Racing/ros-msgs"]
+	path = 01_fsd_open_source_code/team_stacks/Zurich-UAS-Racing/ros-msgs
+	url = https://github.com/Beomar97/ros-msgs.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/eForce-Prague/eforce_microsim"]
+	path = 01_fsd_open_source_code/team_stacks/eForce-Prague/eforce_microsim
+	url = https://github.com/edavidk7/eforce_microsim.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/eForce-Prague/urob_cone_seg"]
+	path = 01_fsd_open_source_code/team_stacks/eForce-Prague/urob_cone_seg
+	url = https://github.com/edavidk7/urob_cone_seg.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/municHMotorsport/MM-label-tool"]
+	path = 01_fsd_open_source_code/team_stacks/municHMotorsport/MM-label-tool
+	url = https://github.com/ddavid/MM-label-tool.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/municHMotorsport/clara"]
+	path = 01_fsd_open_source_code/team_stacks/municHMotorsport/clara
+	url = https://github.com/cirquit/clara.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/municHMotorsport/ekf"]
+	path = 01_fsd_open_source_code/team_stacks/municHMotorsport/ekf
+	url = https://github.com/cirquit/ekf.git
+	shallow = true
+[submodule "01_fsd_open_source_code/team_stacks/municHMotorsport/fsoco"]
+	path = 01_fsd_open_source_code/team_stacks/municHMotorsport/fsoco
+	url = https://github.com/ddavid/fsoco.git
+	shallow = true
