@@ -1570,3 +1570,23 @@
 	path = 03_fsuk_ddt_ads-dv/community_ads-dv_code/RandevRanjit__FSAI-Simulation-C
 	url = https://github.com/RandevRanjit/FSAI-Simulation-C.git
 	shallow = true
+[submodule "03_fsuk_ddt_ads-dv/official_fs-ai_github/FS-AI_ADS-DV_CAD"]
+	path = 03_fsuk_ddt_ads-dv/official_fs-ai_github/FS-AI_ADS-DV_CAD
+	url = https://github.com/FS-AI/FS-AI_ADS-DV_CAD.git
+	shallow = true
+[submodule "03_fsuk_ddt_ads-dv/official_fs-ai_github/FS-AI_ADS-DV_Documentation"]
+	path = 03_fsuk_ddt_ads-dv/official_fs-ai_github/FS-AI_ADS-DV_Documentation
+	url = https://github.com/FS-AI/FS-AI_ADS-DV_Documentation.git
+	shallow = true
+[submodule "03_fsuk_ddt_ads-dv/official_fs-ai_github/FS-AI_API"]
+	path = 03_fsuk_ddt_ads-dv/official_fs-ai_github/FS-AI_API
+	url = https://github.com/FS-AI/FS-AI_API.git
+	shallow = true
+[submodule "03_fsuk_ddt_ads-dv/official_fs-ai_github/FS-AI_Compute"]
+	path = 03_fsuk_ddt_ads-dv/official_fs-ai_github/FS-AI_Compute
+	url = https://github.com/FS-AI/FS-AI_Compute.git
+	shallow = true
+[submodule "03_fsuk_ddt_ads-dv/official_fs-ai_github/FS-AI_IMechE_ADS-DV_HiL"]
+	path = 03_fsuk_ddt_ads-dv/official_fs-ai_github/FS-AI_IMechE_ADS-DV_HiL
+	url = https://github.com/FS-AI/FS-AI_IMechE_ADS-DV_HiL.git
+	shallow = true
