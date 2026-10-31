@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ADS-DV Explorer</title>
 <meta name="doc-section" content="Tools">
-<meta name="date" content="2026-10-27">
-<meta name="description" content="Interactive 3D guide to the IMechE FS-AI ADS-DV used for the DDT class: dimensions, connectors, sensors, CAN interface and rules, each linked to its official source.">
+<meta name="date" content="2026-10-28">
+<meta name="description" content="Interactive 3D guide to the IMechE FS-AI ADS-DV used for the DDT class: every exposed port and switch, the InCarPC or your own computer, dimensions, sensors, CAN interface and rules, each linked to its official source.">
 <style>
 :root {
   --bg: #f4f5f7; --surface: #ffffff; --surface-2: #eef0f3; --text: #1b1f24; --muted: #5b6470;
@@ -209,11 +209,47 @@ footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
 .cutlabel { font-size: 0.8rem; color: var(--muted); }
 .cutgrp input { width: 140px; }
 .gotobar {
-  position: absolute; left: 10px; top: 52px; right: 10px; display: flex; gap: 5px; flex-wrap: wrap; align-items: center;
+  position: absolute; left: 10px; top: 52px; right: 10px; display: flex; flex-direction: column; gap: 5px; align-items: flex-start;
   pointer-events: none; font-size: 0.78rem;
 }
-.gotobar > * { pointer-events: auto; }
-.gotobar > span { color: var(--muted); background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 2px 8px; }
+.gotobar .row { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
+.gotobar .row > * { pointer-events: auto; }
+.gotobar .row > span { color: var(--muted); background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 2px 8px; }
+.chipbtn.cfg[aria-pressed="true"] { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+/* photos (loaded from IMechE's GitHub) */
+.phgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+.ph { margin: 0; background: var(--surface-2); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+.phbtn {
+  display: block; width: 100%; aspect-ratio: 4 / 3; padding: 0; border: 0; cursor: zoom-in; background: var(--surface-2); overflow: hidden;
+}
+.phbtn img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.phbtn.contain { background: #fff; }
+.phbtn.contain img { object-fit: contain; }
+.phbtn.pdf {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer;
+  color: var(--muted); text-decoration: none; font-size: 0.82rem; border: 1.5px dashed var(--border);
+}
+.phbtn.pdf span { font-weight: 700; font-size: 1.1rem; color: var(--text); border: 1.5px solid var(--muted); border-radius: 5px; padding: 2px 8px; }
+.ph figcaption { padding: 7px 10px 9px; font-size: 0.82rem; display: flex; flex-direction: column; gap: 5px; flex: 1; }
+.phlinks { display: flex; gap: 10px; align-items: center; margin-top: auto; font-size: 0.8rem; }
+.linkbtn { appearance: none; background: none; border: 0; padding: 0; font: inherit; color: var(--link); cursor: pointer; text-decoration: underline; }
+.phstrip { display: flex; gap: 6px; overflow-x: auto; margin: 8px 0; padding-bottom: 2px; }
+.phstrip .phbtn { width: 104px; flex: none; border-radius: 7px; border: 1px solid var(--border); }
+.phstrip .phbtn.pdf { font-size: 0.72rem; }
+.lightbox { border: 0; padding: 0; border-radius: 12px; max-width: min(1100px, 94vw); background: var(--surface); color: var(--text); }
+.lightbox::backdrop { background: rgba(0, 0, 0, 0.72); }
+.lightbox img { display: block; max-width: 100%; max-height: 74vh; margin: 0 auto; }
+.lightbox .lbcap { margin: 10px 16px 4px; font-size: 0.92rem; }
+.lightbox .lbbar { margin: 0 16px 14px; display: flex; gap: 14px; align-items: center; font-size: 0.86rem; }
+.lightbox form { position: absolute; right: 8px; top: 8px; margin: 0; }
+.lbclose {
+  appearance: none; border: 0; width: 34px; height: 34px; border-radius: 50%; font-size: 1.3rem; line-height: 1; cursor: pointer;
+  background: rgba(0, 0, 0, 0.55); color: #fff;
+}
+.cfgnote { font-size: 0.84rem; border-left: 3px solid #8b5cf6; padding: 4px 8px; background: var(--surface-2); border-radius: 0 6px 6px 0; }
+.badge.yours { background: #ede9fe; color: #5b21b6; }
+:root[data-theme="dark"] .badge.yours { background: #2e2350; color: #c4b5fd; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .badge.yours { background: #2e2350; color: #c4b5fd; } }
 .chipbtn {
   appearance: none; font: inherit; font-size: 0.78rem; cursor: pointer; border-radius: 999px; padding: 3px 10px;
   background: var(--surface); color: var(--text); border: 1px solid var(--border);
@@ -239,6 +275,7 @@ footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
 .k { width: 14px; height: 10px; border-radius: 2px; display: inline-block; flex: none; }
 .k.solid { background: var(--muted); }
 .k.ghost { border: 1.5px dashed var(--muted); }
+.k.yours { border: 1.5px dashed #8b5cf6; background: rgba(139, 92, 246, 0.18); }
 .layers .modelrow { display: flex; gap: 5px; flex-wrap: wrap; }
 .layers .modelrow .btn { font-size: 0.78rem; padding: 4px 8px; }
 .layers .status { color: var(--muted); font-size: 0.76rem; }
@@ -251,6 +288,10 @@ footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
   border-radius: 5px; padding: 1px 6px; font-size: 11.5px; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,.18);
 }
 .tag.ghost { border-style: dashed; border-left-style: solid; font-weight: 500; }
+.tag.yours { border-color: #8b5cf6; border-left-color: #8b5cf6; color: #6d28d9; }
+.tag.yours.sel { color: #fff; }
+:root[data-theme="dark"] .tag.yours { color: #c4b5fd; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tag.yours { color: #c4b5fd; } }
 .tag.sel { background: var(--accent); color: #fff; border-color: var(--accent); }
 .tag::after {
   content: ""; position: absolute; left: 50%; bottom: -7px; width: 1px; height: 7px; background: var(--muted);
@@ -273,6 +314,10 @@ footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
 .pinsvg text { font: 600 11px system-ui, sans-serif; fill: var(--text); }
 @media (max-width: 640px) {
   .gotobar { top: auto; bottom: 52px; }
+  .gotobar .row { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; pointer-events: auto; scrollbar-width: none; }
+  .gotobar .row > * { flex: none; }
+  .phgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .ph figcaption { font-size: 0.78rem; }
   .legend { max-width: 170px; }
   .readout { display: none; }
   .cutgrp input { width: 90px; }
@@ -288,7 +333,7 @@ footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
   <div class="row">
     <div>
       <h1>ADS-DV Explorer</h1>
-      <p>The IMechE FS-AI ADS-DV used by DDT teams. Switch to <b>See-through</b>, <b>Exploded</b> or <b>Cut-away</b> to see every plug, switch, internal unit and cable, colour-coded by type. Click anything for its specs, or use <b>Go to</b>. Every fact links to its source: the official FS-AI GitHub files (pinned to the version checked on 27 Oct 2026), the FS-AI 2026 rules, IMechE's photos and drawings, and vendor datasheets.</p>
+      <p>The IMechE FS-AI ADS-DV used by DDT teams. Switch to <b>See-through</b>, <b>Exploded</b> or <b>Cut-away</b> to see every plug, switch, internal unit and cable, colour-coded by type. Use <b>Computer</b> to swap the shared InCarPC for your own computer and see which plugs that leaves free. Click anything for its specs and IMechE's photos of it, or use <b>Go to</b>. Every fact links to its source: the official FS-AI GitHub files (pinned to the version checked on 27 Oct 2026), the FS-AI 2026 rules, IMechE's photos and drawings, and vendor datasheets.</p>
     </div>
     <button class="btn" id="themeBtn" type="button" title="Switch light / dark">◐ Theme</button>
   </div>
@@ -318,15 +363,23 @@ footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
           <input type="range" id="cutZ" min="-320" max="320" step="10" value="0" aria-label="Cut plane position">
         </div>
       </div>
-      <div class="gotobar" role="group" aria-label="Go to">
-        <span>Go to</span>
-        <button class="chipbtn" data-goto="front" type="button">Front plugs</button>
-        <button class="chipbtn" data-goto="tower" type="button">Light tower</button>
-        <button class="chipbtn" data-goto="switches" type="button">Switches</button>
-        <button class="chipbtn" data-goto="rearpanel" type="button">Rear panel</button>
-        <button class="chipbtn" data-goto="bay" type="button">Rear compute bay</button>
-        <button class="chipbtn" data-goto="drive" type="button">Battery &amp; drive</button>
-        <button class="chipbtn" data-goto="steer" type="button">Steering &amp; brakes</button>
+      <div class="gotobar">
+        <div class="row" role="group" aria-label="Go to">
+          <span>Go to</span>
+          <button class="chipbtn" data-goto="front" type="button">Front plugs</button>
+          <button class="chipbtn" data-goto="tower" type="button">Light tower</button>
+          <button class="chipbtn" data-goto="switches" type="button">Switches</button>
+          <button class="chipbtn" data-goto="rearpanel" type="button">Rear panel</button>
+          <button class="chipbtn" data-goto="bay" type="button">Rear compute bay</button>
+          <button class="chipbtn" data-goto="drive" type="button">Battery &amp; drive</button>
+          <button class="chipbtn" data-goto="steer" type="button">Steering &amp; brakes</button>
+        </div>
+        <div class="row" role="group" aria-label="Computer set-up">
+          <span>Computer</span>
+          <button class="chipbtn cfg" data-cfg="incarpc" type="button" aria-pressed="true">InCarPC (shared)</button>
+          <button class="chipbtn cfg" data-cfg="rear" type="button" aria-pressed="false">Own, rear plate</button>
+          <button class="chipbtn cfg" data-cfg="front" type="button" aria-pressed="false">Own, front plate</button>
+        </div>
       </div>
       <details class="legend" id="legend" open>
         <summary>Cables</summary>
@@ -334,6 +387,7 @@ footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
         <div class="legendkey">
           <span><i class="k solid"></i>position from CAD / IMechE photo</span>
           <span><i class="k ghost"></i>inside, position not published</span>
+          <span><i class="k yours"></i>your hardware (placeholder)</span>
         </div>
       </details>
       <details class="layers" id="layers">
@@ -387,6 +441,7 @@ footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
     <a href="#sec-sensors">Sensors on the car</a>
     <a href="#sec-compute">Compute &amp; connectors</a>
     <a href="#sec-mount">Mounting rules</a>
+    <a href="#sec-photos">Photos</a>
     <a href="#sec-safety">Safety controls</a>
     <a href="#sec-can">CAN interface</a>
     <a href="#sec-states">State machine</a>
@@ -530,6 +585,9 @@ footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
           <ul>
             <li>Part CQ77G-32-W10P13: Intel Core i7-8700T, NVIDIA GPU listed as "GTX 1060 Ti" with 1280 CUDA cores, 32 GB DDR4, removable 2.5" SATA SSD, PEAK-System CAN (SocketCAN), 4 × USB 3.0, 2 × GbE, Wi-Fi 802.11ac <a class="src" data-ref="compr:8-26">Compute README</a> <a class="src" data-ref="incarpc">spec PDF</a></li>
             <li>IMechE has six, each on its own quick-change rear plate, shared across the cars and teams, so access is limited <a class="src" data-ref="compr:10">README</a> <a class="src" data-ref="compr:46">README</a></li>
+            <li><b>Front face</b> (towards the car's front, where the cables arrive): DC-IN 9–48 V screw terminal (IGN+, +, +, −, −), CAN D-sub, 4 × USB 3.0, LAN 1–2 (GbE), 3 × DisplayPort, COM1–2, GPIO D-sub, mic in and line out <a class="src" data-ref="incarpc">spec photos</a></li>
+            <li><b>Rear face</b> (towards the tail, reachable from behind): power button and LEDs, 2 × SIM, 4 × HDMI, LAN 3–10 marked PoE, ANT1 and ANT7 SMA (Wi-Fi), 2 × 2.5" drive bays <a class="src" data-ref="incarpc">spec photos</a></li>
+            <li>Wired to the car by the rear 7W2 (power to DC-IN, CAN to the PEAK card), both USB runs and the Ethernet run (LAN 1). An ON/OFF toggle on its plate feeds IGN+ <a class="src" data-ref="compr:30-32">README</a> <a class="src" data-ref="incarphoto">installed photo</a></li>
             <li>Not waterproof: no running in rain or standing water <a class="src" data-ref="ops:137-149">Op. Safety §7</a></li>
           </ul>
         </div>
@@ -538,7 +596,8 @@ footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
           <ul>
             <li><b>Rear:</b> a 330 × 250 mm plate, 2–5 mm thick, with 4 × Ø6.4 holes at 310 × 230 mm; posts Ø6 mm with Ø40 mm quick-release knobs; max 8 kg including the plate; max recommended box 280 × 200 × 200 mm; nothing above the rear bodywork; plate mounted rigidly, so consider anti-vibration mounts <a class="src" data-ref="comp:25-69">Compute §Mechanical</a></li>
             <li><b>Front:</b> on the sensor plate, using the same power and CAN plug. The rear mount is then not needed <a class="src" data-ref="comp:15-16">Compute §Intro</a> <a class="src" data-ref="compr:50">README</a></li>
-            <li>You supply the CAN interface; the bus is already terminated <a class="src" data-ref="comp:104-108">Compute §Electrical</a></li>
+            <li><b>Left free when the InCarPC comes out:</b> the rear 7W2 socket, two USB 3.0 Type-A plugs and one RJ45 plug (the rear ends of the front runs), and four M6 posts with knobs. The ignition toggle leaves with the InCarPC <a class="src" data-ref="comp:11-16">Compute §Intro</a> <a class="src" data-ref="cad:162-172">CAD README</a></li>
+            <li>You supply the CAN interface and an on/off switch (the 7W2 has no ignition pin; pins 3–5 are reserved); the bus is already terminated <a class="src" data-ref="comp:104-132">Compute §Electrical</a></li>
             <li>Needs IMechE approval through the ASF (T1.1.6, T4.4.3)</li>
           </ul>
         </div>
@@ -549,10 +608,11 @@ footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
         <tbody>
           <tr><td><b>Compute power + CAN</b> (7W2 combo D-sub: 2 power + 5 signal)</td><td>Front (sensor plate area) and rear (compute bay)</td><td>Socket: Harting 09 69 202 0072 (crimp) or Norcomp 680M7W2203L401 (solder)</td><td>Plug: Harting 09 69 212 0072 (crimp) or Norcomp 680M7W2103L401 (solder)</td><td>13.7 V nominal, 30 A fused, shared; CAN 500 kbit/s</td><td><a class="src" data-ref="comp:72-110">Compute §Electrical</a></td></tr>
           <tr><td><b>Sensor power</b> (TE DT, 2-pin)</td><td>Front</td><td>DT06-2S</td><td>DT04-2P</td><td>11.5–14.5 V, up to 5 A; pin 1 = +12 V, pin 2 = GND</td><td><a class="src" data-ref="cad:154-160">CAD README</a></td></tr>
-          <tr><td><b>Ethernet</b></td><td>Front, cable runs to the rear</td><td>1 × Cat5e, RJ45</td><td>RJ45 plug</td><td>Sensor to rear computer</td><td><a class="src" data-ref="cad:162-166">CAD README</a></td></tr>
-          <tr><td><b>USB 3.0</b></td><td>Front, cables run to the rear</td><td>2 × Type-A socket</td><td>Type-A plug</td><td>Sensor to rear computer</td><td><a class="src" data-ref="cad:168-172">CAD README</a></td></tr>
-          <tr><td><b>MPP</b> (Multi-Purpose Port)</td><td>Rear</td><td>MPP socket</td><td>MPP dongle (supplied)</td><td>Dongle needed to drive; also joystick umbilical, charger comms, CAN diagnostics harness</td><td><a class="src" data-ref="um21">2021 manual §2.3–2.5</a></td></tr>
-          <tr><td><b>Charge port</b></td><td>Rear</td><td>Vehicle charge socket</td><td>Charger lead, Amphenol ELP02A04</td><td>Traction battery charging</td><td><a class="src" data-ref="um:339-341">UM §8.2</a> <a class="src" data-ref="um21">2021 manual</a></td></tr>
+          <tr><td><b>Ethernet</b></td><td>Front, lead runs to the rear</td><td>1 × Cat5e lead ending in a male RJ45 <b>plug</b> at each end</td><td>Front: an RJ45 socket (your device or an inline coupler). Rear: your computer's LAN port</td><td>Sensor to rear computer</td><td><a class="src" data-ref="cad:162-166">CAD README</a> <a class="src" data-ref="ethimg">image</a> <a class="src" data-ref="frontcomp">photo</a></td></tr>
+          <tr><td><b>USB 3.0</b></td><td>Front, cables run to the rear</td><td>Front: 2 × Type-A socket. Rear: 2 × Type-A plug</td><td>Front: Type-A plug. Rear: your computer's USB ports</td><td>Sensor to rear computer; in 2025 the ZED2 used the front run</td><td><a class="src" data-ref="cad:168-172">CAD README</a> <a class="src" data-ref="compr:30">Compute README</a></td></tr>
+          <tr><td><b>AI Power Switch</b></td><td>Rear panel, left</td><td>ON/OFF toggle</td><td>–</td><td>Switches the 30 A AI supply (both 7W2 plugs and the DT)</td><td><a class="src" data-ref="p_rear26">2026 photo</a> <a class="src" data-ref="um:197-201">UM §6.2</a></td></tr>
+          <tr><td><b>MPP</b> (Multi-Purpose Port)</td><td>Rear panel, centre</td><td>Circular multi-pin socket</td><td>MPP dongle (supplied, green)</td><td>Dongle needed to drive and for Brake Discharge; also joystick umbilical, charger comms, CAN diagnostics harness</td><td><a class="src" data-ref="p_mpp26">2026 photo</a> <a class="src" data-ref="glos:57-58">Glossary</a> <a class="src" data-ref="um21">2021 manual §2.3–2.5</a></td></tr>
+          <tr><td><b>Charge port</b></td><td>Rear panel, right</td><td>Orange 2-pole socket</td><td>Charger output connector, red latch pushed forward</td><td>Traction battery charging</td><td><a class="src" data-ref="um:339-345">UM §8.2</a> <a class="src" data-ref="p_rear26">2026 photo</a></td></tr>
         </tbody>
       </table></div>
       <h3>7W2 power + CAN pinout (compute side)</h3>
@@ -582,6 +642,14 @@ footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
     </div>
   </details>
 
+  <details class="sec" id="sec-photos">
+    <summary><h2>Photos of the mounting points</h2><span class="hint">IMechE's photos and drawings, grouped by where they are on the car</span></summary>
+    <div class="content">
+      <p>Click a photo to enlarge it, or <b>Show in 3D</b> to find the part in the model. Clicking a part in the 3D view also shows its photos. The images load from IMechE's FS-AI GitHub repositories at the versions checked, and remain IMechE's; they are not copied into this page, so they need an internet connection. Photos that exist only inside a PDF are linked instead.</p>
+      <div id="photoGallery"></div>
+    </div>
+  </details>
+
   <details class="sec" id="sec-safety">
     <summary><h2>Safety controls &amp; indicators</h2><span class="hint">What stops the car, and what the lights mean</span></summary>
     <div class="content">
@@ -605,7 +673,7 @@ footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
           <h3>Switches</h3>
           <ul>
             <li>LVMS (low voltage), ASMS (autonomous system), TSMS (tractive system): three key switches on the right-hand side <a class="src" data-ref="um21">2021 manual §3.1</a></li>
-            <li>AI Power Switch (AIMS) at the rear powers the compute platform; keep it off in storage even with no computer fitted <a class="src" data-ref="um:197-201">UM §6.2</a> <a class="src" data-ref="um:252-256">UM §6.2</a></li>
+            <li>AI Power Switch: ON/OFF toggle on the left of the rear panel; powers the compute platform; keep it off in storage even with no computer fitted <a class="src" data-ref="p_rear26">2026 photo</a> <a class="src" data-ref="um:197-201">UM §6.2</a> <a class="src" data-ref="um:252-256">UM §6.2</a></li>
             <li>4.3" touchscreen on the right-hand side: mission select (AMI), diagnostics, battery and brake pages, Service page <a class="src" data-ref="um21">2021 manual §3.3</a></li>
           </ul>
         </div>
@@ -751,6 +819,9 @@ footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
         <li><b>Track:</b> spec 1200 mm; CAD wheel centres 1183 mm. The 2° camber accounts for the gap at the contact patch.</li>
         <li><b>Tyres in the simulator:</b> the HiL model uses RT_185_50R13, not the spec 225/45 R13. <a class="src" data-ref="hil:255-258">HiL tyres</a></li>
         <li><b>InCarPC GPU name:</b> listed as "GTX 1060 Ti", a model NVIDIA never sold. 1280 CUDA cores matches the GTX 1060 6 GB. <a class="src" data-ref="compr:16-18">README</a></li>
+        <li><b>InCarPC Ethernet ports:</b> the spec lists "2x GbE LAN ports"; IMechE's own photos also show LAN 3–10 marked PoE on the rear face, ten RJ45 in all. <a class="src" data-ref="compr:22">README</a> <a class="src" data-ref="incarpc">spec photos</a></li>
+        <li><b>Rear panel:</b> the 2021 car had a rotary AI master switch knob and a separate "AI computer ignition" toggle beside the MPP and charge port. The 2026 photos show one ON/OFF toggle, the AI Power Switch, with the MPP and charge port, and the InCarPC now carries its own ignition toggle on its plate. <a class="src" data-ref="um21">2021 manual Fig. 13</a> <a class="src" data-ref="p_rear26">2026 photo</a> <a class="src" data-ref="incarpc">InCarPC spec</a></li>
+        <li><b>Front USB count:</b> the Compute README describes the 2025 wiring as one front USB 3.0 port, shared with the ZED2; the 2026 CAD README lists two sockets. <a class="src" data-ref="compr:30">Compute README</a> <a class="src" data-ref="cad:168-172">CAD README</a></li>
         <li><b>Legacy node name:</b> the 2026 DBC still calls the AI node "NVIDIA Drive PX2". <a class="src" data-ref="dbc">DBC</a></li>
         <li><b>Battery chemistry:</b> the 2021 manual ends charging at a 3.55 V maximum cell voltage (a lithium-type cell); the 2026 spec says lead acid, 4 × 12 V. Use the 2026 numbers. <a class="src" data-ref="um21">2021 manual §8</a> <a class="src" data-ref="spec:50-62">Spec §4</a></li>
         <li><b>Old AI interface:</b> the 2018 IMechE electrical interface sheet (two Deutsch DTP power plugs, 25 A each, and a 9-way D-sub for CAN) and the 2018 drawing (4WD, Avon tyres, lidar in the nose) describe the original car. The 2026 car uses the 7W2 plug and is RWD. <a class="src" data-ref="arch">FS2023 archive</a></li>
@@ -770,12 +841,19 @@ footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
         <li><a data-ref="hilrepo">FS-AI_IMechE_ADS-DV_HiL</a>: <a data-ref="hil">2026 vehicle model</a></li>
         <li>IMechE: <a data-ref="rules">Formula Student rules page</a> (FS-AI 2026 Rules v1: T1, T3, T4, IN1–IN2) and <a data-ref="forms">forms and documents</a>, which also hosts the FS2023 FS-AI archive with the 2018 "ADS-DV dimensions and locations" drawing (DJ Racecars) used to place the right-side switches and touchscreen</li>
         <li>Photos in the <a data-ref="um21">ADS-DV User Manual 2021</a>: Fig. 12 master switches and E-stop, Fig. 13 rear interface panel, Fig. 14 light tower (ASSI, TSAL, GPS antenna, GEMS logger, camera mount), Fig. 21 RES receiver + PCAN-GPS enclosure (§9)</li>
+        <li>Photos in the 2026 documentation: <a data-ref="p_rear26">rear panel</a>, <a data-ref="p_mpp26">MPP</a>, <a data-ref="p_charge26">charger plugged in</a>, <a data-ref="p_side26">side switches</a>, <a data-ref="p_estopl26">left E-stop</a>, <a data-ref="p_gems26">GEMS logger</a>, <a data-ref="p_inertia26">inertia switch</a>, <a data-ref="p_ebs26">EBS unit</a>, <a data-ref="p_push26">pushbar pin</a>, <a data-ref="p_jack26">jack position</a>; the <a data-ref="incarpc">InCarPC spec</a> photos of both faces; the <a data-ref="frontcomp">front compute connection</a> photo and <a data-ref="ethimg">Ethernet image</a></li>
         <li>Vendors: <a data-ref="zed2">Stereolabs ZED 2 datasheet v1.1</a> (from the <a data-ref="zeddocs">Stereolabs datasheets page</a>), <a data-ref="zedcmp">Stereolabs camera comparison</a>, <a data-ref="msteer">DC Electronics Microsteer EPAS200M19 datasheet</a>, <a data-ref="sevcon">Sevcon Gen4 DC datasheet (mirror)</a></li>
       </ul>
-      <p><b>About the 3D model.</b> Parts are placed three ways: from the official 2026 CAD (exact), from IMechE photos and drawings of earlier versions of the car (approximate, solid), or, for internals whose position IMechE does not publish (battery, VCU, motor, steering motor, brake unit, DC-DC, fuse), as dashed ghost boxes in plausible spots. Cable routes inside the car are schematic: the documents say what connects to what, not the harness path. The "Simplified" model is drawn by this page from dimensions and a coarse bodywork outline measured from the official CAD. Suspension members are placed from the CAD's part bounding boxes, so treat them as indicative. "Load official CAD" downloads the STEP files from IMechE's GitHub and renders them in your browser. The CAD is © IMechE and its README asks that it is not re-uploaded to other public locations, so this page does not contain it. <a class="src" data-ref="cad:13">CAD README</a> Markers with a dashed ring are parts the documents describe but the CAD does not contain. Their positions come from the text or IMechE renders, so they are approximate.</p>
+      <p><b>About the 3D model.</b> Parts are placed three ways: from the official 2026 CAD (exact), from IMechE photos and drawings of earlier versions of the car (approximate, solid), or, for internals whose position IMechE does not publish (battery, VCU, motor, steering motor, brake unit, DC-DC, fuse), as dashed ghost boxes in plausible spots. The Computer buttons switch between the shared InCarPC and your own computer at the rear or on the front plate; purple dashed boxes stand for your hardware and are placeholders, not size limits. InCarPC ports are placed from IMechE's photos of its two faces. Cable routes inside the car are schematic: the documents say what connects to what, not the harness path. The "Simplified" model is drawn by this page from dimensions and a coarse bodywork outline measured from the official CAD. Suspension members are placed from the CAD's part bounding boxes, so treat them as indicative. "Load official CAD" downloads the STEP files from IMechE's GitHub and renders them in your browser. The CAD is © IMechE and its README asks that it is not re-uploaded to other public locations, so this page does not contain it. <a class="src" data-ref="cad:13">CAD README</a> Markers with a dashed ring are parts the documents describe but the CAD does not contain. Their positions come from the text or IMechE renders, so they are approximate.</p>
     </div>
   </details>
 </main>
+<dialog class="lightbox" id="lightbox" aria-label="Photo">
+  <form method="dialog"><button class="lbclose" aria-label="Close">×</button></form>
+  <img alt="">
+  <p class="lbcap"></p>
+  <p class="lbbar"><a class="lbsrc" target="_blank" rel="noopener">IMechE original</a> <button class="btn lbshow" type="button">Show in 3D</button></p>
+</dialog>
 <footer class="wrap">ADS-DV Explorer · Falcon Driverless · built from the official FS-AI documentation as of 27 Oct 2026. Not an IMechE document.</footer>
 
 <script>
@@ -810,6 +888,18 @@ footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
     cadfront: C('images/FS-AI_ADS-DV_Front_View_Sketch_2026.png'),
     cadconn: C('images/FS-AI_ADS-DV_Additional_Sensor_Connector_Location_2026.png'),
     cadphoto: C('images/Front_Connections.png'),
+    ethimg: C('images/Ethernet_RJ45.png'),
+    frontcomp: K('images/Front_Compute_Connection.png'),
+    p_rear26: D('images/ADS-DV_AI_Power_Switch_On.jpg'),
+    p_mpp26: D('images/ADS-DV_MPP_Removed.jpg'),
+    p_charge26: D('images/ADS-DV_Charger_Plug_Latched.jpg'),
+    p_side26: D('images/ADS-DV_Side_Switches_Keys_All_On.jpg'),
+    p_estopl26: D('images/ADS-DV_Side%20E-Stop_L.jpg'),
+    p_gems26: D('images/ADS-DV_GEMS_Logger_Two_Green_Lights.jpg'),
+    p_inertia26: D('images/ADS-DV_Inertia_Switch.jpg'),
+    p_ebs26: D('images/ADS-DV_EBS_Fluid_Level.jpg'),
+    p_push26: D('images/ADS-DV_Pushbar_Right_Pin.jpg'),
+    p_jack26: D('images/ADS-DV_Correct_Quick_Lift_Jack_Position_1.jpg'),
     comprepo: 'https://github.com/FS-AI/FS-AI_Compute',
     comp: K('ADS-DV_Reference_Compute_Installation.md'),
     compr: K('README.md'),
@@ -834,12 +924,123 @@ footer { color: var(--muted); font-size: 0.82rem; padding: 18px 0 40px; }
     msteer: 'https://levelfivesupplies.com/wp-content/uploads/2023/01/EPAS200M19_Microsteer_Autonomous_Datasheetv5.pdf',
     sevcon: 'https://www.e-kart.fr/images/stories/technique/SEVCON/sevcon-gen4-dc.pdf',
   };
+
+  // Photos and drawings of the mounting points. They load from IMechE's GitHub at the pinned commits and are
+  // not copied into this page. on = parts they show (select() keys); pdf = only inside a PDF, shown as a link.
+  const REPO = { cad: ['FS-AI_ADS-DV_CAD', SHA.cad], comp: ['FS-AI_Compute', SHA.comp], doc: ['FS-AI_ADS-DV_Documentation', SHA.doc] };
+  const ph = (r, p, cap, on) => ({ r, p, cap, on });
+  const pdf = (ref, cap, on) => ({ pdf: ref, cap, on });
+  window.PHOTO_GROUPS = [
+    ['Front sensor plate and connectors', [
+      ph('cad', 'images/FS-AI_ADS-DV_Additional_Sensor_Connector_Location_2026.png', 'Connector zone (red circle) at the back of the sensor plate, by the light-tower neck. The harness can move a little within it.', ['t:frontconn', 'c:fc_7w2', 'c:fc_dt', 'c:fc_usb', 'c:fc_rj45', 'c:own_front']),
+      ph('cad', 'images/Front_Connections.png', 'Vehicle-side front leads, left to right: 7W2 power + CAN, DT 12 V (inline fuse on its lead), 2 × USB 3.0 sockets, Ethernet RJ45 plug.', ['t:frontconn', 'c:fc_7w2', 'c:fc_dt', 'c:fc_usb', 'c:fc_rj45', 'c:own_front']),
+      ph('cad', 'images/FS-AI_ADS-DV_FreeCAD_v1.0.2.png', 'Example sensor plate on its four posts, in the official CAD.', ['t:plate', 'c:own_front']),
+      ph('cad', 'images/FS-AI_ADS-DV_Section_View_Sketch.png', 'Section through a sensor-plate post: plate on a spacer tube, M6 rod through to the chassis, quick-release knob on top.', ['t:plate', 'c:own_front']),
+      ph('cad', 'images/FS-AI_ADS-DV_Side_View_Sketch_2026.png', 'T 1.3.3 surface envelope (side view) and the ZED2 sight line: sensors must stay inside it.', ['t:plate', 't:zed']),
+      ph('cad', 'images/FS-AI_ADS-DV_Front_View_Sketch_2026.png', 'T 1.3.3 surface envelope (front view), from the TSAL top to the tyres.', ['t:plate']),
+      ph('cad', 'images/Cable_Tie_Base.png', 'Recommended strain relief for the vehicle-side leads: a screwed cable-tie base.', ['t:frontconn', 'c:fc_7w2']),
+      ph('cad', 'images/Power_&_CAN_Socket.png', '7W2 power + CAN socket on the car (front and rear).', ['c:fc_7w2', 'c:r_7w2']),
+      ph('comp', 'images/Compute_Connector_Front_View.png', '7W2 pin numbers on the plug you fit (compute side, front view): A1 +12 V, A2 0 V, 1 CAN-H, 2 CAN-L, 3–5 reserved.', ['c:fc_7w2', 'c:r_7w2']),
+      ph('cad', 'images/TE_DT04-2P.png', 'TE DT04-2P: the plug you fit to the car\'s DT06-2S sensor power lead.', ['c:fc_dt']),
+      ph('cad', 'images/USB3.0_A.png', 'USB 3.0 Type-A socket on the car\'s front leads.', ['c:fc_usb']),
+      ph('cad', 'images/Ethernet_RJ45.png', 'Ethernet lead end: a male RJ45 plug.', ['c:fc_rj45', 'c:r_eth']),
+    ]],
+    ['Rear compute bay', [
+      ph('comp', 'images/InCarPC_Installation.png', 'InCarPC on its quick-change plate, seen from behind and above. Cables arrive from the bulkhead at the top; the ignition toggle is bottom left.', ['c:incarpc', 't:rear', 'c:r_7w2', 'c:ign']),
+      ph('doc', 'images/ADS-DV_AI_Power_Switch_On.jpg', 'Rear bay with no computer fitted: the four posts and knobs, and the rear panel below them.', ['c:own_rear', 't:rear', 'c:aims', 't:rearpanel']),
+      ph('comp', 'images/Rear_Compute_Plate_Required_Dimensions.png', 'Your rear plate: 330 × 250 mm, four Ø6.4 holes at 310 × 230 mm.', ['c:own_rear', 't:rear']),
+      ph('comp', 'images/Rear_Compute_Platform_Required_Clearance.png', 'Keep clear of the Ø40 mm knobs: 280 × 200 mm usable footprint.', ['c:own_rear', 't:rear']),
+      ph('comp', 'images/Rear_Compute_Maximum_Recommended_Size.png', 'Recommended maximum computer: 280 wide × 200 deep × 200 mm high, centred on the plate. The rear panel is underneath.', ['c:own_rear', 't:rear']),
+      pdf('incarpc', 'InCarPC front and rear faces, every port labelled (photos in the InCarPC spec PDF).', ['c:incarpc', 'c:pc_dcin', 'c:pc_can', 'c:pc_usb', 'c:pc_lan12', 'c:pc_dp', 'c:pc_com', 'c:pc_gpio', 'c:pc_audio', 'c:pc_pwr', 'c:pc_sim', 'c:pc_hdmi', 'c:pc_poe', 'c:pc_ant', 'c:pc_ssd', 'c:ign']),
+    ]],
+    ['Rear panel', [
+      ph('doc', 'images/ADS-DV_MPP_Installed.jpg', 'Rear panel from behind: AI Power Switch toggle, MPP with the green dongle fitted, charge port.', ['t:rearpanel', 'c:aims', 'c:mpp', 'c:charge']),
+      ph('doc', 'images/ADS-DV_MPP_Removed.jpg', 'MPP socket with the dongle removed.', ['c:mpp']),
+      ph('doc', 'images/ADS-DV_MPP_Dongle.jpg', 'MPP dongle: must be fitted to drive and for Brake Discharge.', ['c:mpp']),
+      ph('doc', 'images/ADS-DV_Charger_Plug_Latched.jpg', 'Charger plugged into the charge port, red latch pushed forward.', ['c:charge']),
+    ]],
+    ['Sides and cowl', [
+      ph('doc', 'images/ADS-DV_Side_Switches_Keys_All_On.jpg', 'Right side: LV, TS and AS key switches, then the E-stop.', ['t:switches', 'c:lvms', 'c:tsms', 'c:asms', 'c:estop_r']),
+      ph('doc', 'images/ADS-DV_Side%20E-Stop_R.jpg', 'Right E-stop next to the AS switch.', ['t:estop', 'c:estop_r', 'c:asms']),
+      ph('doc', 'images/ADS-DV_Side%20E-Stop_L.jpg', 'Left E-stop, alone on that side.', ['t:estop', 'c:estop_l']),
+      ph('doc', 'images/ADS-DV_Red_Switch_Keys_and_Spare.jpg', 'The three red switch keys and a spare.', ['t:switches', 'c:lvms', 'c:tsms', 'c:asms']),
+      ph('doc', 'images/ADS-DV_Touch_Screen_Service_Page.jpg', 'Touchscreen Service page: Brake Discharge and Charge Enable.', ['t:switches', 'c:screen']),
+    ]],
+    ['Light tower', [
+      ph('doc', 'images/ADS-DV_TSAL_Green.jpg', 'Light tower lit green (LV on), with the logger and siren on it.', ['t:tsal', 'c:siren']),
+      ph('doc', 'images/ADS-DV_GEMS_Logger_Two_Green_Lights.jpg', 'GEMS DA3 logger with its memory card in and two green LEDs; siren above.', ['c:logger', 't:logger', 'c:siren']),
+      pdf('um21', 'Light tower labelled: PCAN-GPS antenna, siren, logger, camera mount, TSAL, ASSI (2021 manual, Fig. 14).', ['t:tsal', 'c:gpsant', 'c:logger', 'c:siren']),
+    ]],
+    ['Under the bodywork', [
+      ph('doc', 'images/ADS-DV_Inertia_Switch_Access.jpg', 'Front Bodywork Panel lifted to reach the inertia switch.', ['t:inertia', 'c:inertia']),
+      ph('doc', 'images/ADS-DV_Inertia_Switch.jpg', 'Inertia switch (black button): press down to reset.', ['t:inertia', 'c:inertia']),
+      ph('doc', 'images/ADS-DV_EBS_Fluid_Level.jpg', 'EBS pump, valve block and reservoir on the front bulkhead.', ['t:brakes', 'c:brake']),
+      pdf('um21', 'RES receiver + PCAN-GPS enclosure with its aerial and top-body harness plugs (2021 manual, Fig. 21).', ['c:resgps', 't:res', 't:imu']),
+    ]],
+    ['Handling', [
+      ph('doc', 'images/ADS-DV_Correct_Quick_Lift_Jack_Position_1.jpg', 'Quick Lift Jack under the middle of the chassis.', ['c:jack']),
+      ph('doc', 'images/ADS-DV_Pushbar_Right_Pin.jpg', 'Pushbar clipped to the rear suspension and pinned (right side).', ['c:pushbar']),
+      ph('doc', 'images/ADS-DV_Pushbar_Left.jpg', 'Pushbar on the left side.', ['c:pushbar']),
+    ]],
+  ];
+  window.PHOTOS = [];
+  for (const [, list] of window.PHOTO_GROUPS) for (const p of list) {
+    p.i = window.PHOTOS.length;
+    if (p.r) {
+      const [repo, sha] = REPO[p.r];
+      const path = p.p.replace(/&/g, '%26');
+      p.src = `https://raw.githubusercontent.com/FS-AI/${repo}/${sha}/${path}`;
+      p.href = B(repo, sha, path);
+      // drawings, renders and small connector images are shown whole; photos fill the frame
+      p.contain = p.r !== 'doc' && !/Front_Connections|InCarPC_Installation/.test(p.p);
+    } else p.href = window.REFS[p.pdf];
+    window.PHOTOS.push(p);
+  }
+  window.photosFor = (key) => window.PHOTOS.filter((p) => p.on.includes(key));
+  const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  window.photoThumb = (p) => p.src
+    ? `<button class="phbtn${p.contain ? ' contain' : ''}" type="button" data-photo="${p.i}" title="${esc(p.cap)}"><img src="${p.src}" alt="${esc(p.cap)}" loading="lazy"></button>`
+    : `<a class="phbtn pdf" href="${p.href}" target="_blank" rel="noopener" title="${esc(p.cap)}"><span>PDF</span>photos</a>`;
+  // "Show in 3D" selects the part in the viewer (once the 3D module has loaded) and scrolls to it.
+  window.showIn3D = (key) => {
+    if (!window.__adsdv) return;
+    window.__adsdv.select(key, true);
+    document.getElementById('viewer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  const lb = document.getElementById('lightbox');
+  window.openPhoto = (i) => {
+    const p = window.PHOTOS[i];
+    lb.querySelector('img').src = p.src;
+    lb.querySelector('img').alt = p.cap;
+    lb.querySelector('.lbcap').textContent = p.cap;
+    lb.querySelector('.lbsrc').href = p.href;
+    const show = lb.querySelector('.lbshow');
+    show.hidden = !window.__adsdv;
+    show.onclick = () => { lb.close(); window.showIn3D(p.on[0]); };
+    lb.showModal();
+  };
+  lb.addEventListener('click', (e) => { if (e.target === lb) lb.close(); });
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-photo]');
+    if (t) { e.preventDefault(); window.openPhoto(+t.dataset.photo); return; }
+    const s = e.target.closest('[data-show]');
+    if (s) window.showIn3D(s.dataset.show);
+  });
+  document.getElementById('photoGallery').innerHTML = window.PHOTO_GROUPS.map(([title, list]) => `
+    <h3>${title}</h3>
+    <div class="phgrid">${list.map((p) => `
+      <figure class="ph">${window.photoThumb(p)}
+        <figcaption>${esc(p.cap)}
+          <span class="phlinks"><a href="${p.href}" target="_blank" rel="noopener">${p.src ? 'IMechE original' : 'Open PDF'}</a>
+          <button class="linkbtn" type="button" data-show="${p.on[0]}">Show in 3D</button></span>
+        </figcaption>
+      </figure>`).join('')}</div>`).join('');
   // data-ref="key" or "key:12" or "key:12-30"; line anchors only for text files on GitHub.
   window.refUrl = function (ref) {
     const [key, lines] = ref.split(':');
     let url = window.REFS[key];
     if (!url) return null;
-    if (lines && url.includes('github.com/FS-AI/') && !/\.(pdf|png|step|stp)$/i.test(url)) {
+    if (lines && url.includes('github.com/FS-AI/') && !/\.(pdf|png|jpg|step|stp)$/i.test(url)) {
       const [a, b] = lines.split('-');
       url += `?plain=1#L${a}` + (b ? `-L${b}` : '');
     }
@@ -892,6 +1093,7 @@ let hovered = null;
 let mode = 'outside';     // outside | inside | exploded | cut
 let explode = 0, explodeTarget = 0;
 let netFocus = null;      // isolate one cable type
+let config = 'incarpc';   // computer set-up: incarpc | rear (own) | front (own)
 let cutOn = false;
 let showTags = true, showHotspots = true;
 
@@ -909,8 +1111,13 @@ const ANCHOR = {
   c: V(0, 0, 0), b: V(0, 650, 0), p: V(0, 330, 0), r: V(-430, 150, 0),
   wFL: V(0, 0, -280), wFR: V(0, 0, 280), wRL: V(0, 0, -280), wRR: V(0, 0, 280),
 };
-const LAYER_ANCHOR = { body: 'b', tsal: 'b', zed: 'b', plate: 'p', rear: 'r' };
+// The rear bay structure stays put; only the computer on its quick-change plate (anchor r) slides out.
+const LAYER_ANCHOR = { body: 'b', tsal: 'b', zed: 'b', plate: 'p', rear: 'c' };
+// Rear compute posts (M6, 40 mm knobs) from the rear compute CAD.
+const REAR_POSTS = { x: [1593 - 2533, 1593 - 2763], z: [155, -155] };
 const at = (p, a = 'c') => p.clone().addScaledVector(ANCHOR[a], explode);
+// Same, at the explode state being animated to: use for camera targets.
+const atT = (p, a = 'c') => p.clone().addScaledVector(ANCHOR[a], explodeTarget);
 
 // Half-width of the bodywork outline at (x, y): used to put switches and the screen on the skin.
 function skinZ(x, y) {
@@ -957,24 +1164,25 @@ const TOPICS = [
     facts: [
       `Compute power + CAN: 7W2 combo D-sub. 13.7 V nominal, 30 A fused (shared with the rear plug and sensor power), CAN 500 kbit/s. Pins A1 +12 V, A2 0 V, 1 CAN-H, 2 CAN-L ${R('comp:72-131', 'Compute §Electrical')}`,
       `Sensor power: TE DT06-2S on the car, you fit a DT04-2P. 11.5–14.5 V, up to 5 A ${R('cad:154-160', 'CAD README')}`,
-      `1 × Cat5e RJ45 and 2 × USB 3.0 Type-A, all running to the rear compute bay ${R('cad:162-172', 'CAD README')}`,
+      `1 × Cat5e lead ending in an RJ45 plug and 2 × USB 3.0 Type-A sockets, all running to the rear compute bay ${R('cad:162-172', 'CAD README')} ${R('ethimg', 'image')}`,
       `Strain relief on both sides of every connector ${R('cad:144', 'CAD README')} ${R('cadconn', 'location image')} ${R('cadphoto', 'photo')}`,
     ], more: 'sec-compute' },
   { id: 'rear', title: 'Rear compute bay', pos: V(-1055, 395, 0), loc: 'cad',
     where: 'Behind the rear axle. Plate 330 × 250 mm, top about 167 mm above the ground, centred 289 mm behind the rear axle line (CAD).',
     facts: [
-      `Shared cars carry the InCarPC here: i7-8700T, GTX 1060-class GPU, 32 GB, PEAK CAN, 4 × USB 3, 2 × GbE ${R('compr:8-26', 'Compute README')}`,
-      `Own plate: 2–5 mm thick, 4 × Ø6.4 holes at 310 × 230 mm, Ø40 knobs, max 8 kg with plate, recommended box 280 × 200 × 200 mm (orange outline), nothing above the rear bodywork ${R('comp:25-69', 'Compute §Mechanical')}`,
+      `Shared cars carry the InCarPC here: i7-8700T, GTX 1060-class GPU, 32 GB, PEAK CAN; its photos show 4 × USB 3, LAN 1–2, 8 × PoE LAN, 4 × HDMI, 3 × DP ${R('compr:8-26', 'Compute README')} ${R('incarpc', 'spec photos')}`,
+      `With the InCarPC out, the rear 7W2, two USB 3.0 plugs and an RJ45 plug are left free (use the Computer buttons in the view) ${R('comp:11-16', 'Compute §Intro')}`,
+      `Own plate: 2–5 mm thick, 4 × Ø6.4 holes at 310 × 230 mm, Ø40 knobs, max 8 kg with plate, recommended box 280 × 200 × 200 mm (orange outline with Own, rear plate), nothing above the rear bodywork ${R('comp:25-69', 'Compute §Mechanical')}`,
       `Same 7W2 power + CAN plug as the front ${R('comp:74', 'Compute')}`,
       `Not waterproof: no running in rain ${R('ops:137-149', 'Op. Safety §7')}`,
     ], more: 'sec-compute', layer: 'rear' },
   { id: 'rearpanel', title: 'Rear panel: AI Power Switch, MPP, charge port', pos: V(-1225, 150, 0), loc: 'approx',
-    where: 'Rear of the car, around the rear compute bracket. The 2021 manual places the AI Master Switch, the MPP and the charging connection at the rear.',
+    where: 'Below the rear compute bay, reached from behind the car. 2026 photos, seen from behind: AI Power Switch (left), MPP (centre), charge port (right).',
     facts: [
-      `AI Power Switch (AIMS) powers the compute platform; turn it off for storage even with no computer fitted ${R('um:197-201', 'UM §6.2')} ${R('glos:41', 'Glossary')}`,
-      `MPP: the MPP dongle must be fitted to drive autonomously; it is part of the E-stop loop. Also takes the joystick umbilical, the charger comms lead and the CAN diagnostics harness ${R('um21', '2021 §2.3–2.5')}`,
-      `Charge port: charger lead with an Amphenol ELP02A04 connector, red latch ${R('um:339-341', 'UM §8.2')}`,
-      `Pushbar spigot on the rear chassis bulkhead ${R('um21', '2021 §4')}`,
+      `AI Power Switch: an ON/OFF toggle that powers the compute plugs and sensor power; turn it off for storage even with no computer fitted ${R('p_rear26', '2026 photo')} ${R('um:197-201', 'UM §6.2')} ${R('glos:41', 'Glossary')}`,
+      `MPP: circular socket; the green MPP dongle must be fitted to drive and for Brake Discharge; it is part of the E-stop loop. Also takes the joystick umbilical, the charger comms lead and the CAN diagnostics harness ${R('p_mpp26', '2026 photo')} ${R('glos:57-58', 'Glossary')} ${R('um21', '2021 §2.3–2.5')}`,
+      `Charge port: orange 2-pole socket; push the charger plug's red latch forward ${R('um:339-345', 'UM §8.2')}`,
+      `Pushbar: clips onto the rear suspension at each upright, held by a pin ${R('p_push26', '2026 photo')} ${R('trans:129-141', 'Transportation')}`,
     ], more: 'sec-safety' },
   { id: 'switches', title: 'Master switches & touchscreen', pos: V(-250, 420, 330), loc: 'approx',
     where: 'Right-hand side of the car. The exact position along the side is not published.',
@@ -1080,17 +1288,17 @@ const NETS = [
     lead: 'The only data link between your computer and the car. Your computer joins it on pins 1–2 of the front or rear 7W2 plug.',
     refs: [['comp:104-108', 'Compute §Electrical'], ['sis', 'SIS v4.0'], ['dbc', 'DBC 2026']] },
   { id: 'ai12', name: '12 V AI power', color: 0xe5484d, r: 6,
-    chips: ['13.7 V nominal', 'one 30 A fuse for front + rear + sensor power', 'AI master switch'],
-    lead: 'Feeds the computer plugs (pins A1/A2) and the front sensor plug. The AI master switch at the rear turns it on.',
+    chips: ['13.7 V nominal', 'one 30 A fuse for front + rear + sensor power', 'AI Power Switch'],
+    lead: 'Feeds the computer plugs (pins A1/A2) and the front sensor plug. The AI Power Switch on the rear panel turns it on.',
     refs: [['comp:100-103', 'Compute §Electrical'], ['cad:154-160', 'CAD README'], ['um:197-201', 'UM §6.2']] },
   { id: 'usb', name: 'USB 3.0', color: 0x3b82f6, r: 4.5,
-    chips: ['2 × Type-A at the front', 'cables run to the rear bay', 'ZED2 is USB 3.0'],
-    lead: 'Two USB 3.0 extension runs from the front plug area to the rear compute bay, plus the ZED2 camera lead.',
+    chips: ['2 × Type-A socket at the front', 'Type-A plugs at the rear end', 'ZED2 is USB 3.0'],
+    lead: 'Two USB 3.0 extension runs from sockets at the front plug area to plugs in the rear compute bay. In 2025 the ZED2 camera used the front run.',
     refs: [['cad:168-172', 'CAD README'], ['compr:28-32', 'Compute README']] },
   { id: 'eth', name: 'Ethernet', color: 0x22a06b, r: 4.5,
-    chips: ['1 × Cat5e RJ45', 'front → rear bay'],
-    lead: 'One Ethernet run from the front plug area to the rear compute bay, e.g. for a lidar.',
-    refs: [['cad:162-166', 'CAD README']] },
+    chips: ['1 × Cat5e', 'RJ45 plug at both ends', 'front → rear bay'],
+    lead: 'One Ethernet lead from the front plug area to the rear compute bay, e.g. for a lidar. On the InCarPC it goes into LAN 1.',
+    refs: [['cad:162-166', 'CAD README'], ['ethimg', 'IMechE image']] },
   { id: 'hv', name: '48 V traction', color: 0x9b51e0, r: 10,
     chips: ['48–52 V', '200 A peak · 100 A cont.', 'live when TSAL is red'],
     lead: 'Battery to motor controller and motor, battery to the DC-DC converter, and the charge port. Not for teams to touch.',
@@ -1120,101 +1328,175 @@ const NET = Object.fromEntries(NETS.map((n) => [n.id, n]));
 const hex = (c) => '#' + c.toString(16).padStart(6, '0');
 
 // ---------- components (interfaces and internals) ----------
-// kind: 'cad' = official CAD, 'photo' = position from an IMechE photo or drawing, 'unpub' = inside, position not published.
+// kind: 'cad' = official CAD, 'photo' = position from an IMechE photo or drawing, 'unpub' = inside, position not published,
+// 'yours' = placeholder for team hardware. cfg: computer set-ups the part exists in (none = always).
 const SR = skinZ(161, 228), SW = skinZ(-56, 228), SC = skinZ(-120, 558);
+// InCarPC ports, read off the photos in IMechE's InCarPC spec. Front face points at the car's front, rear face at the tail.
+// [z, y, width, height, type]; front-face photo is mirrored (seen from ahead of the PC).
+const PCX = -1055;
+const pc = (id, tag, name, face, ports, nets, chips, lead) => ({
+  id, tag, name, kind: 'photo', group: 'ext', anchor: 'r', cfg: ['incarpc'], parent: 'incarpc', prio: 3, face, ports, nets, build: 'ports',
+  at: [PCX + face * 100, ports.reduce((s, p) => s + p[1], 0) / ports.length, ports.reduce((s, p) => s + p[0], 0) / ports.length],
+  chips, lead, refs: [['incarpc', 'InCarPC spec photos'], ['compr:12-24', 'Compute README']],
+});
 const COMPS = [
   // front interface cluster (IMechE CAD image + photo)
   { id: 'fc_7w2', tag: '7W2 power + CAN', name: 'Front compute plug (7W2 D-sub)', kind: 'photo', group: 'ext', anchor: 'c', at: [205, 486, -45], prio: 1,
     nets: ['can', 'ai12'], build: 'dsub',
     chips: ['13.7 V · 30 A fused (shared)', 'CAN 500 kbit/s', 'same plug as the rear'],
     lead: 'Plug your computer in here when it sits on the front sensor plate. Vehicle side: Harting 09 69 202 0072 or Norcomp 680M7W2203L401 socket; you fit the matching plug.',
-    extra: 'pin7w2', refs: [['comp:72-131', 'Compute §Electrical'], ['cadphoto', 'photo'], ['cadconn', 'location image']] },
+    extra: 'pin7w2', refs: [['comp:72-131', 'Compute §Electrical'], ['cadphoto', 'photo'], ['frontcomp', 'photo 2'], ['cadconn', 'location image']] },
   { id: 'fc_dt', tag: 'DT 12 V 5 A', name: 'Front sensor power (TE DT06-2S)', kind: 'photo', group: 'ext', anchor: 'c', at: [205, 486, 15], prio: 1,
     nets: ['ai12'], build: 'dt',
-    chips: ['11.5–14.5 V', '5 A max', 'pin 1 +12 V · pin 2 GND'],
+    chips: ['11.5–14.5 V', '5 A max', 'pin 1 +12 V · pin 2 GND', 'inline blade fuse on the lead (photo)'],
     lead: 'Power for sensors on the plate. The car has the DT06-2S; you fit a DT04-2P.', extra: 'pindt',
-    refs: [['cad:154-160', 'CAD README']] },
+    refs: [['cad:154-160', 'CAD README'], ['frontcomp', 'photo']] },
   { id: 'fc_usb', tag: 'USB 3.0 ×2', name: 'Front USB 3.0 sockets (×2)', kind: 'photo', group: 'ext', anchor: 'c', at: [205, 486, 58], prio: 1,
     nets: ['usb'], build: 'usb',
-    chips: ['2 × Type-A socket', 'run to the rear bay'],
-    lead: 'For USB sensors on the plate when the computer is at the rear.', refs: [['cad:168-172', 'CAD README']] },
-  { id: 'fc_rj45', tag: 'RJ45', name: 'Front Ethernet socket (RJ45, Cat5e)', kind: 'photo', group: 'ext', anchor: 'c', at: [205, 486, 100], prio: 1,
-    nets: ['eth'], build: 'rj45',
-    chips: ['1 × Cat5e', 'runs to the rear bay'],
-    lead: 'For an Ethernet sensor (e.g. lidar) on the plate when the computer is at the rear.', refs: [['cad:162-166', 'CAD README']] },
-  // rear
-  { id: 'incarpc', tag: 'InCarPC', name: 'InCarPC (fitted to shared cars)', kind: 'photo', group: 'ext', anchor: 'r', at: [-1055, 225, 0], prio: 1,
+    chips: ['2 × Type-A socket', 'run to plugs in the rear bay', 'ZED2 used this run in 2025'],
+    lead: 'For USB sensors on the plate when the computer is at the rear. The 2025 wiring had one front USB run, shared with the on-board ZED2; IMechE does not say whether the ZED2 takes one of the two 2026 sockets.',
+    refs: [['cad:168-172', 'CAD README'], ['compr:30', 'Compute README'], ['frontcomp', 'photo']] },
+  { id: 'fc_rj45', tag: 'RJ45 plug', name: 'Front Ethernet lead (Cat5e, RJ45 plug)', kind: 'photo', group: 'ext', anchor: 'c', at: [205, 486, 100], prio: 1,
+    nets: ['eth'], build: 'rj45plug',
+    chips: ['Cat5e lead ending in a male RJ45 plug', 'you need a socket: device port or inline coupler', 'runs to the rear bay'],
+    lead: 'For an Ethernet sensor (e.g. lidar) on the plate when the computer is at the rear. IMechE\'s image and photo show a plug, not a socket.',
+    refs: [['cad:162-166', 'CAD README'], ['ethimg', 'IMechE image'], ['frontcomp', 'photo']] },
+  { id: 'own_front', tag: 'Your computer (front)', name: 'Your computer on the front sensor plate', kind: 'yours', group: 'ext', anchor: 'p', cfg: ['front'],
+    at: [465, 549, 0], prio: 1, nets: ['can', 'ai12', 'usb'], build: 'box:200,70,220:0x8b5cf6',
+    chips: ['plugs into the front 7W2: power + CAN', 'rear mount not needed', '30 A fuse shared with sensor power'],
+    lead: 'Sensors and computer on one plate. The rear 7W2, USB and Ethernet ends in the rear bay are then unused. The box is a placeholder, not a size limit; the plate rules and the T 1.3.3 envelope apply.',
+    links: [['Plug into', ['fc_7w2']], ['Sensors on the plate can use', ['fc_dt', 'fc_usb', 'fc_rj45', 'zedc']]],
+    refs: [['comp:15-16', 'Compute §Intro'], ['compr:50', 'Compute README'], ['cad:118-131', 'CAD README']] },
+  // rear compute bay
+  { id: 'incarpc', tag: 'InCarPC', name: 'InCarPC (fitted to shared cars)', kind: 'photo', group: 'ext', anchor: 'r', cfg: ['incarpc'], at: [PCX, 225, 0], prio: 1,
     nets: ['can', 'ai12', 'usb', 'eth'], build: 'incarpc',
-    chips: ['i7-8700T', 'GTX 1060-class GPU', '32 GB', 'PEAK CAN'],
-    lead: 'Sits on the 330 × 250 mm quick-change plate. Swap it for your own computer on a plate of the same size (max 8 kg).',
-    refs: [['compr:8-26', 'Compute README'], ['incarphoto', 'photo'], ['comp:25-69', 'plate rules']] },
-  { id: 'r_7w2', tag: '7W2 (rear)', name: 'Rear compute plug (7W2 D-sub)', kind: 'photo', group: 'ext', anchor: 'c', at: [-925, 215, 140], prio: 1,
+    chips: ['i7-8700T', 'GTX 1060-class GPU', '32 GB', 'PEAK CAN', 'Wi-Fi + Bluetooth'],
+    lead: 'Sits on the 330 × 250 mm quick-change plate, cables to the front. Power and CAN come from the rear 7W2; the USB and Ethernet runs from the front plug straight in. Swap it for your own computer on a plate of the same size (max 8 kg).',
+    links: [['Front face (towards the car\'s front)', ['pc_dcin', 'pc_can', 'pc_usb', 'pc_lan12', 'pc_dp', 'pc_com', 'pc_gpio', 'pc_audio']],
+      ['Rear face (towards the tail)', ['pc_pwr', 'pc_sim', 'pc_hdmi', 'pc_poe', 'pc_ant', 'pc_ssd']], ['On its plate', ['ign']]],
+    faces: true,
+    refs: [['compr:8-26', 'Compute README'], ['incarpc', 'spec PDF (photos)'], ['incarphoto', 'installed photo'], ['comp:25-69', 'plate rules']] },
+  pc('pc_dcin', 'DC-IN 9–48 V', 'DC power input (5-way screw terminal)', 1, [[-90, 228, 30, 11, 'term']], ['ai12'],
+    ['9–48 V DC', 'terminals: IGN+, +, +, −, −', 'fed from the rear 7W2 (A1/A2)'],
+    'The car\'s 13.7 V reaches it through the rear 7W2 plug; IGN+ comes from the ignition toggle on the InCarPC plate.'),
+  pc('pc_can', 'CAN (PEAK)', 'CAN port (PEAK-System card)', 1, [[86, 186, 31, 13, 'dsub']], ['can'],
+    ['2 channels, galvanically isolated', 'mini PCIe card (.GGP13B)', 'SocketCAN'],
+    'Joins the car\'s CAN bus through pins 1–2 of the rear 7W2. The photo shows a D-sub here with a white/black twisted pair; the port itself is not labelled.'),
+  pc('pc_usb', 'USB 3.0 ×4', 'USB 3.0 ports (×4)', 1, [[24, 225, 13, 5.5, 'usb'], [24, 216, 13, 5.5, 'usb'], [-3, 225, 13, 5.5, 'usb'], [-3, 216, 13, 5.5, 'usb']], ['usb'],
+    ['4 × Type-A', 'the front USB runs plug in here', 'ZED2 needs USB 3.0'], 'Two stacks of two, above LAN 1 and LAN 2.'),
+  pc('pc_lan12', 'LAN 1–2', 'LAN 1 and LAN 2 (Gigabit Ethernet)', 1, [[24, 202, 16, 13.5, 'lan'], [-3, 202, 16, 13.5, 'lan']], ['eth'],
+    ['2 × GbE', 'LAN 1 takes the front Ethernet run (photo)'], 'The two ports the spec lists as "2x GbE".'),
+  pc('pc_dp', 'DP ×3', 'DisplayPort (×3)', 1, [[81, 226, 16, 5, 'dp'], [54, 226, 16, 5, 'dp'], [54, 216, 16, 5, 'dp']], [],
+    ['DP1–DP3'], 'For a monitor while working on the car.'),
+  pc('pc_com', 'COM 1–2', 'COM1 and COM2 (9-pin D-sub)', 1, [[-46, 222, 31, 12.5, 'dsub'], [-46, 201, 31, 12.5, 'dsub']], [],
+    ['2 × 9-pin serial'], 'Serial ports for devices such as a GNSS receiver.'),
+  pc('pc_gpio', 'GPIO', 'GPIO D-sub', 1, [[-88, 201, 25, 11, 'dsub']], [],
+    ['label partly hidden by cables in the photo'], 'Below the DC-IN terminal.'),
+  pc('pc_audio', 'Audio', 'Mic in and line out (3.5 mm)', 1, [[103, 221, 7, 7, 'audioP'], [103, 211, 7, 7, 'audioG']], [],
+    ['pink: mic in', 'green: line out'], 'Next to ANT2.'),
+  pc('pc_pwr', 'Power button', 'Power button and status LEDs', -1, [[-103, 232, 8, 8, 'btn'], [-94, 236, 3, 3, 'ledR'], [-86, 236, 3, 3, 'ledR'], [-94, 228, 3, 3, 'ledG'], [-86, 228, 3, 3, 'ledG']], [],
+    ['LEDs: POWER, HDD, UPS, ACC, WWAN'], 'On the face you see from behind the car.'),
+  pc('pc_sim', 'SIM ×2', 'SIM card slots (×2)', -1, [[-65, 232, 24, 3, 'slot'], [-65, 225, 24, 3, 'slot']], [],
+    ['for a WWAN modem', 'no modem in the published parts list'], 'Beside the power button.'),
+  pc('pc_hdmi', 'HDMI ×4', 'HDMI (×4)', -1, [[-35, 222, 15, 5.5, 'hdmi'], [-35, 209, 15, 5.5, 'hdmi'], [-8, 222, 15, 5.5, 'hdmi'], [-8, 209, 15, 5.5, 'hdmi']], [],
+    ['HDMI 1–4'], 'Reachable from behind the car.'),
+  pc('pc_poe', 'LAN 3–10 PoE', 'LAN 3–10, marked PoE (×8)', -1,
+    [22, 46, 73, 100].flatMap((z) => [[z, 222, 16, 13.5, 'lan'], [z, 205, 16, 13.5, 'lan']]), ['eth'],
+    ['8 × RJ45 marked PoE', 'PoE budget not published', 'not in the spec\'s port list'],
+    'Marked PoE on the case, so they can power PoE devices such as cameras. The spec only lists "2x GbE"; these eight are visible in IMechE\'s photos.'),
+  pc('pc_ant', 'Wi-Fi antenna', 'Antenna sockets ANT1 and ANT7 (SMA)', -1, [[119, 214, 7, 7, 'sma'], [119, 192, 7, 7, 'sma']], [],
+    ['Wi-Fi 802.11ac + Bluetooth 4.0', 'ANT2–ANT6 are blanked'], 'The installed photo shows a stub antenna at the rear right.'),
+  pc('pc_ssd', 'SSD bays', '2.5" drive bays (×2)', -1, [[-60, 196, 95, 10, 'bay'], [-60, 177, 95, 10, 'bay']], [],
+    ['removable 2.5" SATA SSD caddy'], 'Lower left, as seen from behind.'),
+  { id: 'ign', tag: 'Ignition toggle', name: 'InCarPC ignition toggle', kind: 'photo', group: 'ext', anchor: 'r', cfg: ['incarpc'], parent: 'incarpc',
+    at: [-1160, 240, -152], prio: 3, nets: ['ai12'], build: 'igntoggle',
+    chips: ['ON/OFF', 'wired to IGN+ on the DC-IN terminal', 'leaves with the InCarPC'],
+    lead: 'On a bracket at the rear left of the InCarPC plate (spec photo). The 7W2 has no ignition pin, so your own computer needs its own on/off.',
+    refs: [['incarpc', 'InCarPC spec photo'], ['incarphoto', 'installed photo']] },
+  { id: 'own_rear', tag: 'Your computer (rear)', name: 'Your computer on the rear plate', kind: 'yours', group: 'ext', anchor: 'r', cfg: ['rear'],
+    at: [PCX, 225, 0], prio: 1, nets: ['can', 'ai12', 'usb', 'eth'], build: 'ownrear',
+    chips: ['plate 330 × 250 mm, 2–5 mm', 'max 8 kg with plate', 'recommended max 280 × 200 × 200 mm', 'nothing above the rear bodywork'],
+    lead: 'Lift the InCarPC plate off its four posts and these harness ends are left free in the bay. You supply the CAN interface and an on/off switch; the bus is already terminated.',
+    links: [['Plug into', ['r_7w2', 'r_usb', 'r_eth']], ['Turn on with', ['aims']]],
+    refs: [['comp:25-69', 'Compute §Mechanical'], ['comp:72-110', 'Compute §Electrical'], ['compplate', 'plate drawing']] },
+  { id: 'r_7w2', tag: '7W2 (rear)', name: 'Rear compute plug (7W2 D-sub)', kind: 'photo', group: 'ext', anchor: 'c', at: [-925, 305, -105], prio: 1,
     nets: ['can', 'ai12'], build: 'dsub',
-    chips: ['13.7 V · 30 A fused (shared)', 'CAN 500 kbit/s'],
-    lead: 'Same plug and pinout as the front one. Exact spot in the bay is approximate.', extra: 'pin7w2',
-    refs: [['comp:72-131', 'Compute §Electrical']] },
-  { id: 'charge', tag: 'Charge port', name: 'Traction charge port', kind: 'photo', group: 'ext', anchor: 'c', at: [-1214, 150, -110], prio: 1,
-    nets: ['hv'], build: 'charge',
-    chips: ['Amphenol connector, red latch', 'turn on Charge Enable first'],
-    lead: 'Charger: TC Charger HK-J-H66-40. Charging runs from about 52 V to 58 V.',
-    refs: [['um:335-411', 'UM §8.2'], ['um21', '2021 manual Fig. 13']] },
-  { id: 'mpp', tag: 'MPP', name: 'Multi-Purpose Port (MPP)', kind: 'photo', group: 'ext', anchor: 'c', at: [-1214, 150, -35], prio: 1,
-    nets: ['estop', 'can'], build: 'mpp',
-    chips: ['MPP dongle must be in to drive', 'joystick · charger comms · CAN diagnostics'],
-    lead: 'The dongle is part of the shutdown loop: pull it and the car brakes.',
-    refs: [['um21', '2021 manual §2.3–2.5, Fig. 13'], ['glos:50', 'Glossary']] },
-  { id: 'aims', tag: 'AI master switch', name: 'AI Power Switch (AIMS)', kind: 'photo', group: 'ext', anchor: 'c', at: [-1214, 150, 35], prio: 1,
-    nets: ['ai12'], build: 'aims',
-    chips: ['turns on 12 V AI power', 'off for storage'],
-    lead: 'Switch it on before ASMS/TSMS so the computer boots and starts sending CAN.',
-    refs: [['um:197-201', 'UM §6.2'], ['um:252-256', 'UM §6.2'], ['um21', '2021 manual Fig. 13']] },
-  { id: 'ign', tag: 'AI ignition', name: 'AI computer ignition switch', kind: 'photo', group: 'ext', anchor: 'c', at: [-1214, 150, 105], prio: 2,
+    chips: ['13.7 V · 30 A fused (shared)', 'CAN 500 kbit/s', 'InCarPC: adapter to DC-IN + CAN'],
+    lead: 'Same plug and pinout as the front one, on the bulkhead at the front of the bay (left side in the installed photo).', extra: 'pin7w2',
+    refs: [['comp:72-131', 'Compute §Electrical'], ['compr:32', 'Compute README'], ['incarphoto', 'installed photo']] },
+  { id: 'r_usb', tag: 'USB plugs ×2', name: 'USB 3.0 plugs (×2), rear end of the front sockets', kind: 'photo', group: 'ext', anchor: 'c', cfg: ['rear', 'front'],
+    at: [-928, 298, -62], prio: 1, nets: ['usb'], build: 'usbplug',
+    chips: ['2 × Type-A plug', 'other end: the front USB sockets'],
+    lead: 'Plug these into your computer to reach USB sensors on the front plate. The InCarPC takes them in its front USB ports.',
+    refs: [['cad:168-172', 'CAD README'], ['incarpc', 'InCarPC photo']] },
+  { id: 'r_eth', tag: 'RJ45 plug', name: 'Ethernet RJ45 plug, rear end of the front lead', kind: 'photo', group: 'ext', anchor: 'c', cfg: ['rear', 'front'],
+    at: [-928, 298, -32], prio: 1, nets: ['eth'], build: 'rj45plug',
+    chips: ['1 × Cat5e', 'other end: the front RJ45 plug'],
+    lead: 'Plug into your computer\'s Ethernet port. On the InCarPC it goes into LAN 1.',
+    refs: [['cad:162-166', 'CAD README'], ['incarpc', 'InCarPC photo']] },
+  // rear panel (2026 photos, seen from behind: left to right)
+  { id: 'aims', tag: 'AI Power Switch', name: 'AI Power Switch (ON/OFF toggle)', kind: 'photo', group: 'ext', anchor: 'c', at: [-1214, 150, -95], prio: 1,
     nets: ['ai12'], build: 'toggle',
-    chips: ['on/off signal to the InCarPC'],
-    lead: 'A toggle on the rear panel next to the AI master switch (2021 photo).', refs: [['um21', '2021 manual Fig. 13']] },
+    chips: ['turns on 12 V AI power: both 7W2 plugs + sensor DT', 'off for storage, even with no computer'],
+    lead: 'Left of the rear panel. Switch it on before ASMS/TSMS so the computer boots and starts sending CAN. The 2021 car had a rotary knob here.',
+    refs: [['p_rear26', '2026 photo'], ['um:197-201', 'UM §6.2'], ['um:252-256', 'UM §6.2'], ['glos:41', 'Glossary']] },
+  { id: 'mpp', tag: 'MPP', name: 'Multi-Purpose Port (MPP)', kind: 'photo', group: 'ext', anchor: 'c', at: [-1214, 150, 0], prio: 1,
+    nets: ['estop', 'can'], build: 'mpp',
+    chips: ['circular multi-pin socket', 'green MPP dongle must be in to drive', 'joystick · charger comms · CAN diagnostics'],
+    lead: 'Centre of the rear panel. The dongle is part of the shutdown loop: pull it and the car brakes. It is also needed for Brake Discharge.',
+    refs: [['p_mpp26', '2026 photo'], ['glos:57-58', 'Glossary'], ['um21', '2021 manual §2.3–2.5']] },
+  { id: 'charge', tag: 'Charge port', name: 'Traction charge port', kind: 'photo', group: 'ext', anchor: 'c', at: [-1214, 150, 95], prio: 1,
+    nets: ['hv'], build: 'charge',
+    chips: ['orange 2-pole socket', 'charger plug: push the red latch forward', 'turn on Charge Enable first'],
+    lead: 'Right of the rear panel. Charger: TC Charger HK-J-H66-40. Charging runs from about 52 V to 58 V.',
+    refs: [['p_rear26', '2026 photo'], ['um:335-411', 'UM §8.2'], ['p_charge26', 'plugged-in photo']] },
   // light tower (on the bodywork fin)
   { id: 'tower', tag: 'TSAL / ASSI lights', topic: 'tsal', kind: 'cad', group: 'ext', anchor: 'b', at: [G.tsalX, 712, 0], prio: 1, nets: [] },
   { id: 'gpsant', tag: 'GPS antenna', name: 'PCAN-GPS antenna', kind: 'photo', group: 'ext', anchor: 'b', at: [G.tsalX, 826, 0], prio: 2,
     nets: ['rf'], build: 'gpsant',
     chips: ['top of the light tower'],
-    lead: 'Antenna for the PCAN-GPS. A siren is also under the tower cover.', refs: [['um21', '2021 manual Fig. 14']] },
+    lead: 'Antenna for the PCAN-GPS.', refs: [['um21', '2021 manual Fig. 14']] },
+  { id: 'siren', tag: 'Siren', name: 'Siren', kind: 'photo', group: 'ext', anchor: 'b', at: [G.tsalX - 20, 790, 0], prio: 3, nets: [],
+    chips: ['under the tower cover'], lead: 'Sounds with the autonomous-system states.', refs: [['um21', '2021 manual Fig. 14'], ['p_gems26', '2026 photo']] },
   { id: 'logger', tag: 'GEMS DA3 logger', name: 'GEMS DA3 CAN data logger', kind: 'photo', group: 'ext', anchor: 'b', at: [G.tsalX - 68, 722, 0], prio: 2,
     nets: ['can'], build: 'logger',
-    chips: ['logs the CAN bus', 'card in + 2 green LEDs before a mission'],
-    lead: 'Mounted on the back of the light tower. Officials and the team can read the data.',
-    refs: [['um21', '2021 manual Fig. 14'], ['um:225-228', 'UM §6.2'], ['rules', 'Rules T1.2']] },
+    chips: ['logs the CAN bus', 'memory card in the slot + 2 green LEDs before a mission', 'card reader supplied'],
+    lead: 'On the back of the light tower. Officials and the team can read the data.',
+    refs: [['p_gems26', '2026 photo'], ['um:225-228', 'UM §6.2'], ['rules', 'Rules T1.2']] },
   { id: 'zedc', tag: 'ZED2 camera', topic: 'zed', kind: 'cad', group: 'ext', anchor: 'b', at: [G.zedX + 10, G.zedY + 18, 0], prio: 1, nets: ['usb'] },
   // under the top bodywork
   { id: 'resgps', tag: 'RES receiver + PCAN-GPS', name: 'RES receiver + PCAN-GPS enclosure', kind: 'photo', group: 'int', anchor: 'c', at: [-200, 436, -80], prio: 1,
     nets: ['can', 'estop', 'rf'], build: 'resgps',
-    chips: ['RES 430–440 MHz', 'GNSS + gyro + accel/mag', 'unplug 2 leads (left side) before lifting the top body'],
-    lead: 'One enclosure under the top bodywork. Exact spot is approximate; the 2021 manual shows it on the chassis with its plugs on the left.',
+    chips: ['RES 430–440 MHz', 'GNSS + gyro + accel/mag', 'plugs: GrossFunk aerial, top-body harness (sprung tab), circular harness'],
+    lead: 'One enclosure under the top bodywork. Unplug the aerial and the top-body harness before lifting the top body. Exact spot is approximate; the 2021 manual shows it on the chassis with its plugs on the left.',
     refs: [['um21', '2021 manual §9, Fig. 21'], ['pcan', 'PCAN-GPS manual'], ['ops:150-158', 'Op. Safety §8']] },
-  // right side (2018 drawing + 2021 photo): LV, TS, AS, E-stop from rear to front
+  // right side (2018 drawing + 2021/2026 photos): LV, TS, AS, E-stop from rear to front
   { id: 'lvms', tag: 'LVMS', name: 'Low Voltage Master Switch', kind: 'photo', group: 'ext', anchor: 'c', at: [-140, 228, skinZ(-140, 228)], prio: 1,
     nets: ['lv'], build: 'key:0x18191b',
-    chips: ['key switch', 'first on: TSAL goes green'],
-    lead: 'Right side of the car, first of three key switches (rear to front: LV, TS, AS).', refs: [['um21', '2021 manual Fig. 12'], ['arch', '2018 drawing']] },
+    chips: ['red key', 'first on: TSAL goes green'],
+    lead: 'Right side of the car, first of three key switches (rear to front: LV, TS, AS). 3 keys + 1 spare come with the car.',
+    refs: [['p_side26', '2026 photo'], ['um21', '2021 manual Fig. 12'], ['arch', '2018 drawing']] },
   { id: 'tsms', tag: 'TSMS', name: 'Tractive System Master Switch', kind: 'photo', group: 'ext', anchor: 'c', at: [-56, 228, SW], prio: 1,
     nets: ['hv'], build: 'key:0xf05a28',
     chips: ['orange ring', 'enables the 48 V drive'],
-    lead: 'Right side, middle key switch.', refs: [['um21', '2021 manual Fig. 12']] },
+    lead: 'Right side, middle key switch.', refs: [['p_side26', '2026 photo'], ['um21', '2021 manual Fig. 12']] },
   { id: 'asms', tag: 'ASMS', name: 'Autonomous System Master Switch', kind: 'photo', group: 'ext', anchor: 'c', at: [28, 228, skinZ(28, 228)], prio: 1,
     nets: ['estop'], build: 'key:0x1d4ed8',
     chips: ['blue ring', 'off → AS_OFF; off while driving → emergency brake'],
-    lead: 'Right side, third key switch.', refs: [['um21', '2021 manual Fig. 12'], ['sis', 'SIS §3']] },
+    lead: 'Right side, third key switch.', refs: [['p_side26', '2026 photo'], ['sis', 'SIS §3']] },
   { id: 'estop_r', tag: 'E-stop', name: 'Side emergency stop (right)', kind: 'photo', group: 'ext', anchor: 'c', at: [161, 228, SR], prio: 1,
     nets: ['estop'], build: 'estop:1',
     chips: ['press = emergency brake', 'twist to release'],
-    lead: 'Red button next to the key switches. There is one on each side.', refs: [['um21', '2021 manual Fig. 12'], ['um:144-145', 'UM §5.2']] },
+    lead: 'Red button next to the key switches. There is one on each side.', refs: [['p_side26', '2026 photo'], ['um:144-145', 'UM §5.2']] },
   { id: 'estop_l', tag: 'E-stop (left)', name: 'Side emergency stop (left)', kind: 'photo', group: 'ext', anchor: 'c', at: [161, 228, -SR], prio: 2,
     nets: ['estop'], build: 'estop:-1',
     chips: ['press = emergency brake', 'twist to release'],
-    lead: 'Mirror of the right-hand button (assumed same position).', refs: [['um:144-145', 'UM §5.2']] },
+    lead: 'Left side panel. The 2026 photo shows it alone on that side; its position along the car is assumed to mirror the right one.',
+    refs: [['p_estopl26', '2026 photo'], ['um:144-145', 'UM §5.2']] },
   { id: 'screen', tag: 'Touchscreen', name: '4.3" touchscreen (mission select)', kind: 'photo', group: 'ext', anchor: 'b', at: [-120, 558, SC], prio: 1,
     nets: ['can'], build: 'screen',
-    chips: ['select mission (AMI)', 'Service page: brake discharge, charge enable'],
-    lead: 'Right-hand side of the cowl behind the light tower (2018 drawing).', refs: [['um21', '2021 manual §3.3'], ['arch', '2018 drawing']] },
+    chips: ['select mission (AMI)', 'Service page: Brake Discharge, Charge Enable'],
+    lead: 'Right-hand side of the cowl behind the light tower (2018 drawing).', refs: [['um21', '2021 manual §3.3'], ['arch', '2018 drawing'], ['um:302-308', 'UM §7.2']] },
   // inside: positions not published
   { id: 'batt', tag: 'Traction battery', name: 'Traction battery (4 × 12 V 100 Ah)', kind: 'unpub', group: 'int', anchor: 'c', at: [-130, 172, 0], prio: 1,
     nets: ['hv'], build: 'battery',
@@ -1249,49 +1531,78 @@ const COMPS = [
     chips: ['±21° road-wheel angle', '37 Nm column torque', '13.8 V'],
     lead: 'The VCU turns your CAN angle request into motor commands. Tie rods are from the CAD; motor and controller spots are indicative.',
     refs: [['spec:42-48', 'Spec §3'], ['msteer', 'datasheet'], ['sis', 'SIS p.4']] },
-  { id: 'brake', tag: 'Brake / EBS unit', name: 'Brake-by-wire and EBS unit', kind: 'unpub', group: 'int', anchor: 'c', at: [1050, 235, 0], prio: 1,
+  { id: 'brake', tag: 'Brake / EBS unit', name: 'Brake-by-wire and EBS unit', kind: 'unpub', group: 'int', anchor: 'c', at: [990, 215, 0], prio: 1,
     nets: ['hyd', 'vcu'], build: 'box:160,110,150:0x7c2d12',
-    chips: ['front + rear circuits', 'EBS: armed / triggered', 'discharge before storage'],
-    lead: 'Holds pressure in accumulators so the car can always stop.', refs: [['sis', 'SIS p.5, §3'], ['um:303-321', 'UM §7.2']] },
-  { id: 'inertia', tag: 'Inertia switch', name: 'Inertia (crash) switch', kind: 'unpub', group: 'int', anchor: 'c', at: [1180, 255, 70], prio: 2,
+    chips: ['front + rear circuits', 'EBS: armed / triggered', 'reservoir level check under the nose', 'discharge before storage'],
+    lead: 'Pump, valve block and reservoir sit on the front bulkhead (2026 photo); which side is not clear. Holds pressure in accumulators so the car can always stop.',
+    refs: [['p_ebs26', '2026 photo'], ['sis', 'SIS p.5, §3'], ['um:303-321', 'UM §7.2']] },
+  { id: 'inertia', tag: 'Inertia switch', name: 'Inertia (crash) switch', kind: 'unpub', group: 'int', anchor: 'c', at: [760, 350, 60], prio: 2,
     nets: ['estop'], build: 'box:40,40,40:0xe3b505',
-    chips: ['under the front body panel', 'press down to reset'], lead: 'Trips on impact and opens the shutdown loop.',
-    refs: [['um:413-427', 'UM §9']] },
+    chips: ['under the Front Bodywork Panel', 'press down to reset'], lead: 'Trips on impact and opens the shutdown loop. The 2026 photo shows it under a clear cover between the front wheels.',
+    refs: [['um:413-427', 'UM §9'], ['p_inertia26', '2026 photo']] },
   { id: 'wss', tag: 'Wheel speed ×4', name: 'Wheel speed sensors (×4)', kind: 'unpub', group: 'int', anchor: 'wFR', at: [G.axleF, 205, 470], prio: 2,
     nets: ['vcu'], build: 'box:20,20,20:0x0ea5e9',
     chips: ['rpm on 525h', 'pulse counts on 526h'], lead: 'One per wheel; read them from the VCU messages.',
     refs: [['sis', 'SIS p.9–10']] },
+  // handling
+  { id: 'jack', tag: 'Jack point', name: 'Quick Lift Jack point', kind: 'photo', group: 'ext', anchor: 'c', at: [0, 40, 0], prio: 3, nets: [], build: 'box:160,6,160:0xdc2626',
+    chips: ['underside of the chassis', 'only lift point'], lead: 'Lift only here, with the Quick Lift Jack, onto or off the skateboard trolleys. Never by the bodywork, nosecone or suspension.',
+    refs: [['ops:50-58', 'Op. Safety §4'], ['p_jack26', '2026 photo']] },
+  { id: 'pushbar', tag: 'Pushbar pins', name: 'Pushbar mounts (rear, both sides)', kind: 'photo', group: 'ext', anchor: 'c', at: [G.axleR + 40, 160, 470], prio: 3, nets: [], build: 'pushpins',
+    chips: ['clips onto the rear suspension at each upright', 'held by a pin'], lead: 'Push only with the pushbar or the tyres. There is no towing eye.',
+    refs: [['p_push26', '2026 photo'], ['trans:129-141', 'Transportation §6']] },
 ];
 const COMP = Object.fromEntries(COMPS.map((c) => [c.id, c]));
+const cfgOn = (c) => !c.cfg || c.cfg.includes(config);
+// Inspector index groups.
+const SECTIONS = [
+  ['Front plugs (sensor plate)', ['fc_7w2', 'fc_dt', 'fc_usb', 'fc_rj45', 'own_front']],
+  ['Rear compute bay', ['incarpc', 'own_rear', 'r_7w2', 'r_usb', 'r_eth', 'ign']],
+  ['InCarPC ports', ['pc_dcin', 'pc_can', 'pc_usb', 'pc_lan12', 'pc_dp', 'pc_com', 'pc_gpio', 'pc_audio', 'pc_pwr', 'pc_sim', 'pc_hdmi', 'pc_poe', 'pc_ant', 'pc_ssd']],
+  ['Rear panel', ['aims', 'mpp', 'charge']],
+  ['Sides & cowl', ['lvms', 'tsms', 'asms', 'estop_r', 'estop_l', 'screen']],
+  ['Light tower', ['tower', 'gpsant', 'logger', 'siren', 'zedc']],
+  ['Inside the car', ['resgps', 'vcu', 'batt', 'dcdc', 'lvbatt', 'fuse', 'sevcon', 'motor', 'steer', 'brake', 'inertia', 'wss']],
+  ['Handling', ['jack', 'pushbar']],
+];
 
-// Cable runs: [x, y, z, anchor?]. Routes inside the car are schematic.
+// Cable runs: [x, y, z, anchor?]. Routes inside the car are schematic. cfg as for COMPS.
 const CABLES = [
   // AI CAN bus trunk and branches
-  { net: 'can', pts: [[-925, 215, 140], [-880, 385, 165], [-300, 395, 168], [250, 400, 165], [270, 440, 20], [205, 486, -45]] },
-  { net: 'can', pts: [[-925, 215, 130], [-960, 215, 110, 'r'], [-960, 240, 60, 'r']] },
+  { net: 'can', pts: [[-925, 305, -105], [-870, 385, -40], [-700, 395, 150], [-300, 395, 168], [250, 400, 165], [270, 440, 20], [205, 486, -45]] },
   { net: 'can', pts: [[330, 398, 165], [330, 330, 110]] },
   { net: 'can', pts: [[-200, 395, 168], [-200, 420, 30], [-200, 445, -20]] },
   { net: 'can', pts: [[40, 398, 166], [40, 560, 60, 'b'], [G.tsalX - 60, 715, 0, 'b']] },
   { net: 'can', pts: [[-120, 395, 168], [-120, 480, 160], [-120, 545, 70, 'b'], [-120, 558, SC - 6, 'b']] },
-  { net: 'can', pts: [[-925, 215, 140], [-1050, 170, 40], [-1200, 150, -35]] },
+  { net: 'can', pts: [[-925, 300, -110], [-1000, 210, -60], [-1150, 160, -10], [-1200, 150, 0]] },
   // 12 V AI power
   { net: 'ai12', pts: [[-700, 350, -160], [-880, 320, -130]] },
-  { net: 'ai12', pts: [[-880, 320, -130], [-1100, 210, 0], [-1200, 150, 35]] },
-  { net: 'ai12', pts: [[-1200, 150, 35], [-1080, 200, 90], [-925, 215, 150]] },
-  { net: 'ai12', pts: [[-925, 215, 150], [-965, 215, 125, 'r'], [-965, 240, 75, 'r']] },
-  { net: 'ai12', pts: [[-1200, 150, 35], [-1060, 230, -60], [-880, 385, -165], [-300, 395, -170], [250, 400, -165], [265, 445, -90], [205, 486, -45]] },
+  { net: 'ai12', pts: [[-880, 320, -130], [-1100, 210, -110], [-1200, 150, -95]] },
+  { net: 'ai12', pts: [[-1200, 150, -95], [-1080, 240, -120], [-925, 300, -112]] },
+  { net: 'ai12', pts: [[-1200, 150, -95], [-1060, 230, -130], [-880, 385, -165], [-300, 395, -170], [250, 400, -165], [265, 445, -90], [205, 486, -45]] },
   { net: 'ai12', pts: [[250, 400, -165], [270, 450, -20], [205, 486, 15]] },
-  { net: 'ai12', pts: [[-1200, 150, 105], [-1080, 200, 100], [-965, 245, 90, 'r']] },
-  // USB, Ethernet, ZED
-  { net: 'usb', pts: [[205, 486, 52], [262, 440, 70], [200, 390, 128], [-880, 372, 128], [-962, 262, 40, 'r']] },
-  { net: 'usb', pts: [[205, 486, 64], [258, 436, 82], [190, 384, 116], [-880, 362, 116], [-962, 258, 25, 'r']] },
-  { net: 'usb', pts: [[G.zedX - 20, G.zedY, 0, 'b'], [110, 700, 0, 'b'], [60, 560, 40, 'b'], [40, 395, 104], [-880, 352, 104], [-962, 254, 10, 'r']] },
-  { net: 'eth', pts: [[205, 486, 100], [262, 440, 120], [200, 392, 142], [-880, 380, 142], [-962, 266, 60, 'r']] },
+  // USB and Ethernet runs, front plug area to the rear bay
+  { net: 'usb', pts: [[205, 486, 52], [262, 440, 70], [200, 390, 128], [-700, 372, 128], [-860, 340, 40], [-928, 305, -68]] },
+  { net: 'usb', pts: [[205, 486, 64], [258, 436, 82], [190, 384, 116], [-700, 362, 116], [-850, 335, 30], [-928, 305, -56]] },
+  { net: 'eth', pts: [[205, 486, 100], [262, 440, 120], [200, 392, 142], [-700, 380, 142], [-870, 345, 50], [-928, 305, -32]] },
+  // ZED2: into a front USB socket (2025 wiring), or straight into a computer on the plate
+  { net: 'usb', cfg: ['incarpc', 'rear'], pts: [[G.zedX - 20, G.zedY, 0, 'b'], [130, 680, 30, 'b'], [180, 540, 50], [212, 492, 52]] },
+  { net: 'usb', cfg: ['front'], pts: [[G.zedX - 20, G.zedY, 0, 'b'], [180, 650, 40, 'b'], [300, 600, 60, 'p'], [365, 555, 40, 'p']] },
+  // InCarPC: rear harness ends into its front face; ignition toggle to IGN+
+  { net: 'ai12', cfg: ['incarpc'], pts: [[-925, 305, -105], [-930, 280, -100], [-945, 240, -92, 'r'], [-957, 228, -90, 'r']] },
+  { net: 'can', cfg: ['incarpc'], pts: [[-925, 305, -100], [-905, 280, -20], [-935, 200, 70, 'r'], [-957, 186, 86, 'r']] },
+  { net: 'usb', cfg: ['incarpc'], pts: [[-928, 305, -68], [-918, 280, -20], [-940, 235, 18, 'r'], [-957, 225, 24, 'r']] },
+  { net: 'usb', cfg: ['incarpc'], pts: [[-928, 305, -56], [-915, 275, -10], [-940, 222, 12, 'r'], [-957, 216, 24, 'r']] },
+  { net: 'eth', cfg: ['incarpc'], pts: [[-928, 305, -32], [-910, 265, 0], [-938, 208, 20, 'r'], [-957, 202, 24, 'r']] },
+  { net: 'ai12', cfg: ['incarpc'], pts: [[-1160, 245, -152, 'r'], [-1150, 300, -150, 'r'], [-990, 300, -120, 'r'], [-950, 262, -96, 'r'], [-957, 229, -92, 'r']] },
+  // your computer on the front plate: short leads from the front 7W2
+  { net: 'can', cfg: ['front'], pts: [[205, 486, -50], [260, 505, -60], [350, 540, -70, 'p'], [365, 549, -62, 'p']] },
+  { net: 'ai12', cfg: ['front'], pts: [[205, 486, -40], [255, 512, -80], [350, 545, -88, 'p'], [365, 549, -80, 'p']] },
   // 48 V traction
   { net: 'hv', pts: [[-200, 282, 60], [-350, 300, 110], [-560, 323, 110]] },
   { net: 'hv', pts: [[-560, 323, 70], [-560, 290, 40], [-560, 268, 40]] },
   { net: 'hv', pts: [[-200, 282, -60], [-280, 300, -110], [-300, 310, -110]] },
-  { net: 'hv', pts: [[-1200, 150, -110], [-1080, 120, -150], [-700, 80, -165], [-465, 110, -150]] },
+  { net: 'hv', pts: [[-1200, 150, 95], [-1080, 120, 150], [-700, 80, 165], [-465, 110, 150]] },
   // 12 V vehicle
   { net: 'lv', pts: [[-300, 335, -110], [-500, 365, -125], [-640, 350, -110]] },
   { net: 'lv', pts: [[-700, 305, -110], [-400, 230, 150], [-140, 228, skinZ(-140, 228) - 10]] },
@@ -1299,19 +1610,19 @@ const CABLES = [
   { net: 'estop', pts: [[330, 300, 180], [200, 240, SR - 30], [161, 228, SR - 8]] },
   { net: 'estop', pts: [[161, 228, SR - 8], [140, 160, 0], [161, 228, -SR + 8]] },
   { net: 'estop', pts: [[161, 228, -SR + 8], [-100, 380, -160], [-200, 430, -140]] },
-  { net: 'estop', pts: [[-200, 430, -140], [-700, 260, -60], [-1050, 150, -40], [-1200, 150, -35]] },
-  { net: 'estop', pts: [[-1200, 150, -35], [-1000, 50, 0], [800, 50, 0], [1180, 230, 70]] },
-  { net: 'estop', pts: [[1180, 255, 70], [800, 320, 120], [420, 300, 110]] },
+  { net: 'estop', pts: [[-200, 430, -140], [-700, 260, -40], [-1050, 150, -10], [-1200, 150, 0]] },
+  { net: 'estop', pts: [[-1200, 150, 0], [-1000, 50, 0], [600, 50, 0], [760, 330, 60]] },
+  { net: 'estop', pts: [[760, 350, 60], [600, 330, 110], [420, 300, 110]] },
   { net: 'estop', pts: [[28, 228, skinZ(28, 228) - 8], [150, 260, 180], [330, 300, 170]] },
   // brake hydraulics
-  { net: 'hyd', pts: [[1050, 235, 60], [900, 210, 260], [G.axleF, 230, 470, 'wFR']] },
-  { net: 'hyd', pts: [[1050, 235, -60], [900, 210, -260], [G.axleF, 230, -470, 'wFL']] },
-  { net: 'hyd', pts: [[970, 200, 40], [800, 55, 190], [-650, 55, 230], [G.axleR, 230, 470, 'wRR']] },
-  { net: 'hyd', pts: [[970, 200, -40], [800, 55, -190], [-650, 55, -230], [G.axleR, 230, -470, 'wRL']] },
+  { net: 'hyd', pts: [[990, 215, 60], [900, 210, 260], [G.axleF, 230, 470, 'wFR']] },
+  { net: 'hyd', pts: [[990, 215, -60], [900, 210, -260], [G.axleF, 230, -470, 'wFL']] },
+  { net: 'hyd', pts: [[930, 180, 40], [800, 55, 190], [-650, 55, 230], [G.axleR, 230, 470, 'wRR']] },
+  { net: 'hyd', pts: [[930, 180, -40], [800, 55, -190], [-650, 55, -230], [G.axleR, 230, -470, 'wRL']] },
   // VCU control and sensors
   { net: 'vcu', pts: [[330, 300, 40], [0, 300, 190], [-450, 380, 190], [-560, 397, 140]] },
   { net: 'vcu', pts: [[420, 300, 80], [700, 330, 40], [874, 340, 0]] },
-  { net: 'vcu', pts: [[420, 290, 60], [800, 260, 30], [970, 235, 0]] },
+  { net: 'vcu', pts: [[420, 290, 60], [800, 260, 30], [910, 215, 0]] },
   { net: 'vcu', pts: [[G.axleF, 205, 470, 'wFR'], [600, 200, 300], [400, 290, 160]] },
   { net: 'vcu', pts: [[G.axleF, 205, -470, 'wFL'], [600, 200, -300], [400, 290, 60]] },
   { net: 'vcu', pts: [[G.axleR, 205, 470, 'wRR'], [-600, 45, 260], [300, 45, 200], [330, 275, 140]] },
@@ -1555,20 +1866,27 @@ function buildProxy() {
     add('plate', cylY(20, G.plateY, 539, x, z, mat(COLORS.knob)), 'plate');
   }
 
-  // Rear compute bay: plate, knobs, bracket sides, rear panel, recommended max box
+  // Rear compute bay (stays with the car): M6 posts, bracket sides, rear panel, recommended max box.
+  // The quick-change plate and its knobs belong to the computer fitted (see BUILD.plate).
   const rx = 1593 - 2648;
-  add('rear', boxAt(250, 3, 330, rx, 165.5, 0, mat(COLORS.plate)), 'rear');
-  for (const xc of [2533, 2763]) for (const s of [1, -1]) add('rear', cylY(20, 167, 196, 1593 - xc, s * 155, mat(COLORS.knob)), 'rear');
+  for (const x of REAR_POSTS.x) for (const z of REAR_POSTS.z) {
+    add('rear', cylY(8, 120, 163, x, z, mat(COLORS.steel, { metalness: 0.6, roughness: 0.35 })), 'rear');
+    add('rear', cylY(3, 163, 205, x, z, mat(COLORS.steel, { metalness: 0.7, roughness: 0.3 }), 10), 'rear');
+  }
   const brM = mat(COLORS.bracket, { metalness: 0.5, roughness: 0.4, side: THREE.DoubleSide });
   for (const s of [1, -1]) add('rear', boxAt(290, 200, 3, 1593 - 2653, 194, s * 216, brM), 'rear');
   add('rear', boxAt(3, 105, 300, 1593 - 2796, 146, 0, brM), 'rear');
   const clr = boxAt(200, 200, 280, rx, 267, 0, new THREE.MeshBasicMaterial({ color: 0xf08c2e, transparent: true, opacity: 0.1, depthWrite: false }));
   clr.userData.noPick = true;
-  proxy('rear').add(clr);
   const clrEdges = new THREE.LineSegments(new THREE.EdgesGeometry(clr.geometry), new THREE.LineBasicMaterial({ color: 0xf08c2e }));
   clrEdges.position.copy(clr.position);
-  proxy('rear').add(clrEdges);
+  // the recommended size only matters for your own computer at the rear
+  envelopeRear = new THREE.Group();
+  envelopeRear.add(clr, clrEdges);
+  envelopeRear.visible = config === 'rear';
+  proxy('rear').add(envelopeRear);
 }
+let envelopeRear = null;
 
 // ---------- components ----------
 function ghostify(group, color) {
@@ -1592,14 +1910,63 @@ const BUILD = {
   dt(g) { g.add(boxAt(30, 20, 22, 0, 0, 0, mat(0x9ca3af))); g.add(boxAt(16, 3, 14, 0, 11, 0, mat(0x14b8a6))); },
   usb(g) { for (const dz of [-8, 8]) { g.add(boxAt(34, 9, 14, 0, 0, dz, mat(0x111214))); g.add(boxAt(12, 2, 9, 4, 5.5, dz, mat(0x2563eb))); } },
   rj45(g) { g.add(boxAt(32, 15, 17, 0, 0, 0, mat(0x111214))); g.add(boxAt(12, 2, 12, 4, 8.5, 0, mat(0xd1d5db))); },
+  // loose cable ends: clear RJ45 plug on a black boot, two USB-A plugs
+  rj45plug(g) { g.add(boxAt(16, 20, 14, 0, -6, 0, mat(0xdfe6ee, { transparent: true, opacity: 0.85 }))); g.add(boxAt(18, 22, 16, 0, 14, 0, mat(0x111214))); },
+  usbplug(g) {
+    for (const dz of [-8, 8]) { g.add(boxAt(14, 26, 12, 0, 6, dz, mat(0x111214))); g.add(boxAt(10, 12, 9, 0, -13, dz, mat(0xc0c4ca, { metalness: 0.7, roughness: 0.3 }))); }
+  },
+  // quick-change plate (330 × 250 mm) and the four knobs, relative to a computer centred at (PCX, 225, 0)
+  plate(g, m) {
+    g.add(boxAt(250, 3, 330, 0, 165.5 - 225, 0, m || mat(COLORS.plate)));
+    for (const x of REAR_POSTS.x) for (const z of REAR_POSTS.z) g.add(cylY(20, 167 - 225, 196 - 225, x - PCX, z, m || mat(COLORS.knob)));
+  },
+  ownrear(g) { g.add(boxAt(200, 110, 270, 0, 0, 0, mat(0x8b5cf6))); BUILD.plate(g); },
   incarpc(g) {
+    BUILD.plate(g);
     g.add(boxAt(200, 110, 270, 0, 0, 0, mat(0x1b1d21, { roughness: 0.8 })));
     for (let i = -6; i <= 6; i++) g.add(boxAt(200, 8, 4, 0, 59, i * 20, mat(0x2a2d33)));
+    // blanked antenna holes (ANT2/3 front, ANT4-6 rear) and the earth stud
+    const blank = mat(0x0a0a0a);
+    for (const [f, z, y] of [[1, 120, 221], [1, -119, 222], [-1, -105, 211], [-1, -84, 211], [-1, -62, 211]]) {
+      const b = cylAxis(4.5, 3, 'x', blank, 14); b.position.set(f * 101, y - 225, z); g.add(b);
+    }
+    const stud = cylAxis(3, 8, 'x', mat(0xc0c4ca, { metalness: 0.8 }), 10); stud.position.set(104, 199 - 225, -119); g.add(stud);
   },
-  charge(g) { g.add(boxAt(30, 46, 54, 0, 0, 0, mat(0xf97316))); },
-  mpp(g) { const c = cylAxis(15, 26, 'x', mat(0x27272a, { metalness: 0.6 })); g.add(c); },
-  aims(g) { g.add(cylAxis(14, 20, 'x', mat(0x111214))); g.add(boxAt(10, 42, 10, -14, 0, 0, mat(0x111214))); },
-  toggle(g) { g.add(boxAt(12, 24, 18, 0, 0, 0, mat(0xb91c1c))); g.add(rod(V(-6, 0, 0), V(-24, 10, 0), 2.5, mat(0xd1d5db, { metalness: 0.8 }))); },
+  ports(g, _, c) {
+    const f = c.face, [, cy, cz] = c.at;
+    for (const [z, y, w, h, t] of c.ports) {
+      const col = PORT_COL[t];
+      if (t === 'sma' || t === 'btn') {
+        const m = cylAxis(w / 2, 6, 'x', mat(col, { metalness: 0.7, roughness: 0.3 }), 16); m.position.set(f * 3, y - cy, z - cz); g.add(m);
+        continue;
+      }
+      if (!PORT_BARE.has(t)) g.add(boxAt(3, h + 3, w + 3, f * 1.5, y - cy, z - cz, mat(0xb8bcc2, { metalness: 0.6, roughness: 0.35 })));
+      g.add(boxAt(3, h, w, f * 2.5, y - cy, z - cz, mat(col)));
+    }
+    if (c.id === 'pc_ant') {
+      // stub Wi-Fi antenna on ANT1, angled up and back
+      const [z, y] = c.ports[0];
+      g.add(rod(V(f * 5, y - cy, z - cz), V(f * 55, y - cy + 95, z - cz), 5, mat(0x111214)));
+    }
+  },
+  charge(g) { g.add(boxAt(30, 46, 54, 0, 0, 0, mat(0xf97316))); g.add(boxAt(4, 26, 36, -16, 0, 0, mat(0x9a3412))); },
+  // MPP socket with the green dongle fitted
+  mpp(g) {
+    g.add(cylAxis(23, 24, 'x', mat(0x18181b, { roughness: 0.6 })));
+    const d = cylAxis(21, 10, 'x', mat(0x22c55e)); d.position.x = -16; g.add(d);
+  },
+  toggle(g) {
+    g.add(boxAt(8, 30, 22, 0, 0, 0, mat(0xd1d5db, { metalness: 0.5 })));
+    g.add(boxAt(3, 9, 16, -5, 9, 0, mat(0xdc2626)));
+    g.add(rod(V(-4, 0, 0), V(-30, -10, 0), 2.5, mat(0xd1d5db, { metalness: 0.8 })));
+  },
+  igntoggle(g) { g.add(boxAt(30, 50, 8, 10, -10, 0, mat(0x18181b))); BUILD.toggle(g); },
+  pushpins(g) {
+    for (const dz of [0, -940]) {
+      g.add(boxAt(40, 30, 26, 0, 0, dz, mat(0x111214)));
+      g.add(rod(V(0, -4, dz - 30), V(0, -4, dz + 30), 4, mat(0x52525b, { metalness: 0.6 })));
+    }
+  },
   gpsant(g) { g.add(cylY(14, -4, 8, 0, 0, mat(0x111214))); },
   logger(g) { g.add(boxAt(26, 36, 50, 0, 0, 0, mat(0x2a2d33))); g.add(boxAt(30, 4, 22, -10, 20, 0, mat(0xfacc15))); },
   resgps(g) { g.add(boxAt(230, 45, 130, 0, 0, 0, mat(0xd4d8dd, { metalness: 0.6, roughness: 0.35 }))); },
@@ -1630,6 +1997,11 @@ const BUILD = {
     g.add(boxAt(100, 40, 80, 110, 0, -140, mat(0x0f172a)));
   },
 };
+const PORT_COL = {
+  usb: 0x2563eb, lan: 0x27272a, hdmi: 0x18181b, dp: 0x18181b, dsub: 0x27272a, term: 0x16a34a, audioP: 0xf472b6, audioG: 0x22c55e,
+  btn: 0x9ca3af, ledR: 0xef4444, ledG: 0x22c55e, slot: 0x0a0a0a, sma: 0xd4a017, bay: 0x3f3f46,
+};
+const PORT_BARE = new Set(['term', 'ledR', 'ledG', 'slot']);
 function beltCurve(a, ra, b, rb) {
   const pts = [];
   // a is ahead of b: wrap the front side of a and the rear side of b
@@ -1644,7 +2016,7 @@ function buildComps() {
     const g = new THREE.Group();
     g.position.copy(c.pos);
     const parts = c.build.split(':'), kind = parts[0], arg = parts[1];
-    const col = kind === 'box' ? Number(parts[2]) || 0x64748b : 0x64748b;
+    const col = kind === 'box' ? Number(parts[2]) || 0x64748b : c.kind === 'yours' ? 0x8b5cf6 : 0x64748b;
     if (kind === 'box') {
       const [sx, sy, sz] = arg.split(',').map(Number);
       g.add(boxAt(sx, sy, sz, 0, 0, 0, mat(col)));
@@ -1656,12 +2028,11 @@ function buildComps() {
       const s = Number(arg);
       const b = cylAxis(17, 16, 'z', mat(0xdc2626, { emissive: 0x7f1d1d, emissiveIntensity: 0.3 }));
       b.position.z = s * 6; g.add(b);
-    } else if (kind === 'screen') {
-      BUILD.screen(g);
-    } else BUILD[kind](g);
-    if (c.kind === 'unpub') ghostify(g, col);
+    } else BUILD[kind](g, arg, c);
+    if (c.kind === 'unpub' || c.kind === 'yours') ghostify(g, col);
     setKey(g, 'c:' + c.id, { nets: c.nets });
     anchorGroups[c.group][c.anchor].add(g);
+    g.visible = cfgOn(c);
     c.obj = g;
   }
 }
@@ -1671,6 +2042,7 @@ function buildCables() {
   for (const m of cableGroup.children) m.geometry.dispose();
   cableGroup.clear();
   for (const cab of CABLES) {
+    if (cab.cfg && !cab.cfg.includes(config)) continue;
     const n = NET[cab.net];
     const pts = cab.pts.map(([x, y, z, a]) => at(V(x, y, z), a || 'c'));
     const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal');
@@ -1786,7 +2158,7 @@ function buildTags() {
   for (const c of COMPS) {
     const el = document.createElement('button');
     el.type = 'button';
-    el.className = 'tag' + (c.kind === 'unpub' ? ' ghost' : '');
+    el.className = 'tag' + (c.kind === 'unpub' || c.kind === 'yours' ? ' ghost' : '') + (c.kind === 'yours' ? ' yours' : '');
     const n = c.nets[0] && NET[c.nets[0]];
     if (n) el.style.setProperty('--tagc', hex(n.color));
     el.textContent = c.tag;
@@ -1805,6 +2177,7 @@ const BADGE = {
   approx: '<span class="badge approx">Approximate location</span>',
   unpub: '<span class="badge none">Inside · position not published</span>',
   none: '<span class="badge none">Location not published</span>',
+  yours: '<span class="badge yours">Your hardware · placeholder</span>',
 };
 const PIN7W2 = `<svg class="pinsvg" viewBox="0 0 300 110" role="img" aria-label="7W2 pinout, compute side, front view">
   <path d="M14 14 H286 Q294 14 292 22 L272 92 Q270 98 262 98 H38 Q30 98 28 92 L8 22 Q6 14 14 14 Z" fill="var(--surface-2)" stroke="var(--muted)" stroke-width="2"/>
@@ -1831,31 +2204,68 @@ function wireInspector() {
   if (ib) ib.addEventListener('click', () => select(null));
   insp.querySelectorAll('[data-open]').forEach((a) => a.addEventListener('click', () => { const d = document.getElementById(a.dataset.open); if (d) d.open = true; }));
 }
+const CFG_NOTE = {
+  incarpc: 'Shown with the shared <b>InCarPC</b> at the rear. Pick <b>Own, rear</b> or <b>Own, front</b> above to see the plugs left free when it comes out.',
+  rear: 'InCarPC removed: your computer on the rear plate. The free harness ends are what it plugs into.',
+  front: 'InCarPC removed: your computer on the front sensor plate, on the front 7W2. The rear harness ends are unused.',
+};
 function renderIndex() {
-  const ext = COMPS.filter((c) => c.group === 'ext' && c.prio === 1);
-  const int = COMPS.filter((c) => c.kind === 'unpub' || c.id === 'resgps');
+  const groups = SECTIONS.map(([title, ids]) => [title, ids.map((id) => COMP[id]).filter(cfgOn)]).filter(([, cs]) => cs.length);
   insp.innerHTML = `
     <div class="kicker">What is where</div>
     <h2>Find a part</h2>
     <p class="lead" style="color:var(--muted)">Use <b>See-through</b> or <b>Exploded</b> to see cables and internals. Click any part, tag or cable.</p>
-    <div class="grouphead">Plugs, switches &amp; lights</div><div class="pills">${ext.map(compPill).join('')}</div>
-    <div class="grouphead">Inside the car</div><div class="pills">${int.map(compPill).join('')}</div>
+    <p class="cfgnote">${CFG_NOTE[config]}</p>
+    ${groups.map(([title, cs]) => `<div class="grouphead">${title}</div><div class="pills">${cs.map(compPill).join('')}</div>`).join('')}
     <div class="grouphead">Cable types</div><div class="pills">${NETS.map((n) => netPill(n.id)).join('')}</div>
     <div class="grouphead">Topics</div><div class="pills">${TOPICS.map((t) => `<button class="pill" type="button" data-key="t:${t.id}">${t.title}</button>`).join('')}</div>`;
   wireInspector();
 }
+// Camera pose that looks at a part; ports are seen square-on from the side they face.
+function focusComp(c) {
+  if (c.face === 1 && c.anchor === 'r' && mode !== 'exploded') setMode('exploded', false);
+  const t = atT(c.pos, c.anchor);
+  if (c.face) flyToPose(t, t.clone().add(V(c.face * 520, 240, c.face * 160).multiplyScalar(Math.min(1.6, aspectScale()))));
+  else focusAt(c.pos, t);
+}
+// Fly close to a point: rear parts from behind, side parts from their side, others from the current direction.
+function focusAt(p, t) {
+  let dir = camera.position.clone().sub(controls.target).normalize();
+  if (p.x < -900) dir = V(-0.55, 0.5, 0.65);
+  else if (p.z > 180) dir = V(0.15, 0.35, 1);
+  else if (p.z < -180) dir = V(0.15, 0.35, -1);
+  const dist = Math.min(camera.position.distanceTo(controls.target), 1700) * Math.min(1.6, aspectScale());
+  flyToPose(t, t.clone().add(dir.normalize().multiplyScalar(dist)));
+}
+// Thumbnails of IMechE photos showing this part (click to enlarge).
+function photoStrip(key) {
+  const ps = window.photosFor ? window.photosFor(key) : [];
+  return ps.length ? `<div class="phstrip">${ps.map(window.photoThumb).join('')}</div>` : '';
+}
 function renderComp(c) {
+  const links =(c.links || []).map(([title, ids]) => `<div class="grouphead">${title}</div><div class="pills">${ids.map((id) => compPill(COMP[id])).join('')}</div>`).join('');
+  const parent = c.parent ? `<div class="grouphead">Part of</div><div class="pills">${compPill(COMP[c.parent])}</div>` : '';
   insp.innerHTML = `
     <div class="kicker">${BADGE[c.kind]}</div>
     <h2>${c.name}</h2>
     <div class="chips">${c.chips.map((x) => `<span class="chip">${x}</span>`).join('')}</div>
+    ${photoStrip('c:' + c.id)}
     ${c.extra === 'pin7w2' ? PIN7W2 : c.extra === 'pindt' ? PINDT : ''}
     <p class="lead">${c.lead}</p>
+    ${links}${parent}
     ${c.nets.length ? `<div class="grouphead">Cables</div><div class="pills">${c.nets.map(netPill).join('')}</div>` : ''}
-    <div class="actions"><button class="btn" type="button" id="focusBtn">Centre view here</button><button class="btn" type="button" id="indexBtn">All parts</button></div>
+    <div class="actions">
+      ${c.faces ? '<button class="btn" type="button" data-face="1">Look at front face</button><button class="btn" type="button" data-face="-1">Look at rear face</button>' : '<button class="btn" type="button" id="focusBtn">Centre view here</button>'}
+      <button class="btn" type="button" id="indexBtn">All parts</button>
+    </div>
     <details class="more"><summary>Sources</summary><p>${src(c.refs)}</p></details>`;
   wireInspector();
-  insp.querySelector('#focusBtn').addEventListener('click', () => flyTo(null, at(c.pos, c.anchor)));
+  const fb = insp.querySelector('#focusBtn');
+  if (fb) fb.addEventListener('click', () => focusComp(c));
+  insp.querySelectorAll('[data-face]').forEach((b) => b.addEventListener('click', () => {
+    const f = +b.dataset.face;
+    focusComp({ pos: V(PCX + f * 100, 215, 0), anchor: c.anchor, face: f });
+  }));
 }
 function renderNet(n) {
   const comps = COMPS.filter((c) => c.nets.includes(n.id));
@@ -1874,6 +2284,7 @@ function renderTopic(t) {
   insp.innerHTML = `
     <div class="kicker">${t.pos ? '#' + t.n + ' · ' : ''}${BADGE[t.loc]}</div>
     <h2>${t.title}</h2>
+    ${photoStrip('t:' + t.id)}
     <div class="where">${t.where}</div>
     <ul>${t.facts.map((f) => `<li>${f}</li>`).join('')}</ul>
     <div class="actions">
@@ -1883,11 +2294,14 @@ function renderTopic(t) {
     </div>`;
   wireInspector();
   const fb = insp.querySelector('#focusBtn');
-  if (fb) fb.addEventListener('click', () => flyTo(null, at(t.pos, TOPIC_ANCHOR[t.id])));
+  if (fb) fb.addEventListener('click', () => focusAt(t.pos, atT(t.pos, TOPIC_ANCHOR[t.id])));
 }
 function select(key, focus) {
-  selected = key;
   const [kind, id] = key ? key.split(':') : [null, null];
+  // a part that only exists in another computer set-up switches to that set-up
+  if (kind === 'c' && !cfgOn(COMP[id])) setConfig(COMP[id].cfg[0], false);
+  if (kind === 'c' && focus && mode === 'outside' && (COMP[id].group === 'int' || COMP[id].anchor === 'r')) setMode('inside', false);
+  selected = key;
   if (kind === 'n') { netFocus = id; if (mode === 'outside') setMode('inside', false); } else netFocus = null;
   hotspots.forEach((h) => h.el.classList.toggle('sel', h.key === key));
   tags.forEach((t) => t.el.classList.toggle('sel', t.key === key));
@@ -1895,9 +2309,9 @@ function select(key, focus) {
   applyNetFocus();
   applyHighlight();
   if (!key) renderIndex();
-  else if (kind === 'c') { renderComp(COMP[id]); if (focus) flyTo(null, at(COMP[id].pos, COMP[id].anchor)); }
+  else if (kind === 'c') { renderComp(COMP[id]); if (focus) focusComp(COMP[id]); }
   else if (kind === 'n') renderNet(NET[id]);
-  else { const t = TOPIC[id]; renderTopic(t); if (focus && t.pos) flyTo(null, at(t.pos, TOPIC_ANCHOR[t.id])); }
+  else { const t = TOPIC[id]; renderTopic(t); if (focus && t.pos) focusAt(t.pos, atT(t.pos, TOPIC_ANCHOR[t.id])); }
   requestRender();
 }
 
@@ -2032,7 +2446,7 @@ const GOTO = {
   tower: { target: V(70, 740, 0), off: V(700, 220, 560), key: 't:tsal', anchor: 'b' },
   switches: { target: V(10, 250, 330), off: V(350, 260, 1800), key: 'c:lvms' },
   rearpanel: { target: V(-1214, 160, 0), off: V(-760, 230, 420), key: 'c:mpp', mode: 'inside' },
-  bay: { target: V(-1000, 260, 0), off: V(-700, 750, 850), key: 'c:incarpc', mode: 'inside', anchor: 'r' },
+  bay: { target: V(-1000, 260, 0), off: V(-700, 750, 850), key: () => (config === 'incarpc' ? 'c:incarpc' : config === 'rear' ? 'c:own_rear' : 'c:r_7w2'), mode: 'inside', anchor: 'r' },
   drive: { target: V(-420, 230, 0), off: V(-600, 1300, 1500), key: 'c:motor', mode: 'inside' },
   steer: { target: V(880, 260, 0), off: V(800, 1000, 1200), key: 'c:steer', mode: 'inside' },
 };
@@ -2051,10 +2465,29 @@ document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('clic
 document.querySelectorAll('[data-goto]').forEach((b) => b.addEventListener('click', () => {
   const g = GOTO[b.dataset.goto];
   if (g.mode && mode === 'outside') setMode(g.mode, false);
-  const t = at(g.target, g.anchor || 'c');
+  const t = atT(g.target, g.anchor || 'c');
   flyToPose(t, t.clone().add(g.off.clone().multiplyScalar(Math.min(1.8, aspectScale()))));
-  select(g.key, false);
+  select(typeof g.key === 'function' ? g.key() : g.key, false);
 }));
+
+// ---------- computer set-up ----------
+function setConfig(cfg, fly) {
+  config = cfg;
+  document.querySelectorAll('[data-cfg]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.cfg === cfg));
+  for (const c of COMPS) if (c.obj) c.obj.visible = cfgOn(c);
+  if (envelopeRear) envelopeRear.visible = cfg === 'rear';
+  buildCables();
+  applyNetFocus();
+  applyHighlight();
+  if (fly === false) { requestRender(); return; }
+  if (selected && selected.startsWith('c:') && !cfgOn(COMP[selected.slice(2)])) selected = null;
+  if (mode === 'outside') setMode('inside', false);
+  const g = cfg === 'front' ? { target: V(330, 520, 0), off: V(650, 650, 900), anchor: 'p' } : GOTO.bay;
+  const t = atT(g.target, g.anchor || 'c');
+  flyToPose(t, t.clone().add(g.off.clone().multiplyScalar(Math.min(1.8, aspectScale()))));
+  select({ incarpc: 'c:incarpc', rear: 'c:own_rear', front: 'c:own_front' }[cfg], false);
+}
+document.querySelectorAll('[data-cfg]').forEach((b) => b.addEventListener('click', () => setConfig(b.dataset.cfg)));
 
 // ---------- layer checkboxes ----------
 for (const [k, cb] of Object.entries(layerBoxes)) {
@@ -2289,8 +2722,12 @@ function placeLabels() {
     const grp = layers[c.group].visible && (c.group === 'ext' || layers.int.visible);
     const layerOk = !c.topic || layers[c.topic === 'tsal' ? 'tsal' : 'zed'].visible;
     const netOk = !netFocus || c.nets.includes(netFocus);
-    const want = t.key === selected || (showTags && mode !== 'outside' && grp && layerOk && netOk);
-    const xy = want ? project(at(c.pos, c.anchor).add(V(0, 28, 0))) : null;
+    const p = at(c.pos, c.anchor);
+    // small parts (prio 3) only when close, and ports only from the side they face
+    const near = c.prio < 3 || camera.position.distanceTo(p) < 1700 || (c.parent && selected === 'c:' + c.parent);
+    const facing = !c.face || (camera.position.x - p.x) * c.face > 0;
+    const want = cfgOn(c) && (t.key === selected || (showTags && mode !== 'outside' && grp && layerOk && netOk && near && facing));
+    const xy = want ? project(p.add(V(0, 28, 0))) : null;
     if (!xy) { t.el.style.display = 'none'; continue; }
     const pri = t.key === selected ? -1 : c.prio;
     cands.push({ t, xy, pri, d: camera.position.distanceTo(c.pos) });
@@ -2383,7 +2820,7 @@ applyExplode();
 renderer.render(scene, camera);
 placeLabels();
 scheduleOcclusion();
-window.__adsdv = { scene, camera, select, setMode, setModel, get mode() { return mode; } };
+window.__adsdv = { scene, camera, select, setMode, setModel, setConfig, get mode() { return mode; } };
 </script>
 </body>
 </html>
