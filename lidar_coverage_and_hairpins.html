@@ -166,12 +166,13 @@ ul.chk .no{color:var(--no)}ul.chk a.r{margin:0 0 0 6px;font-size:12.5px}
 <div class="note"><b>The ADS-DV does not fit the minimum hairpin.</b> The AI can request at most ±21° of road-wheel angle (<a href="ads_dv_explorer.html">ADS-DV Explorer, SIS p. 4</a>). With a 1.533 m wheelbase, the tightest the rear axle can turn is a 3.99 m radius. Then the outer front tyre sweeps 4.95 m from the turn centre, a kerb-to-kerb turning circle of 9.9 m. A 180° turn needs that much room between the outside cones, plus a cone’s half-width each side: 10.1 m. The rules allow 9 m. So in a 9 m hairpin the ADS-DV touches the outside cones on any line. It clears an 11 m hairpin by 0.43 m. This is a kinematic estimate with no tyre slip; a slipping car runs wider still.</div>
 
 <h2 id="view">A Hesai ATX and the VLP-16 on the ADS-DV, in 2D and 3D</h2>
-<p>The 2D and 3D views below share one model. Pick a track, or draw one under <b>Your track</b>, then move the car and pick the ATX, the VLP-16 or both.</p>
+<p>The 2D and 3D views below share one model. Pick a track, or draw one under <b>Your track</b>, then move the car and pick the ATX, a spinning lidar (the VLP-16 or one of two 32-channel RoboSense Helios versions), or both.</p>
 <ul>
 <li><b>Car:</b> ADS-DV, 1.533 m wheelbase, steering limited to the ±21° the AI can request. The rear axle follows the track centreline; in the 11 m hairpin that is full lock. The tracks: an 11 m hairpin, two 11 m hairpins back to back (legal under “multiple turns”), and the skidpad to the rules. Cones are placed as the cones specification asks: at most 5 m apart on straights, closer in corners.</li>
 <li><b>Hesai ATX, the 120° lidar we would buy:</b> 120° × 20°, 256 channels, 0.08° in azimuth and 3.84 million points a second, which is 256 × 1500 rays at 10 Hz (<a href="https://www.hesaitech.com/product/atx/" target="_blank" rel="noopener">Hesai</a>). ISC Racing already runs one at ±60° (below). The model spreads the 256 channels evenly over ±10°, about 0.08° apart, and mounts the unit level; the real ATX packs them closer near the middle, 0.05° at the finest. It sits on the front sensor plate, 425 mm ahead of the wheelbase midpoint (CAD, <a href="ads_dv_explorer.html">ADS-DV Explorer</a>), 0.57 m up, the lidar height in the 2026 CarMaker model (<a href="ddt_architecture_and_testing.html#gps">DDT Architecture and Tests</a>).</li>
 <li><b>VLP-16:</b> on a short post above it, 0.70 m up. It has 16 channels 2° apart from −15° to +15°, scans every 0.2° in azimuth, and loses the rear 90° to the car body.</li>
-<li><b>Rings on the ground:</b> both views draw, to scale, where each channel pointing down meets the ground, out to 45 m, broken where a cone or the car is in the way. The VLP-16’s 8 rings fall 2.6, 3.0, 3.6, 4.4, 5.7, 8.0, 13.4 and 40 m out. The ATX’s 119 rings are drawn faint, as at 0.08° apart they would fill the view.</li>
+<li><b>RoboSense Helios, two 32-channel versions,</b> in place of the VLP-16 on the same post. Both scan every 0.2° in azimuth at 10 Hz (<a href="https://cdn-reichelt.de/documents/datenblatt/C900/RS-HELIOS_5515_USER_GUIDE_V3.0.1_EN.pdf#page=16" target="_blank" rel="noopener">RS-Helios-5515 user guide, p. 16</a>). The <b>Helios 1615</b> has its channels 1° apart from −16° to +15° (<a href="https://cdn-reichelt.de/documents/datenblatt/C900/RS-HELIOS_5515_USER_GUIDE_V3.0.1_EN.pdf#page=8" target="_blank" rel="noopener">p. 8</a>). The <b>Helios 5515</b> spreads them over −55° to +15°: 2° apart at the top, 1.33° from +4° to −8°, then 3° apart down to −55° (<a href="https://cdn-reichelt.de/documents/datenblatt/C900/RS-HELIOS_5515_USER_GUIDE_V3.0.1_EN.pdf#page=17" target="_blank" rel="noopener">channel table, p. 17</a>). From 0.70 m up, 30% of the 5515’s rays land on the ADS-DV itself.</li>
+<li><b>Rings on the ground:</b> both views draw, to scale, where each channel pointing down meets the ground, out to 45 m, broken where a cone or the car is in the way. The VLP-16’s 8 rings fall 2.6, 3.0, 3.6, 4.4, 5.7, 8.0, 13.4 and 40 m out; the Helios 1615’s 16 rings run from 2.4 to 40 m, and the Helios 5515’s 22 from 0.5 to 30 m, the nearest ones on the car. The other channels point up and never reach the ground. The ATX’s 119 rings are drawn faint, as at 0.08° apart they would fill the view; 86 of them fall between 3.2 and 10 m.</li>
 <li><b>The car in its own way:</b> rays that hit the ADS-DV first are dropped, using the bodywork outline from the CAD and round front tyres.</li>
 <li><b>Seeing a cone:</b> every ray is cast against the ground and against each cone, modelled as a 228 mm-base, 325 mm-tall frustum. Nearer cones hide farther ones. A cone counts as seen when at least 3 rays hit it.</li>
 <li><b>Your track:</b> drawn with the mouse. Each turn is a peg the track wraps round, set by its outside diameter, and the straights run from peg to peg. Every edit is checked against the track rules before it is drawn: straights up to 80 m, turns of 9 to 50 m outside diameter, and a track at least 3 m wide (<a href="https://www.imeche.org/docs/default-source/1-oscar/formula-student/2026/rules/fs-ai-2026-rules-v1.pdf?sfvrsn=2#page=32" target="_blank" rel="noopener">FS-AI D6.1.1, p. 32</a>, <a href="https://www.imeche.org/docs/default-source/1-oscar/formula-student/2026/rules/fs-ai-2026-rules-v1.pdf?sfvrsn=2#page=33" target="_blank" rel="noopener">D8.1.1, p. 33</a>). Both diameter limits are held for every turn, though the rules write the 9 m one for hairpins and the 50 m one for constant turns. Turns may sit right against each other, as in a chicane or a tightening turn; the only limit there is geometry, since a smooth line must still join them. Parts of the track may also cross or overlap, since the rules say nothing about how close two parts may come. Where they cross, no cone stands on the other road and one stands at each end of the opening, so the gap that leaves must still be 5 m at most (<a href="https://www.imeche.org/docs/default-source/1-oscar/formula-student/2021/forms/ai/fs-ai-dynamic-events-setup-and-cones-specification.pdf?sfvrsn=2#page=1" target="_blank" rel="noopener">DE6.3.1, p. 1</a>). On a 3 m track two straights have to cross at about 37° or more, and a track wider than 5 m cannot cross at all. The page notes a crossing, and two parts whose cone rows come within 1 m, without stopping either. Real layouts never cross: none of the 14 competition tracks that ship with PacSim crosses itself, and the closest two separate parts come is 2.1 m between cones, at FSE23 and FSI24 (<a href="https://github.com/PacSim/pacsim/tree/30bfb27158474a728dd09cb6881e979fa0246640/tracks">PacSim tracks</a>). The one figure of eight is the skidpad, a separate event with a fixed layout (<a href="https://www.imeche.org/docs/default-source/1-oscar/formula-student/2026/rules/fs-ai-2026-rules-v1.pdf?sfvrsn=2#page=30" target="_blank" rel="noopener">FS-AI D4.1.1, p. 30</a>). Cones go by default in the worst case the cones specification allows: exactly 5 m apart everywhere, corners included, measured in a straight line (<a href="https://www.imeche.org/docs/default-source/1-oscar/formula-student/2021/forms/ai/fs-ai-dynamic-events-setup-and-cones-specification.pdf?sfvrsn=2#page=1" target="_blank" rel="noopener">DE6.3.1, p. 1</a>). The other choice puts them closer in corners, as on the tracks above.</li>
@@ -181,7 +182,8 @@ ul.chk .no{color:var(--no)}ul.chk a.r{margin:0 0 0 6px;font-size:12.5px}
 <div class="panel" id="sim">
 <div class="ctl sticky">
 <span class="seg" role="group" aria-label="Track"><button type="button" data-scen="hairpin" aria-pressed="true">Hairpin, 11 m</button><button type="button" data-scen="s" aria-pressed="false">Two hairpins (S)</button><button type="button" data-scen="skidpad" aria-pressed="false">Skidpad</button><button type="button" data-scen="custom" aria-pressed="false">Your track</button></span>
-<span class="seg" role="group" aria-label="Lidars"><button type="button" data-sen="solid" aria-pressed="true">Hesai ATX, 120°</button><button type="button" data-sen="vlp" aria-pressed="false">VLP-16</button><button type="button" data-sen="both" aria-pressed="false">Both</button></span>
+<span class="seg" role="group" aria-label="Lidars"><button type="button" data-sen="solid" aria-pressed="true">Hesai ATX, 120°</button><button type="button" data-sen="spin" aria-pressed="false">Spinning lidar</button><button type="button" data-sen="both" aria-pressed="false">Both</button></span>
+<span class="seg" role="group" aria-label="Spinning lidar"><button type="button" data-spin="vlp" aria-pressed="true">VLP-16</button><button type="button" data-spin="h1615" aria-pressed="false">Helios 1615</button><button type="button" data-spin="h5515" aria-pressed="false">Helios 5515</button></span>
 <span class="seg" role="group" aria-label="Planner input"><button type="button" id="plMap" aria-pressed="true">Planner: map ahead</button><button type="button" id="plScan" aria-pressed="false">Planner: current scan</button></span>
 </div>
 <div id="ed" class="ed" hidden>
@@ -228,14 +230,14 @@ ul.chk .no{color:var(--no)}ul.chk a.r{margin:0 0 0 6px;font-size:12.5px}
 <span><i class="dot" style="background:#9aa0a8;opacity:.35"></i>not seen yet</span>
 <span><i class="dot dash"></i>virtual cone</span>
 <span><svg width="26" height="10"><path d="M1 8 Q13 1 25 8" style="fill:none;stroke:#8fbfff;stroke-opacity:.5;stroke-width:1"/></svg>Hesai ATX rings on the ground (faint)</span>
-<span><svg width="26" height="10"><path d="M1 8 Q13 1 25 8" style="fill:none;stroke:#ffad75;stroke-width:1.6"/></svg>VLP-16 rings, 2° apart</span>
+<span><svg width="26" height="10"><path d="M1 8 Q13 1 25 8" style="fill:none;stroke:#ffad75;stroke-width:1.6"/></svg>spinning lidar rings</span>
 <span><svg width="26" height="10"><line x1="1" y1="5" x2="25" y2="5" style="stroke:#d7dbe0;stroke-width:1.4;stroke-dasharray:6 4"/></svg>planner keeps map cones ahead</span>
 </div>
 <div id="v2d"><canvas aria-label="Top view of the track, the ADS-DV and what its sensors see"></canvas></div>
 <p class="readout" id="simOut" aria-live="polite"></p>
 <h3 class="vh">3D view</h3>
 <div class="ctl"><span class="seg" role="group" aria-label="Camera"><button type="button" data-cam="chase" aria-pressed="true">Chase</button><button type="button" data-cam="eye" aria-pressed="false">From the lidar</button><button type="button" data-cam="top" aria-pressed="false">Top</button><button type="button" data-cam="free" aria-pressed="false">Free</button></span><span class="seg" role="group" aria-label="Mouse drag"><button type="button" data-drag="orbit" aria-pressed="true">Drag to orbit</button><button type="button" data-drag="pan" aria-pressed="false">Drag to pan</button></span><button type="button" id="camFollow" aria-pressed="true">Follow the car</button></div>
-<p class="m" style="margin:-4px 0 8px">Translucent blue: the ATX’s 120° × 20° field of view. Dots: lidar returns on cones. Lines on the ground: the rings, faint for the ATX and bold for the VLP-16. Dragging switches to the Free view. Right-drag or Shift-drag does the other of orbit and pan; two fingers pan and zoom on a touch screen. In the Free view the mouse wheel zooms and, once the view is clicked, the arrow keys pan.</p>
+<p class="m" style="margin:-4px 0 8px">Translucent blue: the ATX’s 120° × 20° field of view. Dots: lidar returns on cones. Lines on the ground: the rings, faint for the ATX and bold for the spinning lidar. Dragging switches to the Free view. Right-drag or Shift-drag does the other of orbit and pan; two fingers pan and zoom on a touch screen. In the Free view the mouse wheel zooms and, once the view is clicked, the arrow keys pan.</p>
 <div id="v3d"><p class="m" id="v3dMsg">Loading the 3D view…</p></div>
 </div>
 
@@ -246,7 +248,8 @@ ul.chk .no{color:var(--no)}ul.chk a.r{margin:0 0 0 6px;font-size:12.5px}
 <li><b>Two hairpins back to back:</b> the second hairpin is easier to see. Its inside cones are seen on the approach to the first hairpin and again while the car swings round the first one, last 0.3–1.8 m before the second turn-in. All are in the map before the car needs them. The model flips the steering from full left to full right at the join; the real car needs a short distance to unwind, so it runs wide there.</li>
 <li><b>Skidpad:</b> on the 9.125 m centreline radius the ATX keeps 3 or 4 inside cones of the circle in view the whole way round.</li>
 <li><b>VLP-16 alone:</b> 4 to 7 of the inside cones are in view at every point of each hairpin, but it sees less far ahead: it first sees the 11 m hairpin’s inside cones 11–13 m before turn-in, against 24 m (the whole run) for the ATX. On the skidpad 11 of the 16 inside cones of each circle are in the map as the car enters it, against 15 and 16 with the ATX.</li>
-<li><b>Both:</b> the ATX’s reach and the VLP-16’s side view; 4 to 7 inside cones in view through each hairpin.</li>
+<li><b>Helios instead of the VLP-16:</b> both versions also keep 4 to 7 inside cones in view through each hairpin. The 1615 reaches farthest: 3 or more rays on a cone out to 20 m ahead, against 13.5 m for the VLP-16, so it first sees the 11 m hairpin’s inside cones 18–20 m before turn-in. On the skidpad it has all 16 inside cones of each circle in the map as the car enters, and 7 to 12 in view the whole way round. The 5515 reaches 15 m, has 12 and 16 skidpad cones in the map on entry, and 6 to 9 in view. Its low channels see a cone as close as 0.6 m beside the car, where the others start at 1.4–1.5 m, but from this mount those channels mostly see the car.</li>
+<li><b>Both:</b> the ATX’s reach and the spinning lidar’s side view; 4 to 7 inside cones in view through each hairpin.</li>
 <li><b>Worst legal cone placing</b> (Your track, started from Hairpin, 11 m): the 11 m hairpin keeps 1 cone on its inside edge instead of 7, and 24 cones in all instead of 36. In a 9 m hairpin, depending on where the 5 m spacing falls, no cone is left between turn-in and exit in about two cases out of three. The ATX sees the one cone until 2.0 m before turn-in, so it is in the map. Through the turn the planner fills in the rest of the inside edge with up to 4 virtual cones. That is the case FaSTTUBe’s planner was written for, and the one to test on the rig.</li>
 <li><b>Range and the 20° vertical view:</b> the ATX puts 242 rays on a cone 10 m ahead, 60 at 20 m, 28 at 30 m and 6 at 60 m. Within about 1.4 m the top of a cone is under the lowest beam (−10° from 0.57 m), so a cone that close is not seen at all; the VLP-16’s limit is also 1.4 m. Off to the sides the car itself gets in the way: the front tyres and the bulges of the nose block 6% of the ATX’s rays, all pointing down and to the side. Straight ahead the first ground return is 3.2 m out; at 45° off-centre it is 4.0 m, and at 60° it is 7.5 m. The VLP-16 puts 3 or more rays on a cone out to 10–13 m; farther out, cones fall between its 2° rings.</li>
 </ul>
@@ -449,9 +452,16 @@ function makeModel(BODY) {
   // (hesaitech.com/product/atx). Here the channels are spread evenly over ±10°, mounted level; the ATX packs them
   // closer near the middle (0.05° at the finest).
   const SENS = {
-    solid: {key: 'solid', x: CAR.plateX, h: 0.57, cols: lin(-60, 60, 1501), rows: lin(-10, 10, 256), maxR: 60},
-    vlp: {key: 'vlp', x: CAR.plateX, h: 0.70, cols: range(-135, 135, 0.2), rows: range(-15, 15, 2), maxR: 100},
+    solid: {key: 'solid', name: 'Hesai ATX', x: CAR.plateX, h: 0.57, cols: lin(-60, 60, 1501), rows: lin(-10, 10, 256), maxR: 60},
+    // the spinning lidars, one at a time on a post above the ATX; the car body hides their rear 90°
+    vlp: {key: 'vlp', name: 'VLP-16', x: CAR.plateX, h: 0.70, cols: range(-135, 135, 0.2), rows: range(-15, 15, 2), maxR: 100},
+    // RoboSense Helios, 32 channels, 0.2° at 10 Hz (RS-Helios-5515 user guide V3.0.1, pp. 8, 16, 17). The 1615 has them
+    // 1° apart from −16° to +15°; the 5515 spreads them over −55° to +15°, 1.33° apart from +4° to −8° and 3° below −10°.
+    h1615: {key: 'h1615', name: 'Helios 1615', x: CAR.plateX, h: 0.70, cols: range(-135, 135, 0.2), rows: range(-16, 15, 1), maxR: 100},
+    h5515: {key: 'h5515', name: 'Helios 5515', x: CAR.plateX, h: 0.70, cols: range(-135, 135, 0.2), maxR: 100,
+      rows: [-55, -52, -49, -46, -43, -40, -37, -34, -31, -28, -25, -22, -19, -16, -13, -10, -8, -6.67, -5.33, -4, -2.67, -1.33, 0, 1.33, 2.67, 4, 5.5, 7, 9, 11, 13, 15]},
   };
+  const SPIN = ['vlp', 'h1615', 'h5515'];
   const MIN_PTS = 3;
   // rays that hit the car itself first (bodywork outline or a tyre); fixed in the car frame, so worked out once
   function selfBlock(sen) {
@@ -466,12 +476,12 @@ function makeModel(BODY) {
       return tp >= 0 && y * 1000 <= tp && y * 1000 >= Math.max(bt, 0);
     };
     // traced on a grid of about 0.2° and copied to the rays in between
-    const sj = Math.max(1, Math.round(0.2 / (sen.cols[1] - sen.cols[0]))), sk = Math.max(1, Math.round(0.15 / (sen.rows[1] - sen.rows[0])));
+    const sj = Math.max(1, Math.round(0.2 / (sen.cols[1] - sen.cols[0]))), sk = Math.max(1, Math.round(0.15 / Math.min(...sen.rows.slice(1).map((r, i) => r - sen.rows[i]))));
     for (let k = 0; k < nr; k += sk) for (let j = 0; j < nc; j += sj) {
       const el = sen.rows[k], az = sen.cols[j];
       if (el >= 0) continue;
       const ce = Math.cos(el * deg), dy = Math.sin(el * deg), dx = ce * Math.cos(az * deg), dzl = -ce * Math.sin(az * deg);
-      for (let t = 0.07; t < 3; t += 0.01) {
+      for (let t = 0.07; t < 3; t += 0.02) {
         const x = sen.x + t * dx, y = sen.h + t * dy, z = t * dzl;
         if (y < 0 || x > 1.6 || x < -1.5 || Math.abs(z) > 0.8) break;
         if (occ(x, y, z)) {
@@ -482,8 +492,10 @@ function makeModel(BODY) {
     }
     return mask;
   }
+  // the car's shadow is worked out the first time a lidar is used
   for (const s of Object.values(SENS)) {
-    s.block = selfBlock(s);
+    let mask = null;
+    Object.defineProperty(s, 'block', {get: () => mask || (mask = selfBlock(s))});
     s.cc = Float64Array.from(s.cols, a => Math.cos(a * deg));
     s.cs = Float64Array.from(s.cols, a => Math.sin(a * deg));
   }
@@ -896,9 +908,11 @@ function makeModel(BODY) {
   // a farther one. Tested against casting every ray: the same count on every cone.
   function scan(p, sen, cones, wantPts) {
     const [ox, oy, oz] = origin(p, sen), c0 = sen.cols[0], res = sen.cols[1] - sen.cols[0], nc = sen.cols.length, nr = sen.rows.length;
-    const e0 = sen.rows[0], eres = sen.rows[1] - sen.rows[0], ch = Math.cos(p.h), sh = Math.sin(p.h);
+    const ch = Math.cos(p.h), sh = Math.sin(p.h), blk = sen.block;
     // ray headings, from the column angles turned by the car's heading
     const cx = j => ch * sen.cc[j] - sh * sen.cs[j], cy = j => sh * sen.cc[j] + ch * sen.cs[j];
+    // first channel at or above elevation v (channels go from lowest to highest)
+    const from = v => { let lo = 0, hi = nr; while (lo < hi) { const m = (lo + hi) >> 1; if (sen.rows[m] < v) lo = m + 1; else hi = m; } return lo; };
     const runs = [];
     cones.forEach((cn, i) => {
       const dx = cn.x - ox, dy = cn.y - oy, d = Math.hypot(dx, dy);
@@ -909,7 +923,7 @@ function makeModel(BODY) {
       if (j1 < j0) return;
       const near = Math.max(d - CONE.r0, 0.02);
       const eLo = Math.atan2(-oz, near) / deg - 0.3, eHi = Math.atan2(CONE.h - oz, near) / deg + 0.3;
-      const k0 = Math.max(0, Math.ceil((eLo - e0) / eres - 1e-9)), k1 = Math.min(nr - 1, Math.floor((eHi - e0) / eres + 1e-9));
+      const k0 = from(eLo - 1e-9), k1 = from(eHi + 1e-9) - 1;
       const jm = (az - c0) / res;
       for (let k = k0; k <= k1; k++) {
         const el = sen.rows[k], ce = Math.cos(el * deg), dz = Math.sin(el * deg);
@@ -927,7 +941,7 @@ function makeModel(BODY) {
     for (const [k, a, b, , i] of runs) {
       const tk = taken.get(k) || [], el = sen.rows[k], ce = Math.cos(el * deg), dz = Math.sin(el * deg), cn = cones[i];
       for (let j = a; j <= b; j++) {
-        if (sen.block[j * nr + k] || tk.some(([x, y]) => j >= x && j <= y)) continue;
+        if (blk[j * nr + k] || tk.some(([x, y]) => j >= x && j <= y)) continue;
         counts[i]++;
         if (wantPts) {
           const ddx = ce * cx(j), ddy = ce * cy(j), t = hitCone(ox, oy, oz, ddx, ddy, dz, cn.x, cn.y);
@@ -946,7 +960,7 @@ function makeModel(BODY) {
       if (r > 45) return;
       const pts = [], tk = taken.get(k) || [];
       for (let j = 0; j < nc; j += step) {
-        if (sen.block[j * nr + k] || tk.some(([x, y]) => j >= x - step + 1 && j <= y + step - 1)) { if (pts.length && !isNaN(pts[pts.length - 1])) pts.push(NaN, NaN); continue; }
+        if (blk[j * nr + k] || tk.some(([x, y]) => j >= x - step + 1 && j <= y + step - 1)) { if (pts.length && !isNaN(pts[pts.length - 1])) pts.push(NaN, NaN); continue; }
         pts.push(ox + r * cx(j), oy + r * cy(j));
       }
       rings.push({el, r, pts});
@@ -955,36 +969,43 @@ function makeModel(BODY) {
   }
   const count = (p, sen, cones) => scan(p, sen, cones, false).counts;
 
-  // detection along the whole path, every DS metres, for both sensors
+  // rays on each cone along the whole path, every DS metres; each lidar worked out the first time it is wanted
   const DS = 0.25;
-  function precompute(sc) {
-    if (sc.det) return sc.det;
+  function precompute(sc, keys = ['solid']) {
     const N = Math.floor(sc.len / DS) + 1, nC = sc.cones.length;
-    const det = {N, solid: [], vlp: []};
-    for (let c = 0; c < nC; c++) { det.solid.push(new Uint8Array(N)); det.vlp.push(new Uint8Array(N)); }
-    for (let i = 0; i < N; i++) {
+    const det = sc.det || (sc.det = {N, first: {}}), todo = keys.filter(k => !det[k]);
+    for (const key of todo) det[key] = sc.cones.map(() => new Uint8Array(N));
+    if (todo.length) for (let i = 0; i < N; i++) {
       const p = sc.pose(i * DS);
-      for (const key of ['solid', 'vlp']) {
+      for (const key of todo) {
         const counts = count(p, SENS[key], sc.cones);
         for (let c = 0; c < nC; c++) det[key][c][i] = Math.min(255, counts[c]);
       }
     }
-    // where each cone is first seen, by the ATX alone (S), the VLP-16 alone (V) or both (B)
-    for (const mode of ['S', 'V', 'B']) {
-      det['first' + mode] = sc.cones.map((_, c) => {
-        for (let i = 0; i < N; i++) if ((mode !== 'V' && det.solid[c][i] >= MIN_PTS) || (mode !== 'S' && det.vlp[c][i] >= MIN_PTS)) return i;
-        return Infinity;
-      });
-    }
-    sc.det = det;
     return det;
   }
-  // everything the views need at one position. opt.solid (default on) and opt.vlp pick the lidars.
+  // which lidars are on: the ATX (opt.solid, default on) and one spinning lidar (opt.spin, a SENS key, or none)
+  function lidars(opt) {
+    const useS = opt.solid !== false;
+    let spin = opt.spin !== undefined ? opt.spin : opt.vlp ? 'vlp' : null;
+    if (!useS && !spin) spin = 'vlp';
+    return {useS, spin};
+  }
+  // where each cone is first seen with these lidars, worked out once per choice
+  function firstSeen(det, useS, spin) {
+    const k = (useS ? 'S' : '') + (spin || '');
+    if (!det.first[k]) det.first[k] = det[useS ? 'solid' : spin].map((_, c) => {
+      for (let i = 0; i < det.N; i++) if ((useS && det.solid[c][i] >= MIN_PTS) || (spin && det[spin][c][i] >= MIN_PTS)) return i;
+      return Infinity;
+    });
+    return det.first[k];
+  }
+  // everything the views need at one position. opt.solid (default on) and opt.spin pick the lidars.
   function state(sc, s, opt) {
-    const det = precompute(sc), i = Math.max(0, Math.min(det.N - 1, Math.round(s / DS)));
-    const useS = opt.solid !== false, useV = !!opt.vlp || !useS;
-    const p = sc.pose(i * DS), first = useS && useV ? det.firstB : useS ? det.firstS : det.firstV;
-    const view = sc.cones.map((_, c) => (useS && det.solid[c][i] >= MIN_PTS) || (useV && det.vlp[c][i] >= MIN_PTS));
+    const {useS, spin} = lidars(opt);
+    const det = precompute(sc, [useS && 'solid', spin].filter(Boolean)), i = Math.max(0, Math.min(det.N - 1, Math.round(s / DS)));
+    const p = sc.pose(i * DS), first = firstSeen(det, useS, spin);
+    const view = sc.cones.map((_, c) => (useS && det.solid[c][i] >= MIN_PTS) || (spin && det[spin][c][i] >= MIN_PTS));
     const inMap = sc.cones.map((_, c) => first[c] <= i);
     const ch = Math.cos(p.h), sh = Math.sin(p.h);
     const inp = sc.cones.filter((c, k) => opt.map ? inMap[k] && Math.hypot(c.x - p.x, c.y - p.y) <= 25 && (c.x - p.x) * ch + (c.y - p.y) * sh > 1e-3 : view[k]);
@@ -995,9 +1016,9 @@ function makeModel(BODY) {
       if (!ok) virt.push([c.x + 3 * c.nx, c.y + 3 * c.ny]);
     }
     const steer = Math.atan(CAR.wb * (p.kap || 0)) / deg;
-    return {i, s: i * DS, p, view, inMap, inp, virt, steer, solidPts: sc.cones.map((_, c) => det.solid[c][i]), vlpPts: sc.cones.map((_, c) => det.vlp[c][i])};
+    return {i, s: i * DS, p, view, inMap, inp, virt, steer, first, solidPts: useS ? sc.cones.map((_, c) => det.solid[c][i]) : null, spinPts: spin ? sc.cones.map((_, c) => det[spin][c][i]) : null};
   }
-  return {deg, CAR, CONE, SENS, MIN_PTS, DS, SCEN, LIM, swept, scan, count, precompute, state, build, chain, at, origin, customDef, checks, coneChecks, crossing};
+  return {deg, CAR, CONE, SENS, SPIN, MIN_PTS, DS, SCEN, LIM, swept, scan, count, precompute, state, build, chain, at, origin, customDef, checks, coneChecks, crossing};
 }
 /*/MODEL*/
 const LVM = makeModel(BODY);
@@ -1005,14 +1026,15 @@ window.LVM = LVM;
 const CONE_COL = {blue: '#3d82ff', yellow: '#ffd21f', orange: '#ff8a1c'};
 
 // shared simulation state for the 2D and 3D views
-const SIM = {scen: 'hairpin', s: 0, solid: true, vlp: false, map: true, fns: []};
+// solid: the ATX on; spin: the spinning lidar on (a SENS key) or null; spinKey: the spinning lidar picked
+const SIM = {scen: 'hairpin', s: 0, solid: true, spin: null, spinKey: 'vlp', map: true, fns: []};
 window.LVS = SIM;
 SIM.on = f => { SIM.fns.push(f); if (SIM.st) f(SIM); };
 SIM.emit = () => {
   const sc = LVM.SCEN[SIM.scen];
   SIM.st = LVM.state(sc, SIM.s, SIM);
   const p = SIM.st.p;
-  SIM.pts = {solid: SIM.solid ? LVM.scan(p, LVM.SENS.solid, sc.cones, true) : null, vlp: SIM.vlp ? LVM.scan(p, LVM.SENS.vlp, sc.cones, true) : null};
+  SIM.pts = {solid: SIM.solid ? LVM.scan(p, LVM.SENS.solid, sc.cones, true) : null, spin: SIM.spin ? LVM.scan(p, LVM.SENS[SIM.spin], sc.cones, true) : null};
   SIM.fns.forEach(f => f(SIM));
 };
 
@@ -1212,8 +1234,8 @@ function carShapes(p, steer) {
     for (let x = Math.ceil(G.b[0] / 5) * 5; x <= G.b[2]; x += 5) { const [u] = T(x, 0); ctx.beginPath(); ctx.moveTo(u, 0); ctx.lineTo(u, H); ctx.stroke(); }
     for (let y = Math.ceil(G.b[1] / 5) * 5; y <= G.b[3]; y += 5) { const [, v] = T(0, y); ctx.beginPath(); ctx.moveTo(0, v); ctx.lineTo(W, v); ctx.stroke(); }
     // where each channel pointing down meets the ground, to scale: the ATX's 119 rings faint, as they would crowd the
-    // view, and the VLP-16's 8 rings, 2° apart, bold
-    for (const [k, col, lw] of [['solid', 'rgba(143,191,255,.17)', 0.8], ['vlp', 'rgba(255,173,117,.9)', 1.4]]) {
+    // view, and the spinning lidar's bold
+    for (const [k, col, lw] of [['solid', 'rgba(143,191,255,.17)', 0.8], ['spin', 'rgba(255,173,117,.9)', 1.4]]) {
       const sp = SIM.pts[k];
       if (!sp) continue;
       ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.beginPath();
@@ -1241,11 +1263,11 @@ function carShapes(p, steer) {
       for (let a = -fov / 2; a <= fov / 2 + 1e-6; a += 2) pts.push([o[0] + R * Math.cos(p.h + a * LVM.deg), o[1] + R * Math.sin(p.h + a * LVM.deg)]);
       poly(pts, null, stroke, 1.3);
     };
-    if (SIM.vlp) fan(270, 10, 'rgba(255,173,117,.7)');
+    if (SIM.spin) fan(270, 10, 'rgba(255,173,117,.7)');
     if (SIM.solid) fan(120, 30, 'rgba(143,191,255,.8)');
     ctx.setLineDash([3, 3]);
     if (SIM.solid) fan(120, under(SENS.solid), 'rgba(255,255,255,.7)');
-    else fan(270, under(SENS.vlp), 'rgba(255,255,255,.7)');
+    else fan(270, under(SENS[SIM.spin]), 'rgba(255,255,255,.7)');
     ctx.setLineDash([]);
     // planner boundary
     if (SIM.map) {
@@ -1296,8 +1318,8 @@ function carShapes(p, steer) {
     if (gone) return showTip('<b>Knocked down</b>, not replaced during the run<br>Click to put it back', ev);
     if (best < 0) return hideTip();
     const c = sc.cones[best], o = LVM.origin(st.p, LVM.SENS.solid), dist = Math.hypot(c.x - o[0], c.y - o[1]);
-    const det = sc.det, first = (SIM.solid && SIM.vlp ? det.firstB : SIM.solid ? det.firstS : det.firstV)[best];
-    showTip(`<b>${c.col} cone</b>, ${dist.toFixed(1)} m from the lidar` + (SIM.solid ? `<br>Hesai ATX: ${st.solidPts[best]} rays` : '') + (SIM.vlp ? `<br>VLP-16: ${st.vlpPts[best]} rays` : '') +
+    const first = st.first[best];
+    showTip(`<b>${c.col} cone</b>, ${dist.toFixed(1)} m from the lidar` + (SIM.solid ? `<br>Hesai ATX: ${st.solidPts[best]} rays` : '') + (SIM.spin ? `<br>${LVM.SENS[SIM.spin].name}: ${st.spinPts[best]} rays` : '') +
       `<br>${first === Infinity ? 'not seen on this run' : first * LVM.DS <= st.s ? 'in the map since ' + (st.s - first * LVM.DS).toFixed(1) + ' m back' : 'first seen ' + (first * LVM.DS - st.s).toFixed(1) + ' m further on'}` +
       (SIM.scen === 'custom' ? '<br>Click to knock it down' : ''), ev);
   });
@@ -1330,7 +1352,7 @@ function carShapes(p, steer) {
     SIM.scen = k;
     $('#ed').hidden = k !== 'custom';
     const sc = LVM.SCEN[k];
-    LVM.precompute(sc);
+    LVM.precompute(sc, [SIM.solid && 'solid', SIM.spin].filter(Boolean));
     slider.min = 0; slider.max = (Math.floor(sc.len / LVM.DS) * LVM.DS).toFixed(2);
     const marks = $('#simMarks');
     marks.innerHTML = '<span class="m">Jump to</span>';
@@ -1381,11 +1403,16 @@ function carShapes(p, steer) {
   document.querySelectorAll('#sim button[data-scen]').forEach(b => b.addEventListener('click', () => setScen(b.dataset.scen)));
   const toggle = (on, off, key, val) => $(on).addEventListener('click', () => { SIM[key] = val; $(on).setAttribute('aria-pressed', 'true'); $(off).setAttribute('aria-pressed', 'false'); SIM.emit(); });
   // one lidar or the other, or both
-  const sens = document.querySelectorAll('#sim button[data-sen]');
-  sens.forEach(b => b.addEventListener('click', () => {
-    SIM.solid = b.dataset.sen !== 'vlp'; SIM.vlp = b.dataset.sen !== 'solid';
-    sens.forEach(o => o.setAttribute('aria-pressed', String(o === b)));
-    SIM.emit();
+  // the ATX, the spinning lidar or both, and which spinning lidar
+  const sens = document.querySelectorAll('#sim button[data-sen]'), spins = document.querySelectorAll('#sim button[data-spin]');
+  let mode = 'solid';
+  const apply = () => { SIM.solid = mode !== 'spin'; SIM.spin = mode === 'solid' ? null : SIM.spinKey; SIM.emit(); };
+  sens.forEach(b => b.addEventListener('click', () => { mode = b.dataset.sen; sens.forEach(o => o.setAttribute('aria-pressed', String(o === b))); apply(); }));
+  spins.forEach(b => b.addEventListener('click', () => {
+    SIM.spinKey = b.dataset.spin;
+    spins.forEach(o => o.setAttribute('aria-pressed', String(o === b)));
+    if (mode === 'solid') { mode = 'both'; sens.forEach(o => o.setAttribute('aria-pressed', String(o.dataset.sen === mode))); }
+    apply();
   }));
   toggle('#plMap', '#plScan', 'map', true); toggle('#plScan', '#plMap', 'map', false);
   setScen('hairpin');
@@ -2052,12 +2079,16 @@ if (renderer && M && SIM && host) {
   const lens = new THREE.Mesh(new THREE.BoxGeometry(0.004, 0.022, 0.088), mat(0x0b0c0e, {roughness: 0.1, metalness: 0.3}));
   lens.position.set(SX + 0.051, SH, 0); atxG.add(lens);
   car.add(atxG);
-  const vlpG = new THREE.Group();
-  const post = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, VH - 0.036 - (SH + 0.015), 12), mat(0x9aa3ad));
-  post.position.set(SX, (VH - 0.036 + SH + 0.015) / 2, 0); vlpG.add(post);
-  const puck = new THREE.Mesh(new THREE.CylinderGeometry(0.0515, 0.0515, 0.0717, 28), mat(0xb8bec6, {metalness: 0.4, roughness: 0.35}));
-  puck.position.set(SX, VH, 0); vlpG.add(puck);
-  car.add(vlpG);
+  // the spinning lidars on a post, optical centre 0.70 m up: VLP-16 Ø103 × 72 mm, Helios Ø97.5 × 100 mm
+  const spinG = {};
+  for (const [key, r, h, col] of [['vlp', 0.0515, 0.0717, 0xb8bec6], ['h1615', 0.04875, 0.1, 0x3a3f46], ['h5515', 0.04875, 0.1, 0x3a3f46]]) {
+    const g = new THREE.Group();
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, VH - h / 2 - (SH + 0.015), 12), mat(0x9aa3ad));
+    post.position.set(SX, (VH - h / 2 + SH + 0.015) / 2, 0); g.add(post);
+    const puck = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 28), mat(col, {metalness: 0.4, roughness: 0.35}));
+    puck.position.set(SX, VH, 0); g.add(puck);
+    car.add(g); spinG[key] = g;
+  }
 
   // the ATX's 120° × 20° field of view as a translucent volume, drawn out to 12 m
   function frustum(fovH, fovV, R) {
@@ -2132,7 +2163,7 @@ if (renderer && M && SIM && host) {
     let n = 0;
     const put = (x, y, z, c) => { if (n >= CAP) return; const q = 3 * n; ppos[q] = x; ppos[q + 1] = z; ppos[q + 2] = -y; pcol[q] = c[0]; pcol[q + 1] = c[1]; pcol[q + 2] = c[2]; n++; };
     const cones = M.SCEN[SIM.scen].cones;
-    for (const [key, gc] of [['solid', [0.56, 0.75, 1]], ['vlp', [1, 0.68, 0.46]]]) {
+    for (const [key, gc] of [['solid', [0.56, 0.75, 1]], ['spin', [1, 0.68, 0.46]]]) {
       const sp = SIM.pts[key];
       if (!sp) continue;
       for (let i = 0; i < sp.conePts.length; i += 4) put(sp.conePts[i], sp.conePts[i + 1], sp.conePts[i + 2], HIT[cones[sp.conePts[i + 3]].col]);
@@ -2156,9 +2187,9 @@ if (renderer && M && SIM && host) {
       R.geo.attributes.position.needsUpdate = true;
     }
   }
-  // the channels pointing down, as rings on the ground: the ATX faint, the VLP-16 bold
+  // the channels pointing down, as rings on the ground: the ATX faint, the spinning lidar bold
   const rings = {};
-  for (const [key, col, op, cap] of [['solid', 0x8fbfff, 0.2, 90000], ['vlp', 0xffad75, 0.95, 12000]]) {
+  for (const [key, col, op, cap] of [['solid', 0x8fbfff, 0.2, 90000], ['spin', 0xffad75, 0.95, 12000]]) {
     const buf = new Float32Array(cap * 6), geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(buf, 3));
     const ln = new THREE.LineSegments(geo, new THREE.LineBasicMaterial({color: col, transparent: true, opacity: op, depthWrite: false}));
@@ -2190,7 +2221,7 @@ if (renderer && M && SIM && host) {
         camera.position.copy(mid).addScaledVector(f, -7.5).add(new THREE.Vector3(0, 3.4, 0));
         look = mid.clone().addScaledVector(f, 6);
       } else if (cam === 'eye') {
-        const o = M.origin(SIM.st.p, SIM.solid ? M.SENS.solid : M.SENS.vlp);
+        const o = M.origin(SIM.st.p, SIM.solid ? M.SENS.solid : M.SENS[SIM.spin]);
         camera.fov = 62;
         camera.position.copy(V(o[0], o[1], o[2] + 0.1));
         look = V(o[0] + 10 * Math.cos(h), o[1] + 10 * Math.sin(h), 0.3);
@@ -2221,7 +2252,7 @@ if (renderer && M && SIM && host) {
     car.position.copy(mid);
     car.rotation.y = h;
     wheels.forEach(w => { if (w.userData.front) w.rotation.y = SIM.st.steer * d2r; });
-    vlpG.visible = SIM.vlp;
+    for (const [key, g] of Object.entries(spinG)) g.visible = SIM.spin === key;
     atxG.visible = SIM.solid;
     fov.visible = SIM.solid && cam !== 'eye';
     fillPoints();
