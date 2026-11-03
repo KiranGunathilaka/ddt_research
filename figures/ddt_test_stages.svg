@@ -1,0 +1,298 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1610" height="912" viewBox="0 0 1610 912" font-family="DejaVu Sans, Segoe UI, Helvetica, Arial, sans-serif">
+<title>Falcon DDT test plan: which layers each stage runs, and what feeds them</title>
+<defs><marker id="ah0e7490" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0e7490"/></marker><marker id="ah4b5563" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4b5563"/></marker><marker id="ahb45309" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b45309"/></marker></defs>
+<rect width="1610" height="912" fill="#ffffff"/>
+<text x="20.0" y="30.0" font-size="18" font-weight="bold" fill="#111827" text-anchor="start">Falcon FS-AI DDT: test stages over the same five layers</text>
+<text x="20.0" y="70.0" font-size="12" font-weight="bold" fill="#6b7280" text-anchor="start">Stage</text>
+<text x="290.0" y="70.0" font-size="12" font-weight="bold" fill="#6b7280" text-anchor="start">What feeds the stack</text>
+<text x="630.0" y="70.0" font-size="12.5" font-weight="bold" fill="#6d28d9" text-anchor="start">1 · Vehicle</text>
+<text x="880.0" y="70.0" font-size="12.5" font-weight="bold" fill="#0b5cad" text-anchor="start">2 · Perception</text>
+<text x="1130.0" y="70.0" font-size="12.5" font-weight="bold" fill="#1a7f4b" text-anchor="start">3 · Localisation</text>
+<text x="1380.0" y="70.0" font-size="12.5" font-weight="bold" fill="#b45309" text-anchor="start">4 · Planning + control</text>
+<line x1="20" y1="78" x2="1590" y2="78" stroke="#94a3b8" stroke-width="1.4"/>
+<line x1="20" y1="229" x2="1590" y2="229" stroke="#94a3b8" stroke-width="1.4"/>
+<line x1="20" y1="381" x2="1590" y2="381" stroke="#94a3b8" stroke-width="1.4"/>
+<line x1="20" y1="533" x2="1590" y2="533" stroke="#94a3b8" stroke-width="1.4"/>
+<line x1="20" y1="685" x2="1590" y2="685" stroke="#94a3b8" stroke-width="1.4"/>
+<rect x="20" y="86" width="230" height="134" rx="8" fill="#eef1f5" stroke="#334155" stroke-width="1.6"/>
+<text x="31.0" y="107.0" font-size="13" font-weight="bold" fill="#334155" text-anchor="start">1 · Full simulation</text>
+<circle cx="34.0" cy="122.0" r="2.1" fill="#334155"/>
+<text x="42.0" y="126.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">FSDS or a CARLA FS sim</text>
+<circle cx="34.0" cy="138.5" r="2.1" fill="#334155"/>
+<text x="42.0" y="142.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">one PC, no hardware</text>
+<circle cx="34.0" cy="155.0" r="2.1" fill="#334155"/>
+<text x="42.0" y="159.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">truth: the simulator</text>
+<rect x="290" y="86" width="240" height="134" rx="8" fill="#fff1ea" stroke="#9a3412" stroke-width="1.6"/>
+<text x="301.0" y="107.0" font-size="13" font-weight="bold" fill="#9a3412" text-anchor="start">Simulator</text>
+<circle cx="304.0" cy="122.0" r="2.1" fill="#9a3412"/>
+<text x="312.0" y="126.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">ADS-DV model, FS tracks</text>
+<circle cx="304.0" cy="138.5" r="2.1" fill="#9a3412"/>
+<text x="312.0" y="142.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">lidar, camera, IMU, GNSS</text>
+<circle cx="304.0" cy="155.0" r="2.1" fill="#9a3412"/>
+<text x="312.0" y="159.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">same tracks again with</text>
+<text x="312.0" y="175.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">the 1:10 profile</text>
+<path d="M 530,123 L 630,123" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="580.0" y="116.0" font-size="10" font-weight="normal" fill="#374151" text-anchor="middle">sensors</text>
+<rect x="630" y="86" width="200" height="74" rx="8" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.6"/>
+<text x="641.0" y="107.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">Vehicle</text>
+<circle cx="644.0" cy="122.0" r="2.1" fill="#6d28d9"/>
+<text x="652.0" y="126.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">sim bridge: sim topics</text>
+<text x="652.0" y="142.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">in driver formats</text>
+<rect x="762.4" y="94" width="59.6" height="17" rx="8.5" fill="#6d28d9"/>
+<text x="792.2" y="106.5" font-size="10.5" font-weight="bold" fill="#ffffff" text-anchor="middle">ADS-DV</text>
+<rect x="880" y="86" width="200" height="74" rx="8" fill="#ebf3fc" stroke="#0b5cad" stroke-width="1.6"/>
+<text x="891.0" y="107.0" font-size="13" font-weight="bold" fill="#0b5cad" text-anchor="start">Perception</text>
+<circle cx="894.0" cy="122.0" r="2.1" fill="#0b5cad"/>
+<text x="902.0" y="126.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">rendered lidar + image</text>
+<circle cx="894.0" cy="138.5" r="2.1" fill="#0b5cad"/>
+<text x="902.0" y="142.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">vs true cone positions</text>
+<path d="M 830,123 L 880,123" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<rect x="1130" y="86" width="200" height="74" rx="8" fill="#e8f5ee" stroke="#1a7f4b" stroke-width="1.6"/>
+<text x="1141.0" y="107.0" font-size="13" font-weight="bold" fill="#1a7f4b" text-anchor="start">Localisation</text>
+<circle cx="1144.0" cy="122.0" r="2.1" fill="#1a7f4b"/>
+<text x="1152.0" y="126.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">sim IMU, GNSS, wheels</text>
+<circle cx="1144.0" cy="138.5" r="2.1" fill="#1a7f4b"/>
+<text x="1152.0" y="142.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">vs the true pose</text>
+<path d="M 1080,123 L 1130,123" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<rect x="1380" y="86" width="200" height="74" rx="8" fill="#fdf2e4" stroke="#b45309" stroke-width="1.6"/>
+<text x="1391.0" y="107.0" font-size="13" font-weight="bold" fill="#b45309" text-anchor="start">Planning + control</text>
+<circle cx="1394.0" cy="122.0" r="2.1" fill="#b45309"/>
+<text x="1402.0" y="126.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">closed loop, sim car</text>
+<circle cx="1394.0" cy="138.5" r="2.1" fill="#b45309"/>
+<text x="1402.0" y="142.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">thousands of laps</text>
+<path d="M 1330,123 L 1380,123" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<path d="M 1490,160 L 1490,178 L 530,178" fill="none" stroke="#b45309" stroke-width="2" marker-end="url(#ahb45309)"/>
+<rect x="939.7" y="172.5" width="130.6" height="14.5" rx="3" fill="#ffffff" opacity="0.96"/>
+<text x="1005.0" y="182.0" font-size="10.5" font-weight="bold" fill="#b45309" text-anchor="middle">commands → sim car</text>
+<rect x="630" y="192" width="950" height="28" rx="8" fill="#eef1f5" stroke="#334155" stroke-width="1.6"/>
+<text x="641.0" y="213.0" font-size="13" font-weight="bold" fill="#334155" text-anchor="start"></text>
+<text x="641.0" y="211.0" font-size="12" font-weight="bold" fill="#334155" text-anchor="start">5 · System: </text>
+<text x="721.2" y="211.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">all missions; faults injected: dropped sweeps, late images, a stuck wheel speed</text>
+<rect x="20" y="238" width="230" height="134" rx="8" fill="#eef1f5" stroke="#334155" stroke-width="1.6"/>
+<text x="31.0" y="259.0" font-size="13" font-weight="bold" fill="#334155" text-anchor="start">2a · Pushable sensor rig</text>
+<circle cx="34.0" cy="274.0" r="2.1" fill="#334155"/>
+<text x="42.0" y="278.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">real sensors, ADS-DV heights</text>
+<circle cx="34.0" cy="290.5" r="2.1" fill="#334155"/>
+<text x="42.0" y="294.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">pushed by hand, our cones</text>
+<circle cx="34.0" cy="307.0" r="2.1" fill="#334155"/>
+<text x="42.0" y="311.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">truth: RTK + surveyed cones</text>
+<rect x="290" y="238" width="240" height="134" rx="8" fill="#f4f5f7" stroke="#5b6170" stroke-width="1.6"/>
+<text x="301.0" y="259.0" font-size="13" font-weight="bold" fill="#5b6170" text-anchor="start">Real world</text>
+<circle cx="304.0" cy="274.0" r="2.1" fill="#5b6170"/>
+<text x="312.0" y="278.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">lidar(s), ZED 2, F9P, MTi-3</text>
+<circle cx="304.0" cy="290.5" r="2.1" fill="#5b6170"/>
+<text x="312.0" y="294.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">encoder → ESP32 → CAN</text>
+<text x="312.0" y="311.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">(fakes the VCU wheel</text>
+<text x="312.0" y="327.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">speed frames)</text>
+<path d="M 530,275 L 630,275" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="580.0" y="268.0" font-size="10" font-weight="normal" fill="#374151" text-anchor="middle">sensors</text>
+<rect x="630" y="238" width="200" height="74" rx="8" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.6"/>
+<text x="641.0" y="259.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">Vehicle</text>
+<circle cx="644.0" cy="274.0" r="2.1" fill="#6d28d9"/>
+<text x="652.0" y="278.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">real drivers, PPS time</text>
+<circle cx="644.0" cy="290.5" r="2.1" fill="#6d28d9"/>
+<text x="652.0" y="294.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">CAN bridge on ESP32</text>
+<rect x="762.4" y="246" width="59.6" height="17" rx="8.5" fill="#6d28d9"/>
+<text x="792.2" y="258.5" font-size="10.5" font-weight="bold" fill="#ffffff" text-anchor="middle">ADS-DV</text>
+<rect x="880" y="238" width="200" height="74" rx="8" fill="#ebf3fc" stroke="#0b5cad" stroke-width="1.6"/>
+<text x="891.0" y="259.0" font-size="13" font-weight="bold" fill="#0b5cad" text-anchor="start">Perception</text>
+<circle cx="894.0" cy="274.0" r="2.1" fill="#0b5cad"/>
+<text x="902.0" y="278.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">real lidar + camera</text>
+<circle cx="894.0" cy="290.5" r="2.1" fill="#0b5cad"/>
+<text x="902.0" y="294.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">our hand-made cones</text>
+<path d="M 830,275 L 880,275" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<rect x="1130" y="238" width="200" height="74" rx="8" fill="#e8f5ee" stroke="#1a7f4b" stroke-width="1.6"/>
+<text x="1141.0" y="259.0" font-size="13" font-weight="bold" fill="#1a7f4b" text-anchor="start">Localisation</text>
+<circle cx="1144.0" cy="274.0" r="2.1" fill="#1a7f4b"/>
+<text x="1152.0" y="278.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">real IMU, GNSS, encoder</text>
+<circle cx="1144.0" cy="290.5" r="2.1" fill="#1a7f4b"/>
+<text x="1152.0" y="294.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">vs RTK truth</text>
+<path d="M 1080,275 L 1130,275" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<rect x="1380" y="238" width="200" height="74" rx="8" fill="#ffffff" stroke="#9ca3af" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="1391.0" y="259.0" font-size="13" font-weight="bold" fill="#9ca3af" text-anchor="start">Planning + control</text>
+<circle cx="1394.0" cy="274.0" r="2.1" fill="#9ca3af"/>
+<text x="1402.0" y="278.0" font-size="11.5" font-weight="normal" fill="#9ca3af" text-anchor="start">runs, output logged</text>
+<circle cx="1394.0" cy="290.5" r="2.1" fill="#9ca3af"/>
+<text x="1402.0" y="294.5" font-size="11.5" font-weight="normal" fill="#9ca3af" text-anchor="start">nothing to steer</text>
+<path d="M 1330,275 L 1380,275" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="1005.0" y="334.0" font-size="10.5" font-weight="normal" fill="#6b7280" text-anchor="middle">open loop: commands are logged, not sent anywhere</text>
+<rect x="630" y="344" width="950" height="28" rx="8" fill="#eef1f5" stroke="#334155" stroke-width="1.6"/>
+<text x="641.0" y="365.0" font-size="13" font-weight="bold" fill="#334155" text-anchor="start"></text>
+<text x="641.0" y="363.0" font-size="12" font-weight="bold" fill="#334155" text-anchor="start">5 · System: </text>
+<text x="721.2" y="363.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">supervisor only: topic rates, latency per stage, timestamp alignment</text>
+<rect x="20" y="390" width="230" height="134" rx="8" fill="#eef1f5" stroke="#334155" stroke-width="1.6"/>
+<text x="31.0" y="411.0" font-size="13" font-weight="bold" fill="#334155" text-anchor="start">2b · CarMaker HiL + CARLA</text>
+<circle cx="34.0" cy="426.0" r="2.1" fill="#334155"/>
+<text x="42.0" y="430.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">official ADS-DV model + VCU</text>
+<circle cx="34.0" cy="442.5" r="2.1" fill="#334155"/>
+<text x="42.0" y="446.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">real CAN cable to our PC</text>
+<circle cx="34.0" cy="459.0" r="2.1" fill="#334155"/>
+<text x="42.0" y="463.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">truth: CarMaker state</text>
+<rect x="290" y="390" width="240" height="134" rx="8" fill="#fff1ea" stroke="#9a3412" stroke-width="1.6"/>
+<text x="301.0" y="411.0" font-size="13" font-weight="bold" fill="#9a3412" text-anchor="start">CarMaker HiL (Windows PC)</text>
+<circle cx="304.0" cy="426.0" r="2.1" fill="#9a3412"/>
+<text x="312.0" y="430.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">ADS-DV 2026 model, ZF VCU</text>
+<circle cx="304.0" cy="442.5" r="2.1" fill="#9a3412"/>
+<text x="312.0" y="446.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">lidar, camera: CarMaker</text>
+<text x="312.0" y="463.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">RSI, or CARLA driven</text>
+<text x="312.0" y="479.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">by CarMaker's pose</text>
+<path d="M 530,427 L 630,427" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="580.0" y="420.0" font-size="10" font-weight="normal" fill="#374151" text-anchor="middle">CAN + sensors</text>
+<rect x="630" y="390" width="200" height="74" rx="8" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.6"/>
+<text x="641.0" y="411.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">Vehicle</text>
+<circle cx="644.0" cy="426.0" r="2.1" fill="#6d28d9"/>
+<text x="652.0" y="430.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">CAN bridge on real CAN</text>
+<circle cx="644.0" cy="442.5" r="2.1" fill="#6d28d9"/>
+<text x="652.0" y="446.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">rendered sensors in</text>
+<rect x="762.4" y="398" width="59.6" height="17" rx="8.5" fill="#6d28d9"/>
+<text x="792.2" y="410.5" font-size="10.5" font-weight="bold" fill="#ffffff" text-anchor="middle">ADS-DV</text>
+<rect x="880" y="390" width="200" height="74" rx="8" fill="#ebf3fc" stroke="#0b5cad" stroke-width="1.6"/>
+<text x="891.0" y="411.0" font-size="13" font-weight="bold" fill="#0b5cad" text-anchor="start">Perception</text>
+<circle cx="894.0" cy="426.0" r="2.1" fill="#0b5cad"/>
+<text x="902.0" y="430.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">rendered lidar + camera</text>
+<circle cx="894.0" cy="442.5" r="2.1" fill="#0b5cad"/>
+<text x="902.0" y="446.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">realistic scenes</text>
+<path d="M 830,427 L 880,427" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<rect x="1130" y="390" width="200" height="74" rx="8" fill="#e8f5ee" stroke="#1a7f4b" stroke-width="1.6"/>
+<text x="1141.0" y="411.0" font-size="13" font-weight="bold" fill="#1a7f4b" text-anchor="start">Localisation</text>
+<circle cx="1144.0" cy="426.0" r="2.1" fill="#1a7f4b"/>
+<text x="1152.0" y="430.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">CAN odometry, sim IMU</text>
+<circle cx="1144.0" cy="442.5" r="2.1" fill="#1a7f4b"/>
+<text x="1152.0" y="446.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">vs CarMaker truth</text>
+<path d="M 1080,427 L 1130,427" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<rect x="1380" y="390" width="200" height="74" rx="8" fill="#fdf2e4" stroke="#b45309" stroke-width="1.6"/>
+<text x="1391.0" y="411.0" font-size="13" font-weight="bold" fill="#b45309" text-anchor="start">Planning + control</text>
+<circle cx="1394.0" cy="426.0" r="2.1" fill="#b45309"/>
+<text x="1402.0" y="430.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">ADS-DV dynamics</text>
+<circle cx="1394.0" cy="442.5" r="2.1" fill="#b45309"/>
+<text x="1402.0" y="446.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">real 50 ms handshake</text>
+<path d="M 1330,427 L 1380,427" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<path d="M 1490,464 L 1490,482 L 530,482" fill="none" stroke="#b45309" stroke-width="2" marker-end="url(#ahb45309)"/>
+<rect x="920.8" y="476.5" width="168.4" height="14.5" rx="3" fill="#ffffff" opacity="0.96"/>
+<text x="1005.0" y="486.0" font-size="10.5" font-weight="bold" fill="#b45309" text-anchor="middle">AI2VCU over the CAN cable</text>
+<rect x="630" y="496" width="950" height="28" rx="8" fill="#eef1f5" stroke="#334155" stroke-width="1.6"/>
+<text x="641.0" y="517.0" font-size="13" font-weight="bold" fill="#334155" text-anchor="start"></text>
+<text x="641.0" y="515.0" font-size="12" font-weight="bold" fill="#334155" text-anchor="start">5 · System: </text>
+<text x="721.2" y="515.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">AS states from the organisers' VCU model: ready, driving, finished, emergency brake</text>
+<rect x="20" y="542" width="230" height="134" rx="8" fill="#eef1f5" stroke="#334155" stroke-width="1.6"/>
+<text x="31.0" y="563.0" font-size="13" font-weight="bold" fill="#334155" text-anchor="start">3 · 1:10 car over Wi-Fi</text>
+<circle cx="34.0" cy="578.0" r="2.1" fill="#334155"/>
+<text x="42.0" y="582.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">stack runs in the simulator</text>
+<circle cx="34.0" cy="594.5" r="2.1" fill="#334155"/>
+<text x="42.0" y="598.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">the real car drives it</text>
+<circle cx="34.0" cy="611.0" r="2.1" fill="#334155"/>
+<text x="42.0" y="615.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">truth: RTK on the car</text>
+<rect x="290" y="542" width="240" height="52" rx="8" fill="#fff1ea" stroke="#9a3412" stroke-width="1.6"/>
+<text x="301.0" y="563.0" font-size="13" font-weight="bold" fill="#9a3412" text-anchor="start">Simulator, 1:10 track</text>
+<circle cx="304.0" cy="578.0" r="2.1" fill="#9a3412"/>
+<text x="312.0" y="582.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">ego at the measured pose</text>
+<rect x="290" y="624" width="240" height="52" rx="8" fill="#f4f5f7" stroke="#5b6170" stroke-width="1.6"/>
+<text x="301.0" y="645.0" font-size="13" font-weight="bold" fill="#5b6170" text-anchor="start">1:10 car (Raspberry Pi 5)</text>
+<circle cx="304.0" cy="660.0" r="2.1" fill="#5b6170"/>
+<text x="312.0" y="664.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">VESC, servo, RTK + IMU</text>
+<path d="M 530,568 L 630,568" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="580.0" y="561.0" font-size="10" font-weight="normal" fill="#374151" text-anchor="middle">sensors</text>
+<path d="M 350,624 L 350,594" fill="none" stroke="#0e7490" stroke-width="1.8" stroke-dasharray="6 4" marker-end="url(#ah0e7490)"/>
+<text x="358.0" y="613.0" font-size="10" font-weight="normal" fill="#0e7490" text-anchor="start">measured pose (Wi-Fi)</text>
+<rect x="630" y="542" width="200" height="74" rx="8" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.6"/>
+<text x="641.0" y="563.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">Vehicle</text>
+<circle cx="644.0" cy="578.0" r="2.1" fill="#6d28d9"/>
+<text x="652.0" y="582.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">sim sensors in, commands</text>
+<text x="652.0" y="598.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">out over Wi-Fi DDS</text>
+<rect x="781.9" y="550" width="40.1" height="17" rx="8.5" fill="#0e7490"/>
+<text x="801.9" y="562.5" font-size="10.5" font-weight="bold" fill="#ffffff" text-anchor="middle">1:10</text>
+<rect x="880" y="542" width="200" height="74" rx="8" fill="#ebf3fc" stroke="#0b5cad" stroke-width="1.6"/>
+<text x="891.0" y="563.0" font-size="13" font-weight="bold" fill="#0b5cad" text-anchor="start">Perception</text>
+<circle cx="894.0" cy="578.0" r="2.1" fill="#0b5cad"/>
+<text x="902.0" y="582.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">simulated, seen from</text>
+<text x="902.0" y="598.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">the real car's pose</text>
+<path d="M 830,579 L 880,579" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<rect x="1130" y="542" width="200" height="74" rx="8" fill="#e8f5ee" stroke="#1a7f4b" stroke-width="1.6"/>
+<text x="1141.0" y="563.0" font-size="13" font-weight="bold" fill="#1a7f4b" text-anchor="start">Localisation</text>
+<circle cx="1144.0" cy="578.0" r="2.1" fill="#1a7f4b"/>
+<text x="1152.0" y="582.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">simulated, at the real</text>
+<text x="1152.0" y="598.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">pose; vs the car's RTK</text>
+<path d="M 1080,579 L 1130,579" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<rect x="1380" y="542" width="200" height="74" rx="8" fill="#fdf2e4" stroke="#b45309" stroke-width="1.6"/>
+<text x="1391.0" y="563.0" font-size="13" font-weight="bold" fill="#b45309" text-anchor="start">Planning + control</text>
+<circle cx="1394.0" cy="578.0" r="2.1" fill="#b45309"/>
+<text x="1402.0" y="582.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">drives the real car</text>
+<circle cx="1394.0" cy="594.5" r="2.1" fill="#b45309"/>
+<text x="1402.0" y="598.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">plan vs track checked</text>
+<path d="M 1330,579 L 1380,579" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<path d="M 1490,616 L 1490,634 L 530,634" fill="none" stroke="#0e7490" stroke-width="2" stroke-dasharray="7 4" marker-end="url(#ah0e7490)"/>
+<rect x="921.4" y="628.5" width="167.2" height="14.5" rx="3" fill="#ffffff" opacity="0.96"/>
+<text x="1005.0" y="638.0" font-size="10.5" font-weight="bold" fill="#0e7490" text-anchor="middle">Wi-Fi DDS: steering, speed</text>
+<rect x="630" y="648" width="950" height="28" rx="8" fill="#eef1f5" stroke="#334155" stroke-width="1.6"/>
+<text x="641.0" y="669.0" font-size="13" font-weight="bold" fill="#334155" text-anchor="start"></text>
+<text x="641.0" y="667.0" font-size="12" font-weight="bold" fill="#334155" text-anchor="start">5 · System: </text>
+<text x="721.2" y="667.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">missions on the scaled track; the car stops itself if commands stop for 100 ms</text>
+<rect x="20" y="694" width="230" height="134" rx="8" fill="#eef1f5" stroke="#334155" stroke-width="1.6"/>
+<text x="31.0" y="715.0" font-size="13" font-weight="bold" fill="#334155" text-anchor="start">Event · shared ADS-DV</text>
+<circle cx="34.0" cy="730.0" r="2.1" fill="#334155"/>
+<text x="42.0" y="734.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">test day, then the 4 events</text>
+<circle cx="34.0" cy="746.5" r="2.1" fill="#334155"/>
+<text x="42.0" y="750.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">same software image</text>
+<circle cx="34.0" cy="763.0" r="2.1" fill="#334155"/>
+<text x="42.0" y="767.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">truth: none; log everything</text>
+<rect x="290" y="694" width="240" height="134" rx="8" fill="#f4f5f7" stroke="#5b6170" stroke-width="1.6"/>
+<text x="301.0" y="715.0" font-size="13" font-weight="bold" fill="#5b6170" text-anchor="start">The ADS-DV</text>
+<circle cx="304.0" cy="730.0" r="2.1" fill="#5b6170"/>
+<text x="312.0" y="734.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">our sensors + our PC</text>
+<circle cx="304.0" cy="746.5" r="2.1" fill="#5b6170"/>
+<text x="312.0" y="750.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">on the IMechE car</text>
+<circle cx="304.0" cy="763.0" r="2.1" fill="#5b6170"/>
+<text x="312.0" y="767.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">its VCU over CAN</text>
+<path d="M 530,731 L 630,731" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="580.0" y="724.0" font-size="10" font-weight="normal" fill="#374151" text-anchor="middle">CAN + sensors</text>
+<rect x="630" y="694" width="200" height="74" rx="8" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.6"/>
+<text x="641.0" y="715.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">Vehicle</text>
+<circle cx="644.0" cy="730.0" r="2.1" fill="#6d28d9"/>
+<text x="652.0" y="734.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">real drivers</text>
+<circle cx="644.0" cy="746.5" r="2.1" fill="#6d28d9"/>
+<text x="652.0" y="750.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">real CAN, real VCU</text>
+<rect x="762.4" y="702" width="59.6" height="17" rx="8.5" fill="#6d28d9"/>
+<text x="792.2" y="714.5" font-size="10.5" font-weight="bold" fill="#ffffff" text-anchor="middle">ADS-DV</text>
+<rect x="880" y="694" width="200" height="74" rx="8" fill="#ebf3fc" stroke="#0b5cad" stroke-width="1.6"/>
+<text x="891.0" y="715.0" font-size="13" font-weight="bold" fill="#0b5cad" text-anchor="start">Perception</text>
+<circle cx="894.0" cy="730.0" r="2.1" fill="#0b5cad"/>
+<text x="902.0" y="734.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">as on the rig</text>
+<circle cx="894.0" cy="746.5" r="2.1" fill="#0b5cad"/>
+<text x="902.0" y="750.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">record new images</text>
+<path d="M 830,731 L 880,731" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<rect x="1130" y="694" width="200" height="74" rx="8" fill="#e8f5ee" stroke="#1a7f4b" stroke-width="1.6"/>
+<text x="1141.0" y="715.0" font-size="13" font-weight="bold" fill="#1a7f4b" text-anchor="start">Localisation</text>
+<circle cx="1144.0" cy="730.0" r="2.1" fill="#1a7f4b"/>
+<text x="1152.0" y="734.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">as on the rig</text>
+<circle cx="1144.0" cy="746.5" r="2.1" fill="#1a7f4b"/>
+<text x="1152.0" y="750.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">slow first laps</text>
+<path d="M 1080,731 L 1130,731" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<rect x="1380" y="694" width="200" height="74" rx="8" fill="#fdf2e4" stroke="#b45309" stroke-width="1.6"/>
+<text x="1391.0" y="715.0" font-size="13" font-weight="bold" fill="#b45309" text-anchor="start">Planning + control</text>
+<circle cx="1394.0" cy="730.0" r="2.1" fill="#b45309"/>
+<text x="1402.0" y="734.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">as on the HiL</text>
+<circle cx="1394.0" cy="746.5" r="2.1" fill="#b45309"/>
+<text x="1402.0" y="750.5" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">step tests to tune</text>
+<path d="M 1330,731 L 1380,731" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<path d="M 1490,768 L 1490,786 L 530,786" fill="none" stroke="#b45309" stroke-width="2" marker-end="url(#ahb45309)"/>
+<rect x="950.0" y="780.5" width="110.0" height="14.5" rx="3" fill="#ffffff" opacity="0.96"/>
+<text x="1005.0" y="790.0" font-size="10.5" font-weight="bold" fill="#b45309" text-anchor="middle">AI2VCU over CAN</text>
+<rect x="630" y="800" width="950" height="28" rx="8" fill="#eef1f5" stroke="#334155" stroke-width="1.6"/>
+<text x="641.0" y="821.0" font-size="13" font-weight="bold" fill="#334155" text-anchor="start"></text>
+<text x="641.0" y="819.0" font-size="12" font-weight="bold" fill="#334155" text-anchor="start">5 · System: </text>
+<text x="721.2" y="819.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">first real AS run; steering and speed step responses logged to refit the profile</text>
+<rect x="20" y="855" width="26" height="13" rx="4" fill="#ebf3fc" stroke="#0b5cad" stroke-width="1.5"/>
+<text x="53.0" y="866.0" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="start">layer runs and is tested here</text>
+<rect x="244.609375" y="855" width="26" height="13" rx="4" fill="#ffffff" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="277.6" y="866.0" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="start">runs, not tested here</text>
+<rect x="424.734375" y="855" width="26" height="13" rx="4" fill="#fff1ea" stroke="#9a3412" stroke-width="1.5"/>
+<text x="457.7" y="866.0" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="start">simulated source</text>
+<rect x="582.359375" y="855" width="26" height="13" rx="4" fill="#f4f5f7" stroke="#5b6170" stroke-width="1.5"/>
+<text x="615.4" y="866.0" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="start">real hardware</text>
+<rect x="721.0" y="853" width="59.6" height="17" rx="8.5" fill="#6d28d9"/>
+<text x="750.8" y="865.5" font-size="10.5" font-weight="bold" fill="#ffffff" text-anchor="middle">ADS-DV</text>
+<rect x="786.6" y="853" width="40.1" height="17" rx="8.5" fill="#0e7490"/>
+<text x="806.7" y="865.5" font-size="10.5" font-weight="bold" fill="#ffffff" text-anchor="middle">1:10</text>
+<text x="834.7" y="866.0" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="start">vehicle profile</text>
+<text x="20.0" y="892.0" font-size="11.5" font-weight="normal" fill="#6b7280" text-anchor="start">Arrows inside a stage are the same data flow as the architecture figure. A stage with no return arrow is open loop. The ADS-DV profile is used everywhere except stage 3.</text>
+</svg>
