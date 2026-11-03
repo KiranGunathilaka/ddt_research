@@ -16,7 +16,8 @@ P1X, P1W = 610, 214         # lidar / camera cones
 P3X, P3W = 898, 214         # fusion
 LX, LW = 1210, 232          # localisation
 PX, PW = 1540, 232          # planning and control
-ROUTE = 1816
+ROUTE = 1830                # mission and mode, behaviour tree → planner
+LINE = 1800                 # line crossings, planner → behaviour tree
 # rows
 R1, R2 = (92, 196), (212, 316)
 R3A, R3B = (340, 432), (446, 538)
@@ -39,39 +40,39 @@ def b(name, x, y0y1, w, lay, title, bullets=(), **k):
     return d.box(name, x, y0, w, y1 - y0, lay, title, bullets, **k)
 
 # hardware
-b('vlp', HX, R1, HW, 'hw', 'Velodyne VLP-16', ['360° lidar, 16 rings', 'about 100 m range', 'owned'], rate='10 Hz')
-b('zed', HX, R2, HW, 'hw', 'ZED 2 camera', ['stereo: colour + depth', 'owned'], rate='30 fps')
+b('lid', HX, R1, HW, 'hw', 'Lidar, one or two', ['main, to buy: 120°', '  solid-state or 360°', '  32-channel', '2nd, optional: VLP-16'], rate='10 Hz')
+b('zed', HX, R2, HW, 'hw', 'ZED 2 camera', ['stereo, colour, 110°', 'owned; the shared car', '  also has one'], rate='30 fps')
 b('f9p', HX, (R3A[0], R3B[1]), HW, 'hw', 'u-blox ZED-F9P', ['position, velocity', 'PPS time pulse', 'RTK corrections:', '  NTRIP over 4G,', '  if IMechE allows', 'owned (two boards)'], rate='10 Hz')
 b('imu', HX, R4, HW, 'hw', 'Xsens MTi-3 IMU', ['yaw rate, acceleration', 'to buy (dev kit)'])
 b('vcu', HX, R5, HW, 'hw', 'ADS-DV VCU', ['the shared IMechE car', 'CAN, 500 kbit/s', 'steering, motor, brakes'], rate='100 Hz')
 # drivers
-b('dl', DX, R1, DW, 'veh', 'Lidar driver', ['Velodyne ROS 2 driver', 'packets → point cloud', 'stamped in GNSS time'])
-b('dc', DX, R2, DW, 'veh', 'Camera driver', ['ZED ROS 2 wrapper', 'rectified image + depth', 'runs on the GPU'])
+b('dl', DX, R1, DW, 'veh', 'Lidar drivers', ['maker\'s ROS 2 driver,', '  one per lidar', 'packets → point cloud', 'stamped in GNSS time'])
+b('dc', DX, R2, DW, 'veh', 'Camera driver', ['GPU fitted: ZED wrapper', 'no GPU: zed-open-capture', 'left colour image', 'stamped in GNSS time'])
 b('dg', DX, R3A, DW, 'veh', 'GNSS driver', ['u-blox ROS 2 driver', 'NTRIP client over 4G', 'fix type and covariance'])
 b('dt', DX, R3B, DW, 'veh', 'Time and frames', ['chrony: PC clock on PPS', 'tf: sensor poses from CAD', '  (per vehicle profile)'])
 b('di', DX, R4, DW, 'veh', 'IMU driver', ['Xsens ROS 2 driver', 'stamped on arrival'])
 b('can', DX, R5, DW, 'veh', 'CAN bridge', ['FS-AI API on a CANable', 'answers 50 ms handshake', 'VCU2AI → ROS topics', 'commands → AI2VCU, clamped'], rate='100 Hz')
 # perception
-b('pl', P1X, R1, P1W, 'per', 'Lidar cones', ['crop, motion de-skew', 'ground removal', 'clustering (DBSCAN)', 'cone size + point check'], rate='≤30 ms')
-b('pc', P1X, R2, P1W, 'per', 'Camera cones', ['YOLO on TensorRT', 'blue, yellow, orange', 'trained on FSOCO + ours'], rate='≤25 ms')
-b('pf', P3X, (R1[0], R2[1]), P3W, 'per', 'Lidar–camera fusion', ['project lidar cones', '  into the image taken', '  at the same time', 'match boxes (Hungarian)', 'position from lidar,', '  colour from camera', 'no match → "unknown"'], rate='10 Hz')
+b('pl', P1X, R1, P1W, 'per', 'Lidar cones', ['one detector per lidar', 'de-skew, ground removal', 'clustering, size check', '505 mm tall: big orange'], rate='≤30 ms')
+b('pc', P1X, R2, P1W, 'per', 'Camera cones', ['YOLO: OpenVINO, or', '  TensorRT with the GPU', 'blue, yellow, orange,', '  big orange'], rate='≤25 ms')
+b('pf', P3X, (R1[0], R2[1]), P3W, 'per', 'Lidar–camera fusion', ['once per lidar scan', 'project its cones into', '  the image taken at', '  the same time', 'match boxes (Hungarian)', 'position from lidar,', '  colour from camera', 'no match → "unknown"'], rate='10 Hz')
 # localisation
 LS = (92, 296)
 b('slam', LX, LS, LW, 'loc', 'Cone SLAM + mapping', ['data association (JCBB)', 'EKF-SLAM first,', '  GraphSLAM (iSAM2) later', 'builds the cone map', 'lap 1: map + localise', 'laps 2–10: map frozen', 'out: map → odom'], rate='10 Hz')
 b('ekf', LX, (340, R5[1]), LW, 'loc', 'Odometry EKF', ['predict: IMU', 'update: wheel speeds,', '  steering angle, GNSS', 'state: x, y, ψ, vx, vy, r', 'gyro bias as a state', 'out: odom → base_link', 'pose in map = SLAM', '  correction ∘ odometry'], rate='100 Hz')
 # planning and control
-b('path', PX, LS, PW, 'pla', 'Path planner', ['one mode per mission:', 'accel: straight line', 'skidpad: fixed figure 8', 'autocross: Delaunay', '  mid-line of the cones', 'trackdrive: race line', '  on the saved map'], rate='10 Hz')
+b('path', PX, LS, PW, 'pla', 'Path planner', ['one mode per mission:', 'accel: straight line', 'skidpad: fixed figure 8', 'autocross: Delaunay', '  mid-line of map cones', 'trackdrive: race line', '  on the saved map', 'finds the big orange', '  pair; flags crossings'], rate='10 Hz')
 b('speed', PX, (340, 440), PW, 'pla', 'Speed profile', ['forward–backward pass', 'grip + steering limits', '  from the profile'])
 b('ctrl', PX, (484, R5[1]), PW, 'pla', 'Controller', ['steering: pure pursuit,', '  MPC later', 'speed: PID → axle', '  torque, brake pressure', 'rate limits from the', '  vehicle profile'], rate='50 Hz')
 # system
 d.box('as', 34, B0, 478, 132, 'sys', 'AS state manager', ['follows the VCU\'s AS state: off, ready,', '  driving, finished, emergency brake', 'reports mission status: selected,', '  running, finished', 'requests the emergency stop on a fault'])
 d.box('sup', 610, B0, 832, 78, 'sys', 'Supervisor (health)', ['rate and age of every topic', 'node heartbeats', 'CPU and GPU temperature', 'logs everything (rosbag2 / MCAP)'], cols=2)
-d.box('bt', PX, B0, PW, 132, 'sys', 'Mission behaviour tree', ['one tree per mission', 'starts on "go"', 'counts laps (pose via tf)', 'finish → brake to stop'])
+d.box('bt', PX, B0, PW, 132, 'sys', 'Mission behaviour tree', ['one tree per mission', 'starts on "go"', 'counts line crossings', 'last lap → stop inside', '  the zone after the line'])
 
 mid = lambda r: (r[0] + r[1]) // 2
 A = '#4b5563'
 # sensor -> driver
-for s_, t_, y, lab in [('vlp', 'dl', mid(R1), 'UDP'), ('zed', 'dc', mid(R2), 'USB 3'), ('f9p', 'dg', mid(R3A), 'UBX'), ('imu', 'di', mid(R4), 'USB')]:
+for s_, t_, y, lab in [('lid', 'dl', mid(R1), 'UDP'), ('zed', 'dc', mid(R2), 'USB 3'), ('f9p', 'dg', mid(R3A), 'UBX'), ('imu', 'di', mid(R4), 'USB')]:
     d.arrow([(HX + HW, y), (DX, y)], A, src=s_, dst=t_)
     d.label((HX + HW + DX) / 2, y - 7, lab, size=10.5, bg=False)
 d.arrow([(HX + HW, mid(R3B)), (DX, mid(R3B))], C['veh'], dash='5 4', src='f9p', dst='dt')
@@ -110,6 +111,8 @@ d.arrow([(512, 984), (PX, 984)], C['sys'], src='as', dst='bt'); d.label(820, 990
 d.arrow([(PX, 1004), (512, 1004)], C['sys'], src='bt', dst='as'); d.label(1240, 1010, 'mission finished', size=10.5)
 d.arrow([(PX + PW, 950), (ROUTE, 950), (ROUTE, 130), (PX + PW, 130)], C['sys'], src='bt', dst='path')
 d.label(ROUTE + 5, 540, 'mission and mode: explore, race, stop', size=11, rot=-90, color=C['sys'])
+d.arrow([(PX + PW, 270), (LINE, 270), (LINE, 920), (PX + PW, 920)], C['pla'], src='path', dst='bt')
+d.label(LINE + 5, 600, 'start / finish line crossed', size=11, rot=-90, color=C['pla'])
 
 # legend and notes
 ly = 1062
@@ -121,6 +124,6 @@ for k, t in [('hw', 'hardware'), ('veh', 'vehicle'), ('per', 'perception'), ('lo
 d.el.append(f'<line x1="{x}" y1="{ly - 4}" x2="{x + 34}" y2="{ly - 4}" stroke="{GREY}" stroke-width="1.6"/>'); d.text(x + 40, ly, 'data', 11.5); x += 40 + tw('data', 11.5) + 24
 d.el.append(f'<line x1="{x}" y1="{ly - 4}" x2="{x + 34}" y2="{ly - 4}" stroke="{C["veh"]}" stroke-width="1.6" stroke-dasharray="5 4"/>'); d.text(x + 40, ly, 'time pulse', 11.5); x += 40 + tw('time pulse', 11.5) + 24
 d.el.append(f'<line x1="{x}" y1="{ly - 4}" x2="{x + 34}" y2="{ly - 4}" stroke="{C["pla"]}" stroke-width="2.2"/>'); d.text(x + 40, ly, 'commands to the car', 11.5)
-d.text(20, 1088, 'Data flows left to right; commands return along the bottom. The pose reaches every block through tf2 and is not drawn: lidar de-skew, fusion and the behaviour tree read it there.', 11.5, 'normal', GREY)
+d.text(20, 1088, 'Data flows left to right; commands return along the bottom. The pose reaches every block through tf2 and is not drawn: lidar de-skew, fusion and the planner\'s line-crossing check read it there.', 11.5, 'normal', GREY)
 d.text(20, 1106, 'Rates are targets. Only the vehicle layer\'s drivers change between the ADS-DV and 1:10 profiles; the other layers take the profile\'s numbers (size, limits) as parameters.', 11.5, 'normal', GREY)
 d.save(sys.argv[1], sys.argv[2])
