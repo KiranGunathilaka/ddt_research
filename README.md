@@ -2,7 +2,7 @@
 
 Research archive and design notes for Falcon's Formula Student UK FS-AI entry (DDT class, on the IMechE ADS-DV).
 
-Open `index.html` in a browser. It links every doc, and each doc has a bar to move between them. The same pages are public at https://falcone-racing.github.io/ddt_docs/.
+Open `index.html` in a browser. It links every doc, and each doc has a bar to move between them. The same pages are public at https://kirangunathilaka.github.io/ddt_research/.
 
 ## Docs
 
@@ -19,7 +19,7 @@ After adding or changing a doc:
 
 ```sh
 python3 tools/build_docs.py            # rebuild index.html and the bar on every doc
-python3 tools/build_docs.py --publish  # push the public copy to FalconE-Racing/ddt_docs
+python3 tools/build_docs.py --publish  # push the public copy to the gh-pages branch
 ```
 
 The public copy holds only the docs, their figures and the files listed on the index. Links to code go to upstream GitHub at the commit we studied, links to papers go to their public source, and anything else goes to this private repository.
