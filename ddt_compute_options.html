@@ -228,10 +228,10 @@ ul.tree .ev,ul.tree .cp,ul.tree .cm{grid-column:2}}
 <tr><th>Item</th><th>Source</th><th>Landed LKR</th></tr>
 <tr><td>MIO-5379C7P-R1A1U, cooler included</td><td>USD 1,306 + USD 22.97 shipping (2 lb), <a href="https://buy.advantech.com/Boards-Cards/Embedded-Single-Board-Computers-3-5-Single-Board-Computers-By-Processor-Intel-i-Series-Processor/AUS_31913.products.htm" target="_blank" rel="noopener">Advantech eStore</a></td><td class="n">576,084</td></tr>
 <tr><td>2 × 16 GB DDR5-5600 SO-DIMM</td><td><a href="https://www.chamacomputers.lk/products/Memory/Crucial%2016GB%20DDR5%205600MHZ%20Lap%20Ram" target="_blank" rel="noopener">Chama</a></td><td class="n">141,000</td></tr>
-<tr><td>512 GB Gen 4 NVMe SSD (the listing names no brand; check it is M.2 2280)</td><td><a href="https://www.chamacomputers.lk/products/ssd/512gb%20gen%204%20nvme%20ssd" target="_blank" rel="noopener">Chama</a></td><td class="n">30,000</td></tr>
+<tr><td>Lexar NM620 1 TB NVMe 2280</td><td><a href="https://www.chamacomputers.lk/products/ssd/lexar%20nm620%201tb%20gen3x4%20nvme%20m.2%203500mb%2Fs" target="_blank" rel="noopener">Chama</a></td><td class="n">56,000</td></tr>
 <tr><td>Norcomp 7W2 plug for the car’s power and CAN</td><td><a href="https://uk.rs-online.com/web/c/?searchTerm=174-8727" target="_blank" rel="noopener">RS Components</a></td><td class="n">13,430</td></tr>
 <tr><td>CANable 2.0 USB–CAN adapter (mainline SocketCAN driver), until Advantech has a Linux driver for the on-board CAN-FD</td><td>USD 35, <a href="https://openlightlabs.com/products/canable-2-0" target="_blank" rel="noopener">Openlight Labs</a></td><td class="n">22,463</td></tr>
-<tr class="tot"><td>Total</td><td></td><td class="n">782,977</td></tr>
+<tr class="tot"><td>Total</td><td></td><td class="n">808,977</td></tr>
 </table></div>
 <p class="m">At the Customs rates for 2–8 November 2026 (USD 337.1431, CHF 410.5493), as in the cost workbook; the comparison table above uses the 5–11 October rates. Not priced: the 2 × 2 power lead, leads for the 3-pin CAN headers, the enclosure with its fan, and the isolators.</p>
 
@@ -322,7 +322,7 @@ ul.tree .ev,ul.tree .cp,ul.tree .cm{grid-column:2}}
 
 <h2 id="rec">Recommendation</h2>
 <ol>
-<li><b>Buy the MIO-5379C7P-R1A1U</b> (LKR 782,977 with RAM, a 512 GB SSD, the plug and the CANable, at the 2–8 November rates). It matches the layout of the 2026 winner and of KIT: an industrial Intel board, no GPU, the lidar finding the cones. It is rated for vibration, runs straight from the car’s supply, and has two Ethernet ports on the board. Bring the car’s CAN in through the CANable 2.0 until Advantech supplies a Linux driver for the on-board CAN-FD; ask for one before ordering.</li>
+<li><b>Buy the MIO-5379C7P-R1A1U</b> (LKR 808,977 with RAM, a 1 TB SSD, the plug and the CANable, at the 2–8 November rates). It matches the layout of the 2026 winner and of KIT: an industrial Intel board, no GPU, the lidar finding the cones. It is rated for vibration, runs straight from the car’s supply, and has two Ethernet ports on the board. Bring the car’s CAN in through the CANable 2.0 until Advantech supplies a Linux driver for the on-board CAN-FD; ask for one before ordering.</li>
 <li><b>Use the ZED2 for colour only</b>, through zed-open-capture and the lidar projection above; start with HSV thresholds and keep a small CNN on OpenVINO ready.</li>
 <li><b>Check on the stage 2a rig:</b> lidar detection and SLAM CPU load at the lidar’s scan rate; colour latency per scan on the Arc GPU and NPU; a full-image YOLO fallback on OpenVINO against the 25 ms budget; power and temperature in the closed enclosure with its fan; the USB CAN adapter against the ADS-DV CAN at 500 kbit/s; Ethernet link drops on the i226 lidar port.</li>
 <li><b>If the rig shows the camera needs the full ZED SDK</b>, add a Jetson Orin NX 8 GB next to the MIO-5379 for the camera alone (LKR 448,341). Only if the whole stack turns out to need a GPU, switch to the AIMB-279 with the i7-14700 and an RTX 5050 in a real slot (LKR 750,505), not the MIO-5379 with an MXM card.</li>

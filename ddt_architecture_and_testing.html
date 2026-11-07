@@ -95,7 +95,7 @@ a{color:#0b5cad}
 <div><b>One industrial computer, no GPU</b>An Advantech MIO-5379 (Core Ultra 7 255H) runs the whole stack on its CPU, Arc graphics and NPU, from the car’s 13.7 V directly. A Jetson Orin NX is an option, only if the camera turns out to need the full ZED SDK. <a href="#compute">Computer</a>.</div>
 <div><b>Hesai ATX, MTi-8 kit, ZED2</b>One 120° lidar on the car; the VLP-16 stays on the rig. The Xsens MTi-8 kit brings its own ZED-F9P for RTK. The owned ZED2 gives colour, which the car needs: orange cones mark the start, finish and exit lanes. <a href="#hardware">Hardware</a>.</div>
 <div><b>One clock</b>The F9P’s PPS sets the computer’s clock, the computer passes it to the lidar over gPTP, and the MTi-8 takes the same PPS on its kit, so lidar points, IMU samples and GNSS fixes share GNSS time. <a href="#time">Time</a>.</div>
-<div><b>Cost, landed in Sri Lanka</b>Essential: LKR 2.12 M for the car kit, the HiL bench adapter and the test rig. Good to have: LKR 0.04 M more. The Orin NX option adds LKR 0.45 M. Cones are made in-house. <a href="#cost">Cost</a>.</div>
+<div><b>Cost, landed in Sri Lanka</b>Essential: LKR 2.53 M for the car kit, the HiL bench adapter and the test rig. Good to have: a LKR 4,999 4G dongle. The Orin NX option adds LKR 0.45 M. Cones are made in-house. <a href="#cost">Cost</a>.</div>
 </div>
 
 <h2 id="context">Context: FS-AI results and teams without a car</h2>
@@ -208,7 +208,7 @@ a{color:#0b5cad}
 <h3 id="atx">The Hesai ATX</h3>
 <ul>
 <li>120° × 20°, 256 channels, 0.08° × 0.05° at the finest, 230 m on a 10% target, 8 W, 100 × 100 × 30 mm, 360 g, IP6K7 and IP6K9K (<a href="https://www.hesaitech.com/product/atx/" target="_blank" rel="noopener">Hesai</a>). Why one 120° lidar is enough for the tightest hairpin, and why the VLP-16 stays on the rig: the Lidar Coverage and Hairpins and Lidar Resolution and SLAM pages.</li>
-<li>About USD 1,540 for one unit from a Hong Kong seller on <a href="https://www.alibaba.co.uk/product-detail/HESAI-ATX-LiDAR-High-Precision-High_1601757632325.html" target="_blank" rel="noopener">Alibaba</a>, which lists a 10 Hz frame rate, 5.0 kg gross and a 31-day lead time. LKR 718,765 landed, with the shipping and the lidar’s customs line estimated (<a href="#cost">Cost</a>).</li>
+<li>USD 2,500 from <a href="https://www.cratustech.com/product/hesai-atx-long-range-compact-wide-view-high-resolution-lidar-sensor/" target="_blank" rel="noopener">Cratus Technology</a>, a US company in San Jose with a web shop, so a normal invoice and return policy; LKR 1,150,496 landed, with the shipping and the lidar’s customs line estimated (<a href="#cost">Cost</a>). That is over the USD 2,000 lidar budget. The cheaper listings are China-based resellers: about USD 1,370–1,540 on <a href="https://www.alibaba.co.uk/product-detail/HESAI-ATX-LiDAR-High-Precision-High_1601757632325.html" target="_blank" rel="noopener">Alibaba</a>, and USD 1,790 from <a href="https://lidarseek.com/hesai" target="_blank" rel="noopener">LidarSeek</a>, which gives only a Gmail address and WhatsApp. Neither Cratus nor LidarSeek says it is an authorised Hesai distributor, so ask Hesai for its distributor list and a quote as well.</li>
 <li>Hesai’s product page does not give the ATX’s electrical interface. Its other automotive lidars use automotive Ethernet (1000BASE-T1), with an optional connection box that gives a standard Ethernet port and takes the power (<a href="https://manualshive.com/manual/hesai/qt128c2x/2127260" target="_blank" rel="noopener">QT128C2X manual</a>). Figure 2 draws that box; ask the seller what comes with the unit.</li>
 </ul>
 
@@ -261,31 +261,31 @@ a{color:#0b5cad}
 <p class="m">Our estimate, from the Power budget tab of the cost workbook: the CPU at the 45 W cap we set in the BIOS (the 255H has 28 W base power and 115 W maximum turbo, <a href="https://www.intel.com/content/www/us/en/products/sku/241751/intel-core-ultra-7-processor-255h-24m-cache-up-to-5-10-ghz/specifications.html" target="_blank" rel="noopener">Intel</a>); the board, RAM, SSD and fan at 10 W and the board’s regulators at 90% (both assumptions); the ZED2 1.9 W; the MTi-8 kit and CANable 1.5 W and the modem 3 W (assumptions); the ATX 8 W (Hesai); the Orin NX 8 GB at its 20 W top mode, carrier and fan not included. The team figures are from their FSG pages, collected in the workbook’s FSG x86 teams tab. The computer must also fit about 280 × 200 × 200 mm at the rear and needs IMechE approval in the ASF (T1.1.6).</p>
 
 <h2 id="cost">Cost, landed in Sri Lanka</h2>
-<p>Landed means goods + shipping + Sri Lankan duties, at the Customs rates for 2–8 November 2026: USD 337.1431, EUR 377.4991, CHF 410.5493 (<a href="https://www.customs.gov.lk/wp-content/uploads/2026/11/er02112026.pdf" target="_blank" rel="noopener">Customs notice RE/44/2026</a>). Duties are the levies for the HS code (CID, PAL, CESS) on the CIF value, then SSCL 2.5% and VAT 18% on 1.1 × CIF plus those levies. The shipping on imports and the lidar’s HS code are estimates. Every line, with its listing link and the formulas, is in the cost workbook <code>ddt_essential_costs.xlsx</code>; prices were checked on 6 November 2026.</p>
+<p>Landed means goods + shipping + Sri Lankan duties, at the Customs rates for 2–8 November 2026: USD 337.1431, EUR 377.4991, CHF 410.5493 (<a href="https://www.customs.gov.lk/wp-content/uploads/2026/11/er02112026.pdf" target="_blank" rel="noopener">Customs notice RE/44/2026</a>). Duties are the levies for the HS code (CID, PAL, CESS) on the CIF value, then SSCL 2.5% and VAT 18% on 1.1 × CIF plus those levies. The shipping on imports and the lidar’s HS code are estimates. Every line, with its listing link and the formulas, is in the cost workbook <code>ddt_essential_costs.xlsx</code>; prices were checked on 7 November 2026.</p>
 <div class="tw"><table>
 <tr><th>Item</th><th>Listing</th><th>Landed LKR</th></tr>
 <tr><td colspan="3" class="m" style="padding-top:12px">Essential: the car</td></tr>
-<tr><td>Hesai ATX lidar</td><td>about USD 1,540, <a href="https://www.alibaba.co.uk/product-detail/HESAI-ATX-LiDAR-High-Precision-High_1601757632325.html" target="_blank" rel="noopener">Alibaba</a>; shipping and HS code estimated</td><td class="n">718,765</td></tr>
+<tr><td>Hesai ATX lidar</td><td>USD 2,500, <a href="https://www.cratustech.com/product/hesai-atx-long-range-compact-wide-view-high-resolution-lidar-sensor/" target="_blank" rel="noopener">Cratus Technology</a> (USA); shipping and HS code estimated</td><td class="n">1,150,496</td></tr>
 <tr><td>Advantech MIO-5379C7P-R1A1U, cooler included</td><td>USD 1,306 + USD 22.97 shipping, <a href="https://buy.advantech.com/Boards-Cards/Embedded-Single-Board-Computers-3-5-Single-Board-Computers-By-Processor-Intel-i-Series-Processor/AUS_31913.products.htm" target="_blank" rel="noopener">Advantech eStore</a></td><td class="n">576,084</td></tr>
 <tr><td>2 × Crucial 16 GB DDR5-5600 SO-DIMM</td><td>LKR 70,500 each, <a href="https://www.chamacomputers.lk/products/Memory/Crucial%2016GB%20DDR5%205600MHZ%20Lap%20Ram" target="_blank" rel="noopener">Chama</a></td><td class="n">141,000</td></tr>
-<tr><td>512 GB Gen 4 NVMe SSD (the listing names no brand; check it is M.2 2280)</td><td>LKR 30,000, <a href="https://www.chamacomputers.lk/products/ssd/512gb%20gen%204%20nvme%20ssd" target="_blank" rel="noopener">Chama</a></td><td class="n">30,000</td></tr>
+<tr><td>Lexar NM620 1 TB NVMe</td><td>LKR 56,000, <a href="https://www.chamacomputers.lk/products/ssd/lexar%20nm620%201tb%20gen3x4%20nvme%20m.2%203500mb%2Fs" target="_blank" rel="noopener">Chama</a></td><td class="n">56,000</td></tr>
 <tr><td>Xsens MTi-8 development kit (MTI-8-5A-DK), with its ZED-F9P card and antenna</td><td>USD 905.01, <a href="https://www.digikey.com/en/products/detail/xsens-a-movella-brand/MTI-8-5A-DK/18718043" target="_blank" rel="noopener">DigiKey US</a></td><td class="n">421,112</td></tr>
 <tr><td>CANable 2.0 USB–CAN adapter</td><td>USD 35, <a href="https://openlightlabs.com/products/canable-2-0" target="_blank" rel="noopener">Openlight Labs</a></td><td class="n">22,463</td></tr>
 <tr><td>Norcomp 7W2 compute plug for the car</td><td>CHF 10.49, <a href="https://uk.rs-online.com/web/c/?searchTerm=174-8727" target="_blank" rel="noopener">RS</a></td><td class="n">13,430</td></tr>
 <tr><td colspan="3" class="m" style="padding-top:12px">Essential: the HiL bench and the test rig</td></tr>
 <tr><td>PEAK PCAN-USB, for the Windows PC that runs CarMaker</td><td>USD 256, <a href="https://gridconnect.com/products/can-usb-adapter-pcan-usb" target="_blank" rel="noopener">Grid Connect</a></td><td class="n">118,262</td></tr>
-<tr><td>Test rig: hand truck, aluminium profile and brackets, 12 V 18 Ah battery and charger, encoder, ESP32, CAN transceiver, Deutsch connectors</td><td>nine items, Daraz.lk (listed in the workbook)</td><td class="n">74,225</td></tr>
-<tr class="tot"><td>Essential total</td><td></td><td class="n">2,115,342</td></tr>
+<tr><td>Test rig electronics: 12 V 18 Ah battery and charger, encoder, ESP32, CAN transceiver, Deutsch connectors. The rig frame (trolley, bars, brackets) is not costed.</td><td>six items, Daraz.lk (listed in the workbook)</td><td class="n">34,707</td></tr>
+<tr class="tot"><td>Essential total</td><td></td><td class="n">2,533,555</td></tr>
 <tr><td colspan="3" class="m" style="padding-top:12px">Good to have</td></tr>
-<tr><td>Huawei E3372-325 4G USB modem. Why: RTK at the event needs corrections over the internet, if IMechE agrees in the ASF.</td><td>LKR 40,378 delivered, <a href="https://www.desertcart.lk/products/49692547-huawei-e3372-325-lte-4g-150-mbps-low-cost-usb" target="_blank" rel="noopener">desertcart.lk</a></td><td class="n">40,378</td></tr>
-<tr class="tot"><td>Essential + good to have</td><td></td><td class="n">2,155,720</td></tr>
+<tr><td>Huawei E3372 4G USB dongle. Why: RTK at the event needs corrections over the internet (NTRIP), if IMechE agrees in the ASF. A phone on USB tethering does the same for free.</td><td>LKR 4,999, <a href="https://www.daraz.lk/usb-modems/" target="_blank" rel="noopener">Daraz.lk</a> (as indexed by search)</td><td class="n">4,999</td></tr>
+<tr class="tot"><td>Essential + good to have</td><td></td><td class="n">2,538,554</td></tr>
 <tr><td colspan="3" class="m" style="padding-top:12px">Option, only if the full ZED SDK is needed</td></tr>
 <tr><td>Seeed reComputer J4011, Jetson Orin NX 8 GB, 128 GB SSD</td><td>USD 999, <a href="https://www.seeedstudio.com/reComputer-J4011-p-5585.html" target="_blank" rel="noopener">Seeed</a></td><td class="n">448,341</td></tr>
 </table></div>
 <ul>
 <li><b>Owned, no cost:</b> the ZED2; two ZED-F9P with antennas (the RTK base and a spare); the VLP-16 (the rig’s lidar until the ATX arrives); the RTX laptop for training; the Jetson Nano and the borrowed AGX Xavier.</li>
 <li><b>Needed, not priced yet:</b> the ATX’s connection box and cable if they do not come with it; a MAX3232 module and DB9 lead for the PPS; the MIO-5379’s 2 × 2 power lead, the CAN leads and a fuse; the computer’s enclosure with a fan, vibration isolators, and the lidar bracket.</li>
-<li>Cones are made in-house, and the 1:10 car for stage 3 is not in the workbook.</li>
+<li>Cones and the rig frame are made or sourced in-house, and the 1:10 car for stage 3 is not in the workbook.</li>
 </ul>
 
 <h2 id="profiles">Two vehicle profiles</h2>
