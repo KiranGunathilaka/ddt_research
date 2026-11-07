@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1348" height="344" viewBox="0 0 1348 344" font-family="DejaVu Sans, Segoe UI, Helvetica, Arial, sans-serif">
+<title>Cone colour from the ZED2 without an NVIDIA GPU</title>
+<defs><marker id="ah4b5563" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4b5563"/></marker></defs>
+<rect width="1348" height="344" fill="#ffffff"/>
+<text x="20.0" y="32.0" font-size="17" font-weight="bold" fill="#111827" text-anchor="start">Cone colour without an NVIDIA GPU: the lidar gives the position, the camera only the colour</text>
+<rect x="20" y="190" width="226" height="132" rx="8" fill="#ebf3fc" stroke="#0b5cad" stroke-width="1.6"/>
+<text x="31.0" y="211.0" font-size="13" font-weight="bold" fill="#0b5cad" text-anchor="start">Lidar cones</text>
+<rect x="31" y="219" width="37.9" height="17" rx="8.5" fill="#0b5cad"/>
+<text x="50.0" y="231.5" font-size="10.5" font-weight="bold" fill="#ffffff" text-anchor="middle">CPU</text>
+<circle cx="34.0" cy="251.0" r="2.1" fill="#0b5cad"/>
+<text x="42.0" y="255.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">clusters at cone size</text>
+<circle cx="34.0" cy="267.5" r="2.1" fill="#0b5cad"/>
+<text x="42.0" y="271.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">x, y, z in the car frame</text>
+<circle cx="34.0" cy="284.0" r="2.1" fill="#0b5cad"/>
+<text x="42.0" y="288.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">one detector per lidar</text>
+<rect x="290" y="190" width="226" height="132" rx="8" fill="#ebf3fc" stroke="#0b5cad" stroke-width="1.6"/>
+<text x="301.0" y="211.0" font-size="13" font-weight="bold" fill="#0b5cad" text-anchor="start">Project into image</text>
+<rect x="301" y="219" width="37.9" height="17" rx="8.5" fill="#0b5cad"/>
+<text x="320.0" y="231.5" font-size="10.5" font-weight="bold" fill="#ffffff" text-anchor="middle">CPU</text>
+<circle cx="304.0" cy="251.0" r="2.1" fill="#0b5cad"/>
+<text x="312.0" y="255.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">lidar to camera extrinsics</text>
+<circle cx="304.0" cy="267.5" r="2.1" fill="#0b5cad"/>
+<text x="312.0" y="271.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">ZED2 factory intrinsics</text>
+<circle cx="304.0" cy="284.0" r="2.1" fill="#0b5cad"/>
+<text x="312.0" y="288.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">pixel for each cone</text>
+<rect x="560" y="190" width="226" height="132" rx="8" fill="#ebf3fc" stroke="#0b5cad" stroke-width="1.6"/>
+<text x="571.0" y="211.0" font-size="13" font-weight="bold" fill="#0b5cad" text-anchor="start">Colour of the patch</text>
+<rect x="571" y="219" width="78.6" height="17" rx="8.5" fill="#0b5cad"/>
+<text x="610.3" y="231.5" font-size="10.5" font-weight="bold" fill="#ffffff" text-anchor="middle">iGPU / NPU</text>
+<circle cx="574.0" cy="251.0" r="2.1" fill="#0b5cad"/>
+<text x="582.0" y="255.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">crop around the pixel</text>
+<circle cx="574.0" cy="267.5" r="2.1" fill="#0b5cad"/>
+<text x="582.0" y="271.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">HSV rule or small CNN</text>
+<circle cx="574.0" cy="284.0" r="2.1" fill="#0b5cad"/>
+<text x="582.0" y="288.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">OpenVINO on the 255H</text>
+<rect x="830" y="190" width="226" height="132" rx="8" fill="#e8f5ee" stroke="#1a7f4b" stroke-width="1.6"/>
+<text x="841.0" y="211.0" font-size="13" font-weight="bold" fill="#1a7f4b" text-anchor="start">Coloured cone</text>
+<circle cx="844.0" cy="226.0" r="2.1" fill="#1a7f4b"/>
+<text x="852.0" y="230.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">lidar position</text>
+<circle cx="844.0" cy="242.5" r="2.1" fill="#1a7f4b"/>
+<text x="852.0" y="246.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">colour probability</text>
+<circle cx="844.0" cy="259.0" r="2.1" fill="#1a7f4b"/>
+<text x="852.0" y="263.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">scan time stamp</text>
+<rect x="1100" y="190" width="226" height="132" rx="8" fill="#e8f5ee" stroke="#1a7f4b" stroke-width="1.6"/>
+<text x="1111.0" y="211.0" font-size="13" font-weight="bold" fill="#1a7f4b" text-anchor="start">Cone SLAM map</text>
+<rect x="1111" y="219" width="37.9" height="17" rx="8.5" fill="#1a7f4b"/>
+<text x="1130.0" y="231.5" font-size="10.5" font-weight="bold" fill="#ffffff" text-anchor="middle">CPU</text>
+<circle cx="1114.0" cy="251.0" r="2.1" fill="#1a7f4b"/>
+<text x="1122.0" y="255.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">matched by position</text>
+<circle cx="1114.0" cy="267.5" r="2.1" fill="#1a7f4b"/>
+<text x="1122.0" y="271.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">colour votes added</text>
+<text x="1122.0" y="288.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">to the map cone</text>
+<rect x="560" y="58" width="226" height="82" rx="8" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.6"/>
+<text x="571.0" y="79.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">ZED2 left image</text>
+<circle cx="574.0" cy="94.0" r="2.1" fill="#6d28d9"/>
+<text x="582.0" y="98.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">zed-open-capture, no CUDA</text>
+<circle cx="574.0" cy="110.5" r="2.1" fill="#6d28d9"/>
+<text x="582.0" y="114.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">rectified, factory calibration</text>
+<path d="M 246,256.0 L 290,256.0" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="268.0" y="248.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">cones</text>
+<path d="M 516,256.0 L 560,256.0" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="538.0" y="248.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">pixels</text>
+<path d="M 786,256.0 L 830,256.0" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="808.0" y="248.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">colour</text>
+<path d="M 1056,256.0 L 1100,256.0" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="1078.0" y="248.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">cones</text>
+<path d="M 673.0,140 L 673.0,190" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>
+<text x="681.0" y="169.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">image</text>
+</svg>
