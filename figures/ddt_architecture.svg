@@ -19,39 +19,42 @@
 <text x="34.0" y="84.0" font-size="11" font-weight="bold" fill="#6b7280" text-anchor="start">hardware</text>
 <text x="280.0" y="84.0" font-size="11" font-weight="bold" fill="#6b7280" text-anchor="start">drivers and time</text>
 <rect x="34" y="92" width="196" height="104" rx="8" fill="#f4f5f7" stroke="#5b6170" stroke-width="1.6"/>
-<text x="45.0" y="113.0" font-size="13" font-weight="bold" fill="#5b6170" text-anchor="start">Lidar, one or two</text>
+<text x="45.0" y="113.0" font-size="13" font-weight="bold" fill="#5b6170" text-anchor="start">Hesai ATX lidar</text>
 <text x="220.0" y="113.0" font-size="11.5" font-weight="bold" fill="#5b6170" text-anchor="end">10 Hz</text>
 <circle cx="48.0" cy="128.0" r="2.1" fill="#5b6170"/>
-<text x="56.0" y="132.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">main, to buy: 120°</text>
-<text x="56.0" y="148.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">solid-state or 360°</text>
-<text x="56.0" y="165.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">32-channel</text>
+<text x="56.0" y="132.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">120° × 20°</text>
+<circle cx="48.0" cy="144.5" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="148.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">256 channels</text>
+<circle cx="48.0" cy="161.0" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="165.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">to buy</text>
 <circle cx="48.0" cy="177.5" r="2.1" fill="#5b6170"/>
-<text x="56.0" y="181.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">2nd, optional: VLP-16</text>
+<text x="56.0" y="181.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">clock: gPTP</text>
 <rect x="34" y="212" width="196" height="104" rx="8" fill="#f4f5f7" stroke="#5b6170" stroke-width="1.6"/>
 <text x="45.0" y="233.0" font-size="13" font-weight="bold" fill="#5b6170" text-anchor="start">ZED 2 camera</text>
 <text x="220.0" y="233.0" font-size="11.5" font-weight="bold" fill="#5b6170" text-anchor="end">30 fps</text>
 <circle cx="48.0" cy="248.0" r="2.1" fill="#5b6170"/>
 <text x="56.0" y="252.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">stereo, colour, 110°</text>
 <circle cx="48.0" cy="264.5" r="2.1" fill="#5b6170"/>
-<text x="56.0" y="268.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">owned; the shared car</text>
-<text x="56.0" y="285.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">also has one</text>
+<text x="56.0" y="268.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">owned</text>
+<circle cx="48.0" cy="281.0" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="285.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">no clock input</text>
 <rect x="34" y="340" width="196" height="198" rx="8" fill="#f4f5f7" stroke="#5b6170" stroke-width="1.6"/>
 <text x="45.0" y="361.0" font-size="13" font-weight="bold" fill="#5b6170" text-anchor="start">u-blox ZED-F9P</text>
 <text x="220.0" y="361.0" font-size="11.5" font-weight="bold" fill="#5b6170" text-anchor="end">10 Hz</text>
 <circle cx="48.0" cy="376.0" r="2.1" fill="#5b6170"/>
-<text x="56.0" y="380.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">position, velocity</text>
+<text x="56.0" y="380.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">on the MTi-8 kit</text>
 <circle cx="48.0" cy="392.5" r="2.1" fill="#5b6170"/>
-<text x="56.0" y="396.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">PPS time pulse</text>
+<text x="56.0" y="396.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">position, velocity</text>
 <circle cx="48.0" cy="409.0" r="2.1" fill="#5b6170"/>
-<text x="56.0" y="413.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">RTK corrections:</text>
-<text x="56.0" y="429.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">NTRIP over 4G,</text>
-<text x="56.0" y="446.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">if IMechE allows</text>
-<circle cx="48.0" cy="458.5" r="2.1" fill="#5b6170"/>
-<text x="56.0" y="462.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">owned (two boards)</text>
+<text x="56.0" y="413.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">PPS time pulse</text>
+<circle cx="48.0" cy="425.5" r="2.1" fill="#5b6170"/>
+<text x="56.0" y="429.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">RTK corrections:</text>
+<text x="56.0" y="446.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">NTRIP over 4G,</text>
+<text x="56.0" y="462.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">if IMechE allows</text>
 <rect x="34" y="556" width="196" height="80" rx="8" fill="#f4f5f7" stroke="#5b6170" stroke-width="1.6"/>
-<text x="45.0" y="577.0" font-size="13" font-weight="bold" fill="#5b6170" text-anchor="start">Xsens MTi-3 IMU</text>
+<text x="45.0" y="577.0" font-size="13" font-weight="bold" fill="#5b6170" text-anchor="start">Xsens MTi-8</text>
 <circle cx="48.0" cy="592.0" r="2.1" fill="#5b6170"/>
-<text x="56.0" y="596.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">yaw rate, acceleration</text>
+<text x="56.0" y="596.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">fuses F9P data + PPS</text>
 <circle cx="48.0" cy="608.5" r="2.1" fill="#5b6170"/>
 <text x="56.0" y="612.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">to buy (dev kit)</text>
 <rect x="34" y="654" width="196" height="110" rx="8" fill="#f4f5f7" stroke="#5b6170" stroke-width="1.6"/>
@@ -64,24 +67,24 @@
 <circle cx="48.0" cy="723.0" r="2.1" fill="#5b6170"/>
 <text x="56.0" y="727.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">steering, motor, brakes</text>
 <rect x="280" y="92" width="232" height="104" rx="8" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.6"/>
-<text x="291.0" y="113.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">Lidar drivers</text>
+<text x="291.0" y="113.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">Lidar driver</text>
 <circle cx="294.0" cy="128.0" r="2.1" fill="#6d28d9"/>
-<text x="302.0" y="132.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">maker's ROS 2 driver,</text>
-<text x="302.0" y="148.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">one per lidar</text>
+<text x="302.0" y="132.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">HesaiLidar_ROS_2.0</text>
+<circle cx="294.0" cy="144.5" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="148.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">packets → point cloud</text>
 <circle cx="294.0" cy="161.0" r="2.1" fill="#6d28d9"/>
-<text x="302.0" y="165.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">packets → point cloud</text>
-<circle cx="294.0" cy="177.5" r="2.1" fill="#6d28d9"/>
-<text x="302.0" y="181.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">stamped in GNSS time</text>
+<text x="302.0" y="165.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">stamped at capture,</text>
+<text x="302.0" y="181.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">in GNSS time via gPTP</text>
 <rect x="280" y="212" width="232" height="104" rx="8" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.6"/>
 <text x="291.0" y="233.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">Camera driver</text>
 <circle cx="294.0" cy="248.0" r="2.1" fill="#6d28d9"/>
-<text x="302.0" y="252.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">GPU fitted: ZED wrapper</text>
+<text x="302.0" y="252.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">zed-open-capture, no CUDA</text>
 <circle cx="294.0" cy="264.5" r="2.1" fill="#6d28d9"/>
-<text x="302.0" y="268.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">no GPU: zed-open-capture</text>
+<text x="302.0" y="268.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">ZED SDK: Orin NX option</text>
 <circle cx="294.0" cy="281.0" r="2.1" fill="#6d28d9"/>
 <text x="302.0" y="285.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">left colour image</text>
 <circle cx="294.0" cy="297.5" r="2.1" fill="#6d28d9"/>
-<text x="302.0" y="301.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">stamped in GNSS time</text>
+<text x="302.0" y="301.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">arrival time − fixed delay</text>
 <rect x="280" y="340" width="232" height="92" rx="8" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.6"/>
 <text x="291.0" y="361.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">GNSS driver</text>
 <circle cx="294.0" cy="376.0" r="2.1" fill="#6d28d9"/>
@@ -95,14 +98,15 @@
 <circle cx="294.0" cy="482.0" r="2.1" fill="#6d28d9"/>
 <text x="302.0" y="486.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">chrony: PC clock on PPS</text>
 <circle cx="294.0" cy="498.5" r="2.1" fill="#6d28d9"/>
-<text x="302.0" y="502.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">tf: sensor poses from CAD</text>
-<text x="302.0" y="519.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">(per vehicle profile)</text>
+<text x="302.0" y="502.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">ptp4l: gPTP to the lidar</text>
+<circle cx="294.0" cy="515.0" r="2.1" fill="#6d28d9"/>
+<text x="302.0" y="519.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">tf: sensor poses from CAD</text>
 <rect x="280" y="556" width="232" height="80" rx="8" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.6"/>
 <text x="291.0" y="577.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">IMU driver</text>
 <circle cx="294.0" cy="592.0" r="2.1" fill="#6d28d9"/>
 <text x="302.0" y="596.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">Xsens ROS 2 driver</text>
 <circle cx="294.0" cy="608.5" r="2.1" fill="#6d28d9"/>
-<text x="302.0" y="612.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">stamped on arrival</text>
+<text x="302.0" y="612.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">stamped in GNSS time</text>
 <rect x="280" y="654" width="232" height="110" rx="8" fill="#f5f0ff" stroke="#6d28d9" stroke-width="1.6"/>
 <text x="291.0" y="675.0" font-size="13" font-weight="bold" fill="#6d28d9" text-anchor="start">CAN bridge</text>
 <text x="502.0" y="675.0" font-size="11.5" font-weight="bold" fill="#6d28d9" text-anchor="end">100 Hz</text>
@@ -118,22 +122,24 @@
 <text x="621.0" y="113.0" font-size="13" font-weight="bold" fill="#0b5cad" text-anchor="start">Lidar cones</text>
 <text x="814.0" y="113.0" font-size="11.5" font-weight="bold" fill="#0b5cad" text-anchor="end">≤30 ms</text>
 <circle cx="624.0" cy="128.0" r="2.1" fill="#0b5cad"/>
-<text x="632.0" y="132.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">one detector per lidar</text>
+<text x="632.0" y="132.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">de-skew with the pose</text>
 <circle cx="624.0" cy="144.5" r="2.1" fill="#0b5cad"/>
-<text x="632.0" y="148.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">de-skew, ground removal</text>
+<text x="632.0" y="148.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">ground removal</text>
 <circle cx="624.0" cy="161.0" r="2.1" fill="#0b5cad"/>
 <text x="632.0" y="165.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">clustering, size check</text>
 <circle cx="624.0" cy="177.5" r="2.1" fill="#0b5cad"/>
 <text x="632.0" y="181.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">505 mm tall: big orange</text>
 <rect x="610" y="212" width="214" height="104" rx="8" fill="#ebf3fc" stroke="#0b5cad" stroke-width="1.6"/>
-<text x="621.0" y="233.0" font-size="13" font-weight="bold" fill="#0b5cad" text-anchor="start">Camera cones</text>
+<text x="621.0" y="233.0" font-size="13" font-weight="bold" fill="#0b5cad" text-anchor="start">Camera colour</text>
 <text x="814.0" y="233.0" font-size="11.5" font-weight="bold" fill="#0b5cad" text-anchor="end">≤25 ms</text>
 <circle cx="624.0" cy="248.0" r="2.1" fill="#0b5cad"/>
-<text x="632.0" y="252.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">YOLO: OpenVINO, or</text>
-<text x="632.0" y="268.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">TensorRT with the GPU</text>
+<text x="632.0" y="252.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">patch at each lidar cone</text>
+<circle cx="624.0" cy="264.5" r="2.1" fill="#0b5cad"/>
+<text x="632.0" y="268.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">HSV rule or small CNN</text>
 <circle cx="624.0" cy="281.0" r="2.1" fill="#0b5cad"/>
-<text x="632.0" y="285.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">blue, yellow, orange,</text>
-<text x="632.0" y="301.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">big orange</text>
+<text x="632.0" y="285.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">OpenVINO: Arc GPU, NPU</text>
+<circle cx="624.0" cy="297.5" r="2.1" fill="#0b5cad"/>
+<text x="632.0" y="301.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">fallback: full-image YOLO</text>
 <rect x="898" y="92" width="214" height="224" rx="8" fill="#ebf3fc" stroke="#0b5cad" stroke-width="1.6"/>
 <text x="909.0" y="113.0" font-size="13" font-weight="bold" fill="#0b5cad" text-anchor="start">Lidar–camera fusion</text>
 <text x="1102.0" y="113.0" font-size="11.5" font-weight="bold" fill="#0b5cad" text-anchor="end">10 Hz</text>
@@ -144,12 +150,12 @@
 <text x="920.0" y="165.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">the image taken at</text>
 <text x="920.0" y="181.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">the same time</text>
 <circle cx="912.0" cy="194.0" r="2.1" fill="#0b5cad"/>
-<text x="920.0" y="198.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">match boxes (Hungarian)</text>
-<circle cx="912.0" cy="210.5" r="2.1" fill="#0b5cad"/>
-<text x="920.0" y="214.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">position from lidar,</text>
-<text x="920.0" y="231.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">colour from camera</text>
+<text x="920.0" y="198.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">colour each cone from</text>
+<text x="920.0" y="214.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">its image patch</text>
+<circle cx="912.0" cy="227.0" r="2.1" fill="#0b5cad"/>
+<text x="920.0" y="231.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">position from lidar</text>
 <circle cx="912.0" cy="243.5" r="2.1" fill="#0b5cad"/>
-<text x="920.0" y="247.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">no match → "unknown"</text>
+<text x="920.0" y="247.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">no colour → "unknown"</text>
 <rect x="1210" y="92" width="232" height="204" rx="8" fill="#e8f5ee" stroke="#1a7f4b" stroke-width="1.6"/>
 <text x="1221.0" y="113.0" font-size="13" font-weight="bold" fill="#1a7f4b" text-anchor="start">Cone SLAM + mapping</text>
 <text x="1432.0" y="113.0" font-size="11.5" font-weight="bold" fill="#1a7f4b" text-anchor="end">10 Hz</text>
@@ -271,8 +277,10 @@
 <text x="561.0" y="257.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">image</text>
 <path d="M 824,144 L 898,144" fill="none" stroke="#0b5cad" stroke-width="1.6" marker-end="url(#ah0b5cad)"/>
 <text x="861.0" y="137.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">positions</text>
-<path d="M 824,264 L 898,264" fill="none" stroke="#0b5cad" stroke-width="1.6" marker-end="url(#ah0b5cad)"/>
-<text x="861.0" y="257.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">boxes</text>
+<path d="M 898,248 L 824,248" fill="none" stroke="#0b5cad" stroke-width="1.6" marker-end="url(#ah0b5cad)"/>
+<text x="861.0" y="241.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">pixels</text>
+<path d="M 824,284 L 898,284" fill="none" stroke="#0b5cad" stroke-width="1.6" marker-end="url(#ah0b5cad)"/>
+<text x="861.0" y="277.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">colours</text>
 <path d="M 1112,200 L 1210,200" fill="none" stroke="#0b5cad" stroke-width="1.6" marker-end="url(#ah0b5cad)"/>
 <text x="1161.0" y="193.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">coloured cones</text>
 <path d="M 512,386 L 1210,386" fill="none" stroke="#4b5563" stroke-width="1.6" marker-end="url(#ah4b5563)"/>

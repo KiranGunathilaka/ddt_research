@@ -1,0 +1,1018 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lidar Resolution and SLAM</title>
+<meta name="description" content="Theory for choosing Falcon's lidar: rays and rings on a cone against range, what landmark SLAM needs from one scan, how far ahead the car must see at speed, why a 120° lidar loses the inside of a tight turn, and whether the car stays localised through the hairpin. Interactive, with every number computed in the page.">
+<meta name="doc-section" content="Findings">
+<meta name="date" content="2026-11-05">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+:root{--bg:#fbfbf9;--fg:#1c1d1f;--mut:#63666b;--line:#dcddd8;--card:#fff;--acc:#0b5cad;--warn:#fff4dc;--grid:#e6e5e0;--neutral:#c4c3bc;--track:#ecebe6;
+--ok:#1a7f4b;--no:#a33a3a;--amb:#9a6700;--gbg:#eeede8;
+--c1:#2a78d6;--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--c6:#008300;--c7:#6250d6;--c8:#e34948}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15171a;--fg:#e7e8ea;--mut:#9a9da3;--line:#2e3136;--card:#1c1f23;--acc:#7db7f5;--warn:#3a2f14;--grid:#2a2d31;--neutral:#4a4b4d;--track:#25282c;
+--ok:#6fd39b;--no:#f0a0a0;--amb:#e3b341;--gbg:#23262a;
+--c1:#3987e5;--c2:#d95926;--c3:#199e70;--c4:#c98500;--c5:#d55181;--c6:#008300;--c7:#9085e9;--c8:#e66767}}
+:root[data-theme="dark"]{--bg:#15171a;--fg:#e7e8ea;--mut:#9a9da3;--line:#2e3136;--card:#1c1f23;--acc:#7db7f5;--warn:#3a2f14;--grid:#2a2d31;--neutral:#4a4b4d;--track:#25282c;
+--ok:#6fd39b;--no:#f0a0a0;--amb:#e3b341;--gbg:#23262a;
+--c1:#3987e5;--c2:#d95926;--c3:#199e70;--c4:#c98500;--c5:#d55181;--c6:#008300;--c7:#9085e9;--c8:#e66767}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1080px;margin:0 auto;padding:28px 16px 90px}h1{font-size:27px;margin:0 0 4px;line-height:1.25}
+h2{font-size:20px;margin:48px 0 10px;padding-top:16px;border-top:1px solid var(--line)}h3{font-size:16px;margin:24px 0 6px}
+p{margin:9px 0}a{color:var(--acc);text-decoration:none}a:hover{text-decoration:underline}.m{color:var(--mut);font-size:13px}
+nav.toc{margin:14px 0 6px;font-size:14px}nav.toc a{display:inline-block;margin:0 14px 4px 0}
+ul,ol{margin:6px 0 14px;padding-left:22px}li{margin:5px 0}code{font:12.5px ui-monospace,Menlo,Consolas,monospace;overflow-wrap:anywhere}
+.key{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr));gap:10px;margin:16px 0}
+.key div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.big{font-size:22px;font-weight:650;font-variant-numeric:tabular-nums;display:block;margin:2px 0;line-height:1.3}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:14px 0}
+.panel>.fh{font-weight:650;font-size:14.5px;margin:0 0 2px}.panel>.fh+.m{margin:0 0 8px}
+.answer{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:8px;padding:12px 16px;margin:16px 0}
+.answer ul{margin:6px 0}
+.note{background:var(--warn);border-radius:8px;padding:11px 15px;margin:14px 0}
+.eq{overflow-x:auto;overflow-y:hidden;margin:10px 0;padding:2px 0;position:relative}.katex{position:relative}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--mut);margin:2px 0 8px;align-items:center}
+.sw{width:12px;height:12px;border-radius:3px;display:inline-block;flex:none}
+.ctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:6px 0 10px;font-size:13.5px}
+.ctl label{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.ctl input[type=range]{width:180px;accent-color:var(--c1)}
+@media (max-width:560px){.ctl label{white-space:normal;flex-wrap:wrap}.ctl input[type=range]{width:min(180px,52vw)}}
+.ctl output{font-variant-numeric:tabular-nums;min-width:4.5em;display:inline-block}
+button{font:inherit;font-size:13px;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:3px 9px;cursor:pointer}
+button:hover{border-color:var(--acc)}button[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+.seg{display:inline-flex;flex-wrap:wrap}.seg button{border-radius:0;margin:0 -1px 0 0}.seg button:first-child{border-radius:6px 0 0 6px}.seg button:last-child{border-radius:0 6px 6px 0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{display:inline-flex;align-items:center;gap:6px;border-radius:14px;padding:2px 10px 2px 8px}
+.chip[aria-pressed="true"]{background:var(--card);color:var(--fg);border-color:var(--fg)}.chip[aria-pressed="false"]{color:var(--mut)}.chip[aria-pressed="false"] .sw{opacity:.3}
+.tw{overflow-x:auto;margin:8px 0 12px}table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:6px 12px 6px 0;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--mut);font-weight:500}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+details summary{cursor:pointer;color:var(--acc);font-size:13.5px;margin:6px 0}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:12px;align-items:start}
+.read{font-size:13.5px;font-variant-numeric:tabular-nums;margin:6px 0 0;line-height:1.7}.read b{font-weight:650}
+svg.ch{display:block;width:100%;height:auto;overflow:hidden}svg.ch text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.ch .gl{stroke:var(--grid);stroke-width:1}.ch .ax{stroke:var(--line);stroke-width:1}.ch .tk{fill:var(--mut);font-size:11px}.ch .al{fill:var(--mut);font-size:11.5px}
+.ch .lb{fill:var(--fg);font-size:11.5px;font-weight:600}.ch .ref{stroke:var(--fg);stroke-width:1.2;stroke-dasharray:5 4}.ch .reft{fill:var(--fg);font-size:11px}
+.ch .band{fill:var(--fg);fill-opacity:.06}.ch .cross{stroke:var(--mut);stroke-width:1}
+canvas{display:block;max-width:100%;border-radius:6px}
+#tip{position:fixed;z-index:50;pointer-events:none;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:6px 9px;font-size:12.5px;box-shadow:0 4px 14px rgba(0,0,0,.14);max-width:min(320px,calc(100vw - 24px));font-variant-numeric:tabular-nums}
+#tip table{font-size:12.5px;width:auto}#tip td{border:0;padding:1px 10px 1px 0}
+.verd td:first-child{font-weight:600}.good{color:var(--ok);font-weight:600}.bad{color:var(--no);font-weight:600}.mid{color:var(--amb);font-weight:600}
+.katex{font-size:1.05em}
+</style>
+</head>
+<body>
+<!-- docs-bar: generated by tools/build_docs.py -->
+<div class="docs-bar" role="navigation" aria-label="Falcon DDT docs"><style>.docs-bar{--db-bg:#fff;--db-fg:#1c1d1f;--db-mut:#63666b;--db-line:#dcddd8;--db-acc:#0b5cad;display:flex;flex-wrap:wrap;align-items:center;gap:4px 20px;padding:9px 16px;background:var(--db-bg);border-bottom:1px solid var(--db-line);font:13.5px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;box-sizing:border-box}.docs-bar a{color:var(--db-mut);text-decoration:none;white-space:nowrap}.docs-bar a:hover{color:var(--db-acc);text-decoration:underline}.docs-bar a[aria-current]{color:var(--db-fg);font-weight:600}.docs-bar .docs-home{color:var(--db-fg);font-weight:650}.docs-bar .docs-links{display:flex;gap:4px 16px;min-width:0;flex:1 1 auto;overflow-x:auto}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .docs-bar{--db-bg:#1c1f23;--db-fg:#e7e8ea;--db-mut:#9a9da3;--db-line:#2e3136;--db-acc:#7db7f5}}:root[data-theme="dark"] .docs-bar{--db-bg:#1c1f23;--db-fg:#e7e8ea;--db-mut:#9a9da3;--db-line:#2e3136;--db-acc:#7db7f5}@media print{.docs-bar{display:none}}</style><a class="docs-home" href="index.html">Falcon DDT docs</a><span class="docs-links"><a href="ddt_architecture_and_testing.html">DDT Architecture and Tests</a><a href="lidar_statistics.html">Lidar Statistics</a><a href="ddt_compute_options.html">DDT Compute Options</a><a href="lidar_coverage_and_hairpins.html">Lidar Coverage and Hairpins</a><a href="lidar_resolution_and_slam.html" aria-current="page">Lidar Resolution and SLAM</a><a href="ads_dv_explorer.html">ADS-DV Explorer</a><a href="sources.html">Source Inventory</a></span></div>
+<!-- /docs-bar -->
+
+<main>
+<h1>Lidar resolution, field of view and SLAM</h1>
+<p class="m">5 November 2026 · Falcon FS-AI DDT entry on the IMechE ADS-DV · the theory behind the lidar choice. The ray-cast simulator is on <a href="lidar_coverage_and_hairpins.html">Lidar Coverage and Hairpins</a>.</p>
+<nav class="toc"><a href="#numbers">The two numbers</a><a href="#cliff">Rays against range</a><a href="#slam">What SLAM needs</a><a href="#speed">How far ahead</a><a href="#fov">120° in a turn</a><a href="#loc">Staying localised</a><a href="#cost">What 256 channels cost</a><a href="#verdict">Verdict</a><a href="#assume">Assumptions</a></nav>
+
+<p>The question: for a car that builds a map of cones and localises against it, as Falcon's stack will, is a 120° lidar enough, and is the Hesai ATX's 256 channels a real advantage over a spinning lidar? This page answers from geometry and estimation theory. Every figure is computed in the page from the formulas shown, so changing an input changes the result. Where the theory goes against the 120° lidar, the page says so.</p>
+
+<div class="key">
+<div><b>Rays on a cone 20 m ahead, worst case</b><span class="big">ATX 56 · VLP-16 0</span><span class="m">OS1-128: 4. Worst over pitch ±1° and the cone’s sideways position</span></div>
+<div><b>3 or more rays guaranteed out to</b><span class="big">ATX 79 m · VLP-16 8.5 m</span><span class="m">OS1-128: 24.5 m. The ATX figure stops at this page’s 80 m limit</span></div>
+<div><b>Highest speed into an unknown hairpin that detection range allows</b><span class="big">ATX 22 m/s · VLP-16 4.4 m/s</span><span class="m">default assumptions in <a href="#speed">How far ahead</a>; the ADS-DV tops out near 15 m/s</span></div>
+<div><b>Worst legal 9 m hairpin, ATX alone</b><span class="big">4.0 m with &lt; 2 cones</span><span class="m">too few to fix position and heading; odometry drift over that gap ≈ 9 cm</span></div>
+</div>
+
+<div class="answer">
+<b>Short answer</b>
+<ul>
+<li><b>256 channels are an advantage, and the reason is beam spacing, not channel count.</b> The ATX’s beams are 0.08° apart vertically, 25 times closer than the VLP-16’s 2°. A cone is 32.5 cm tall. Past 9.3 m a 2° spacing leaves gaps wider than the cone, so whole bands of range get no ray at all. On an unknown track (autocross, and lap 1 of trackdrive) how far ahead the car confirms cones sets how fast it can approach a hairpin.</li>
+<li><b>It is not an advantage for map precision.</b> Once any of these lidars detects a cone, one scan puts its centre within 2.5 cm (<a href="#slam">Figure 4</a>).</li>
+<li><b>120° is enough in theory, with one weak spot.</b> Mid-turn in any hairpin under 13 m outside diameter, the inside edge is outside a 120° view from the ADS-DV’s front plate (<a href="#fov">Figure 5</a>). Those cones were mapped on the approach, so the planner still has them. Localisation is the weak spot: in a 9 m hairpin with cones at the worst legal spacing, the ATX alone sees fewer than 2 cones for 4.0 m. Odometry carries the car across that stretch, with a predicted drift of about 9 cm against a 1.5 m margin (<a href="#loc">Figure 6</a>).</li>
+<li><b>What would prove this wrong</b> is listed under <a href="#verdict">Verdict</a>, with the test for each. The VLP-16 we own removes the weak spot without buying anything, at the cost of time sync and calibration.</li>
+</ul>
+</div>
+
+<h2 id="numbers">The two numbers, explained</h2>
+<p>An earlier reply gave two columns: “2 rings guaranteed out to” and “3+ rays on a cone out to”. Here is what each means.</p>
+<ul>
+<li><b>Ray:</b> one laser shot. If it hits the cone it returns one point.</li>
+<li><b>Ring:</b> one channel, a laser fixed at one elevation, swept across in azimuth. On a cone it leaves a short row of points at one height. The number of rings on a cone is the number of different heights the cone is sampled at.</li>
+<li><b>Beam gap at the cone:</b> the vertical distance between two neighbouring channels at the cone’s range \(r\). For channels \(\Delta\theta\) apart:</li>
+</ul>
+<div class="eq">\[ g(r) = r\,\big(\tan\theta_{k+1}-\tan\theta_k\big)\;\approx\; r\,\Delta\theta \]</div>
+<p>At 10 m that is 35 cm for the VLP-16 (2°), 24 cm for the OS1-32 (1.37°), 5.8 cm for the OS1-128 (0.33°) and 1.4 cm for the ATX (0.08°, its 256 channels spread evenly over 20°).</p>
+<ul>
+<li><b>Rings guaranteed.</b> A cone of height \(H = 0.325\) m spans an interval that beams \(g\) apart cross either \(\lfloor H/g\rfloor\) or \(\lfloor H/g\rfloor + 1\) times, depending on where the beams happen to fall on it. That depends on the cone’s range, the car’s pitch and bumps in the ground, none of which we control, so the number to design with is the lower one:</li>
+</ul>
+<div class="eq">\[ m_{\min}(r)=\Big\lfloor \frac{H}{g(r)} \Big\rfloor \qquad\Longrightarrow\qquad m_{\min}\ge 2 \iff r \le \frac{H}{2\tan\Delta\theta} \]</div>
+<p>That is the “2 rings guaranteed out to” column: 4.7 m for the VLP-16, 6.8 m for the OS1-32, 28 m for the OS1-128 and 119 m for the ATX. Past \(H/\tan\Delta\theta\) not even one ring is guaranteed: 9.3 m for the VLP-16.</p>
+<ul>
+<li><b>Rays on the cone</b> = rings × points per ring. A ring at height \(z\) crosses a cone of radius \(\rho(z)=r_0-(r_0-r_1)\,z/H\) (\(r_0\) = 114 mm at the base, \(r_1\) = 25 mm at the top), and columns \(\Delta\phi\) apart put about \(2\rho(z)/(r\,\Delta\phi)\) points on it. The “3+ rays” column used the threshold of the coverage page’s detector, which is also the minimum ISC uses with its ATX (<a href="01_fsd_open_source_code/team_stacks/ISC-FS/IFS09-DV-PIPELINE/cone_detection/cone_detection/cone_detection.py#L91-L92">cone_detection.py:91-92</a>).</li>
+</ul>
+<div class="note"><b>A correction to that reply.</b> Its “3+ rays out to” column was the farthest range at which a cone gets 3 rays in the coverage page’s ray-cast. That ray-cast has the car level and the cone centred on a laser column, the most favourable sideways position. For the spinners this overstates the reach. Allow the cone to sit anywhere between two columns, and the car to pitch up to ±1°, and the Helios 1615’s 20 m becomes 11.75 m; the OS1-32’s 19.6 m becomes 11.25 m. <a href="#cliff">Figure 2</a> shows all three versions. This page’s model reproduces the coverage page’s figures to within 0.1 m when it uses the same favourable placement.</div>
+
+<div class="panel" id="f1">
+<p class="fh">Figure 1. One cone, one lidar: where the beams fall</p>
+<p class="m">Left: side view, heights stretched so the beams can be told apart. The short ticks at the cone mark where each channel crosses that range. Right: what the lidar sees, in degrees, with azimuth and elevation at the same scale. Each dot is one ray. Filled dots hit the cone.</p>
+<div class="ctl"><span class="seg" id="f1L" role="group" aria-label="Lidar"></span></div>
+<div class="ctl">
+<label>Range <input type="range" id="f1r" min="1" max="60" step="0.1" value="15"><output id="f1ro"></output></label>
+<label>Car pitch <input type="range" id="f1p" min="-2" max="2" step="0.05" value="0"><output id="f1po"></output></label>
+<label>Cone sideways, in columns <input type="range" id="f1f" min="0" max="0.99" step="0.01" value="0.5"><output id="f1fo"></output></label>
+</div>
+<div class="two">
+<div><svg class="ch" id="f1side" viewBox="0 0 640 280" role="img" aria-label="Side view of the lidar beams and the cone"></svg></div>
+<div><canvas id="f1eye" width="440" height="280" role="img" aria-label="The lidar's view of the cone, one dot per ray"></canvas></div>
+</div>
+<p class="read" id="f1read"></p>
+</div>
+<p>Things to try: the VLP-16 at 15 m gets no ray at all, because its −1° beam passes over the cone and its −3° beam lands in front of it. Set the pitch to −1° (nose down) and the −1° beam drops onto the cone. The ATX at the same range puts about 100 rays on the cone whatever the pitch.</p>
+
+<h2 id="cliff">Rays against range: a cliff, not a slope</h2>
+<p>While several rings land on a cone, its expected ray count is just its silhouette area over the solid angle of one ray. With angles in radians:</p>
+<div class="eq">\[ \bar n(r)\;=\;\frac{(r_0+r_1)\,H}{r^{2}\,\Delta\theta\,\Delta\phi} \qquad\text{e.g. ATX at 20 m: } \frac{0.0452}{400\times 1.37{\times}10^{-3}\times 1.40{\times}10^{-3}} \approx 59 \]</div>
+<p>So doubling the range quarters the rays, and halving either spacing doubles them. That formula only holds while \(g(r) \ll H\). Once the beam gap passes the cone height, the count does not shrink smoothly. It jumps between zero and one thin ring as the cone moves through the beam pattern. Figure 2 shows the worst case (solid) beside the level-car curves.</p>
+<p><b>What matters is angular density, not channel count.</b> The Helios 5515 has the same 32 channels as the 1615 but spreads them over 70° of which half point at the car or the ground near it, so it does worse at range. The OS2-128 puts its 128 channels into 22.5° instead of the OS1-128’s 42.4° and reaches about 45% farther.</p>
+
+<div class="panel" id="f2">
+<p class="fh">Figure 2. Rays on a cone straight ahead, against range</p>
+<p class="m">Solid: the worst case over the cone’s sideways position and the car’s pitch within the envelope set below. Dashed: car level, worst sideways position. Log scale. The dashed horizontal line is the detector’s minimum. Click a lidar to show or hide it.</p>
+<div class="ctl"><div class="chips" id="f2chips"></div></div>
+<div class="ctl">
+<label>Detector needs at least <input type="range" id="f2n" min="1" max="10" step="1" value="3"><output id="f2no"></output></label>
+<label>Pitch envelope ± <span class="seg" id="f2p" role="group" aria-label="Pitch envelope"></span></label>
+</div>
+<svg class="ch" id="f2c" viewBox="0 0 760 340" role="img" aria-label="Rays on a cone against range for each lidar"></svg>
+<details><summary>Show as a table</summary><div class="tw"><table id="f2t"></table></div></details>
+</div>
+<p>The pitch envelope is the honest knob. The ADS-DV pitches under braking and acceleration, and a test track is not flat: a 1% change in slope is 0.57°. At ±1° every lidar here sees every vertical phase of its beam pattern, so the solid curve is what the car can count on. ISC’s pipeline, on an ATX, rejects any cone farther than 20 m as “too sparse / unreliable” (<a href="01_fsd_open_source_code/team_stacks/ISC-FS/IFS09-DV-PIPELINE/cone_detection/cone_detection/cone_detection.py#L69-L70">cone_detection.py:69-70</a>). This model gives the ATX 56 rays on a cone at 20 m, so geometry is not the reason. Their unit may have run a sparser mode, or the trouble may be in ground removal at range; the code does not say.</p>
+
+<h2 id="slam">What landmark SLAM needs from one scan</h2>
+<p>A landmark SLAM never builds a dense point-cloud map. Every scan becomes a list of cone detections, each with a position and an uncertainty. Each detection is matched to a cone already in the map or starts a new one, and the matched ones correct the car’s pose. EKF-SLAM and factor graphs both work this way; ISC’s factor graph is an example (<a href="01_fsd_open_source_code/team_stacks/ISC-FS/IFS09-DV-PIPELINE/cone_slam/cone_slam/factor_graph.py">factor_graph.py</a>). So the idea that a sparse lidar has to drive past a cone to build up its cluster belongs to dense mapping, not to a cone map. What a cone map needs from each scan is three things:</p>
+<ol>
+<li><b>Detection:</b> enough rays to form a cluster. Teams’ minimums: ISC 3 with the ATX (<a href="01_fsd_open_source_code/team_stacks/ISC-FS/IFS09-DV-PIPELINE/cone_detection/cone_detection/cone_detection.py#L91-L92">cone_detection.py:91-92</a>); QUT 2, with the comment “2-3 allows for long-range cone detection” (<a href="01_fsd_open_source_code/team_stacks/QUT-Motorsport/QUTMS_Driverless/src/perception/lidar_pipeline/config/lidar_detector.yaml#L16">lidar_detector.yaml:16</a>); OSU 3 (<a href="01_fsd_open_source_code/team_stacks/OSU_Global-Formula-Racing/OSU-Driverless-Formula-Student/ros_ws/src/see_lidar_processing/config/config.yaml#L40">config.yaml:40</a>); Hydrakon 3 (<a href="01_fsd_open_source_code/team_stacks/HWU-Dubai_Hydrakon/HydrakonV1/src/fs_lidar/fs_lidar/lidar_cluster.py#L36">lidar_cluster.py:36</a>); MUR 10 (<a href="01_fsd_open_source_code/team_stacks/MUR_Melbourne/lidar_dev/launch/cluster_params.yaml#L2">cluster_params.yaml:2</a>).</li>
+<li><b>Verification:</b> evidence the cluster is a cone and not a post, a tyre wall, a shoe or ground clutter. One ring gives an arc about a cone’s width, which many things produce. Two or more rings show the width shrinking with height, the taper that only a cone has. ISC fits a cone template to each cluster and rejects poor fits (<a href="01_fsd_open_source_code/team_stacks/ISC-FS/IFS09-DV-PIPELINE/cone_detection/cone_detection/cone_fit.py">cone_fit.py</a>), which needs points at more than one height. The same goes for colour: the stripe shows up in lidar intensity only across several rings, and AMZ found that “the sparsity of the point cloud combined with the small size of the cones limits the color estimation range to 4.5 m” (<a href="02_fsd_papers/AMZ_ETH-Zurich/2019_Kabzan_AMZ-Driverless_The-Full-Autonomous-Racing-System.pdf#page=11">Kabzan 2019, p. 11</a>).</li>
+<li><b>Precision:</b> how far off the detected centre is. In the SLAM this is the measurement noise, the \(\sigma_i\) below.</li>
+</ol>
+<p>The measurement model, for cone \(i\) at map position \(m_i\) seen from a car at \(p\) with heading \(\psi\):</p>
+<div class="eq">\[ z_i = R(\psi)^{\top}(m_i-p) + v_i,\qquad v_i\sim\mathcal N(0,\sigma_i^{2}I) \]</div>
+<p>Each scan that sees a cone adds information to it, so after \(N\) scans the cone’s position covariance is</p>
+<div class="eq">\[ P_N^{-1} = P_0^{-1} + \sum_{j=1}^{N}\sigma_j^{-2} I ,\qquad N \approx \frac{f\,(r_{\text{det}}-r_{\text{use}})}{v} \]</div>
+<p>where \(f\) is the scan rate, \(r_{\text{det}}\) the range at which the cone is first detected and \(r_{\text{use}}\) the range at which the planner needs it. Speed cuts \(N\); a longer detection range adds it back. Figure 4 measures \(\sigma\) for one scan by simulation: the cone is placed at random over pitch and sideways position, 2 cm of range noise is added to every point, and a circle of the cone’s known radius at each point’s height is fitted to the points.</p>
+
+<div class="panel" id="f4">
+<p class="fh">Figure 4. What one scan gives: chance of detection, and centre error when detected</p>
+<p class="m">40 random placements per range, pitch within the envelope of Figure 2, range noise per point as set. The lidars shown follow Figure 2’s selection.</p>
+<div class="ctl"><label>Range noise per point <input type="range" id="f4s" min="0.5" max="5" step="0.5" value="2"><output id="f4so"></output></label><span class="m" id="f4busy"></span></div>
+<div class="two"><svg class="ch" id="f4a" viewBox="0 0 520 300" role="img" aria-label="Share of scans that detect the cone against range"></svg><svg class="ch" id="f4b" viewBox="0 0 520 300" role="img" aria-label="Centre error when detected against range"></svg></div>
+</div>
+<p><b>What Figure 4 shows:</b> once a cone is detected, every lidar places it within a few centimetres; on a 3 m track that is far more precise than the planner or data association needs. The lidars differ in whether the cone is detected at all, and that drops off a cliff at the ranges in Figure 2. So a dense lidar does not buy a more precise map. It buys earlier, surer detections.</p>
+<p>Real pipelines weight detections more cautiously than this simulation, because mixed returns at cone edges, ground-removal leftovers and partial occlusion add error it leaves out. ISC tells its SLAM \(\sigma = 1.5\,(0.05+0.005\,r)\,/\sqrt{n/10}\) for a cone with \(n\) points (<a href="01_fsd_open_source_code/team_stacks/ISC-FS/IFS09-DV-PIPELINE/cone_detection/cone_detection/cone_detection.py#L456-L457">cone_detection.py:456-457</a>). At 20 m that is 41 cm for 3 points and 9 cm for 60, so in their map a 3-point detection counts about 20 times less (the ratio of the inverse variances). By ISC’s own weighting, then, a dense scan is worth far more per frame.</p>
+<p><b>Why stacking several sparse scans is not the same thing.</b> To merge scans you shift each by the car’s estimated motion, so a heading error \(\delta\psi\) smears a cone \(r\,\delta\psi\) sideways: half a degree at 15 m is 13 cm, more than half the 22.8 cm base. Worse, the merged cluster is built from the pose estimate, so its error is correlated with that estimate. Both an EKF and a factor graph assume measurement noise is independent of the state. Feeding back stacked detections counts the same information twice and makes the filter overconfident. A single dense scan is an independent measurement, as the theory requires.</p>
+
+<h2 id="speed">How far ahead the car must see</h2>
+<p>On an unknown track the car must confirm the cones of a corner before the point where it has to start braking for it. Adding up the distances covered at speed \(v\): the pipeline latency \(t_{\text{lat}}\), \(M\) confirming scans at rate \(f\), braking from \(v\) to the corner speed \(\sqrt{a_{\text{lat}}R}\) at deceleration \(a_b\), plus a distance \(d_{\text{look}}\) into the corner to see its shape:</p>
+<div class="eq">\[ d_{\text{req}}(v)= v\Big(t_{\text{lat}}+\frac{M}{f}\Big)+\max\!\Big(0,\;\frac{v^{2}-a_{\text{lat}}R}{2a_b}\Big)+d_{\text{look}} \]</div>
+<p>A lidar whose guaranteed detection range is \(r_{\text{det}}\) allows speeds up to the \(v\) where \(d_{\text{req}}(v)=r_{\text{det}}\). The defaults: 0.3 s latency, about 150 ms of software plus 150 ms of steering actuation (<a href="ddt_architecture_and_testing.html#latency">DDT Architecture and Tests</a>, latency budget); 3 confirming scans at 10 Hz; ISC’s 3 m/s² lateral limit (<a href="01_fsd_open_source_code/team_stacks/ISC-FS/IFS09-DV-PIPELINE/control/control/control_node.py#L324-L340">control_node.py:324-340</a>) round the ADS-DV’s 4 m minimum radius; 4 m/s² braking (an assumption to measure on the car); 5 m look into the corner. Our own estimate puts the ADS-DV at 4–10 m/s on a track with 9 m hairpins and about 15 m/s at most (<a href="ddt_architecture_and_testing.html#speed">DDT Architecture and Tests</a>), shaded in Figure 3.</p>
+
+<div class="panel" id="f3">
+<p class="fh">Figure 3. Distance needed against speed, and each lidar’s detection range</p>
+<p class="m">Black curve: \(d_{\text{req}}(v)\). Coloured lines: each lidar’s detection range from Figure 2 (its detector minimum and pitch envelope). Where they cross, marked by a dot, is the highest speed that lidar allows into an unknown hairpin; the labels give that speed.</p>
+<div class="ctl">
+<label>Latency <input type="range" id="f3lat" min="0.1" max="0.8" step="0.05" value="0.3"><output id="f3lato"></output></label>
+<label>Confirming scans <input type="range" id="f3M" min="1" max="5" step="1" value="3"><output id="f3Mo"></output></label>
+<label>Braking <input type="range" id="f3ab" min="2" max="9" step="0.5" value="4"><output id="f3abo"></output></label>
+<label>Look into the corner <input type="range" id="f3look" min="0" max="10" step="1" value="5"><output id="f3looko"></output></label>
+<label>Range used <span class="seg" id="f3mode" role="group" aria-label="Range used"></span></label>
+</div>
+<svg class="ch" id="f3c" viewBox="0 0 760 340" role="img" aria-label="Required detection distance against speed"></svg>
+<details><summary>Show as a table</summary><div class="tw"><table id="f3t"></table></div></details>
+</div>
+<p>This only binds where the track is unknown: autocross, and the first lap of trackdrive. From lap 2 the planner follows the map, and the lidar only has to keep the car localised. It is still the run that decides whether the car finishes trackdrive at all.</p>
+
+<h2 id="fov">Why a 120° lidar loses the inside of a tight turn</h2>
+<p>Put the car on the centreline of a constant-radius turn, rear axle on radius \(R_c\), with the lidar \(L\) metres ahead of the rear axle. The car’s heading is the tangent at the rear axle. From the lidar, the inside edge (radius \(R_i=R_c-w/2\)) is nearest the heading direction along the line that just touches it, so the smallest bearing at which any inside cone can appear is</p>
+<div class="eq">\[ \beta_{\min}= 90^\circ+\arctan\frac{L}{R_c}-\arcsin\frac{R_i}{\sqrt{R_c^{2}+L^{2}}} \]</div>
+<p>The inside edge can be seen mid-turn only if \(\beta_{\min}\le \text{FoV}/2\). On the ADS-DV the plate is 0.425 m ahead of the wheelbase midpoint, so \(L\) = 1.19 m (<a href="lidar_coverage_and_hairpins.html#view">coverage page</a>). An 11 m hairpin on a 3 m track gives \(\beta_{\min}\) = 69.8°, beyond the ATX’s 60°, which matches the ray-cast’s 0 of 7 inside cones in view through the turn. The forward mount causes this: with the lidar over the rear axle (\(L=0\)) a 120° view would see the inside edge in every legal hairpin.</p>
+
+<div class="panel" id="f5">
+<p class="fh">Figure 5. Field of view in a constant-radius turn</p>
+<p class="m">Top view, to scale. Grey: the track edges. Shaded wedge: the lidar’s view. Thin line: the sight line that just touches the inside edge. Thick coloured arcs: the parts of each edge inside the view.</p>
+<div class="ctl">
+<label>Outside diameter <input type="range" id="f5D" min="9" max="40" step="0.5" value="11"><output id="f5Do"></output></label>
+<label>Track width <input type="range" id="f5w" min="3" max="5" step="0.5" value="3"><output id="f5wo"></output></label>
+<label>Lidar ahead of rear axle <input type="range" id="f5L" min="0" max="2" step="0.01" value="1.19"><output id="f5Lo"></output></label>
+<label>Field of view <span class="seg" id="f5fov" role="group" aria-label="Field of view"></span></label>
+</div>
+<div class="two"><svg class="ch" id="f5top" viewBox="0 0 520 440" role="img" aria-label="Top view of the turn and the lidar's field of view"></svg><svg class="ch" id="f5plot" viewBox="0 0 520 440" role="img" aria-label="Smallest bearing to the inside edge against outside diameter"></svg></div>
+<p class="read" id="f5read"></p>
+</div>
+<p>This does not make the hairpin unplannable. The inside cones are in view on the approach and stay in the map: in the coverage page’s ray-cast all 7 inside cones of the 11 m hairpin are in the map at turn-in, and in the worst legal placement the single inside cone is too (<a href="lidar_coverage_and_hairpins.html#view">coverage page</a>). FaSTTUBe’s planner, which ISC uses unchanged, plans on map cones and adds virtual cones for an edge it cannot see (<a href="lidar_coverage_and_hairpins.html#software">what the code does</a>). The open question is localisation, next.</p>
+
+<h2 id="loc">Staying localised through the hairpin</h2>
+<p>Localising against a known map means solving for three unknowns, \(x\), \(y\) and \(\psi\). Each cone seen gives two equations (its offset ahead and to the side). One cone leaves one combination unobservable: the car could be anywhere on a circle round that cone, turned to keep it at the same bearing. Two or more cones not on one line from the car fix all three. The best precision any unbiased estimator can reach from one scan is the Cramér–Rao bound:</p>
+<div class="eq">\[ J=\sum_i \frac{H_i^{\top}H_i}{\sigma_i^{2}},\qquad H_i=\Big[\,-R^{\top}\;\;\; \tfrac{\partial R^{\top}}{\partial\psi}(m_i-p)\Big],\qquad \operatorname{Cov}(\hat x,\hat y,\hat\psi)\succeq J^{-1} \]</div>
+<p>with \(\sigma_i\) set by ISC’s weighting above, so cones with few points count for less. Figure 6 uses the coverage page’s ray-cast for which cones each lidar sees at every point of three hairpins. The worst legal placement is cones exactly 5 m apart even in the corner (<a href="https://www.imeche.org/docs/default-source/1-oscar/formula-student/2021/forms/ai/fs-ai-dynamic-events-setup-and-cones-specification.pdf?sfvrsn=2#page=1" target="_blank" rel="noopener">cones specification DE6.3.1, p. 1</a>).</p>
+
+<div class="panel" id="f6">
+<p class="fh">Figure 6. Cones in view and pose precision through a hairpin</p>
+<p class="m">Left: top view. Filled cones are seen with at least 3 rays by the chosen lidars at this point; the ellipse is the pose bound, drawn 10 times larger. Right: cones in view along the run, from 16 m before turn-in. Shading marks where the ATX alone sees fewer than 2.</p>
+<div class="ctl"><span class="seg" id="f6sc" role="group" aria-label="Hairpin"></span><span class="seg" id="f6cfg" role="group" aria-label="Lidars"></span></div>
+<div class="ctl"><label>Position along the run <input type="range" id="f6s" min="0" max="1" step="1" value="0" style="width:min(320px,60vw)"><output id="f6so"></output></label></div>
+<div class="two"><svg class="ch" id="f6top" viewBox="0 0 520 420" role="img" aria-label="Top view of the hairpin with cones in view"></svg><svg class="ch" id="f6strip" viewBox="0 0 520 420" role="img" aria-label="Cones in view along the run"></svg></div>
+<p class="read" id="f6read"></p>
+</div>
+<p>Through a gap with fewer than 2 cones, the pose is carried by odometry: wheel speeds for distance, the gyro for heading. Its error grows with the gap. With a wheel-odometry scale error \(\epsilon\), gyro scale error \(s_g\) and gyro bias \(b_g\), over a gap of length \(d\) round a turn of radius \(R\) at speed \(v\):</p>
+<div class="eq">\[ e_{\parallel}\approx \epsilon\,d,\qquad \delta\psi\approx s_g\,\frac{d}{R}+b_g\,\frac{d}{v},\qquad e_{\perp}\approx \frac{d\,\delta\psi}{2} \]</div>
+<p>When cones come back into view, each must still be matched to the right map cone. That fails only if the drift approaches half the distance between neighbouring cones, at least 1.5 m across a 3 m track.</p>
+<div class="panel" id="f7">
+<p class="fh">Figure 7. Odometry drift across the gap</p>
+<div class="ctl">
+<label>Gap <input type="range" id="f7d" min="0" max="10" step="0.25" value="4"><output id="f7do"></output></label>
+<label>Turn radius <input type="range" id="f7R" min="3" max="10" step="0.5" value="3"><output id="f7Ro"></output></label>
+<label>Speed <input type="range" id="f7v" min="1" max="8" step="0.5" value="3.5"><output id="f7vo"></output></label>
+</div>
+<div class="ctl">
+<label>Wheel odometry scale error <input type="range" id="f7e" min="0" max="10" step="0.5" value="2"><output id="f7eo"></output></label>
+<label>Gyro scale error <input type="range" id="f7g" min="0" max="3" step="0.1" value="1"><output id="f7go"></output></label>
+<label>Gyro bias <input type="range" id="f7b" min="0" max="2" step="0.05" value="0.2"><output id="f7bo"></output></label>
+</div>
+<p class="read" id="f7read"></p>
+</div>
+<p>The defaults are deliberately pessimistic for a car whose front wheels roll freely and whose IMU we have not bought yet; they should be replaced with measured values. The 3.5 m/s is the speed at ISC’s 3 m/s² round a 4 m radius.</p>
+
+<h2 id="cost">What the 256 channels cost</h2>
+<ul>
+<li><b>Processing.</b> The ATX produces 3.84 million points a second (<a href="https://www.hesaitech.com/product/atx/" target="_blank" rel="noopener">Hesai</a>), 13 times the VLP-16’s 300,000. Our stack must run on the CPU without the GPU. Most of those points are ground near the car. ISC crops the ATX cloud at 25 m before clustering because the ~174,000 returns per frame make clustering “the dominant cost” (<a href="01_fsd_open_source_code/team_stacks/ISC-FS/IFS09-DV-PIPELINE/cone_detection/cone_detection/cone_detection.py#L72-L78">cone_detection.py:72-78</a>). The reach in Figure 2 only helps if the far field is processed: a narrow band of rows just below the horizon covers everything past 25 m, so it can be handled separately and cheaply.</li>
+<li><b>Near blind zone.</b> The ATX’s lowest beam is −10° from 0.57 m up, so it cannot see the top of a cone within about 1.4 m. Its 20° vertical view also leaves little margin for a badly tilted mount.</li>
+<li><b>Field of view.</b> The weak spot in <a href="#loc">Figure 6</a>.</li>
+<li><b>Price.</b> About $1,540 for one ATX on Alibaba. The spinners with comparable spacing are the OS1-128 (≈ $17,700) and OS2-128 (from $10,000), far over the $2,000 budget. A 32-channel Helios is $2,550, also over, and Figure 2 shows it barely beats the VLP-16 at range. Prices and sources are in the <a href="lidar_coverage_and_hairpins.html#field">2026 field tree</a>.</li>
+</ul>
+
+<h2 id="verdict">Verdict</h2>
+<div class="tw"><table class="verd">
+<tr><th>What the theory compares</th><th>Hesai ATX alone</th><th>VLP-16 alone (owned)</th><th>ATX + VLP-16</th><th>OS1-128 (reference)</th></tr>
+<tr><td>3+ rays guaranteed out to (pitch ±1°)</td><td class="good">79 m</td><td class="bad">8.5 m</td><td class="good">79 m ahead</td><td>24.5 m</td></tr>
+<tr><td>2 rings guaranteed out to</td><td class="good">119 m</td><td class="bad">4.7 m</td><td class="good">119 m ahead</td><td>28 m</td></tr>
+<tr><td>Speed into an unknown hairpin that detection allows (defaults)</td><td class="good">22 m/s, not the limit</td><td class="bad">4.4 m/s</td><td class="good">22 m/s</td><td>10.8 m/s</td></tr>
+<tr><td>Centre error of a detected cone, one scan</td><td>under 1 cm</td><td>1–2.5 cm</td><td>under 1 cm</td><td>0.5–2 cm</td></tr>
+<tr><td>Inside cones in view mid-hairpin (11 m)</td><td class="mid">0, in the map from the approach</td><td>4 or more</td><td>4 or more</td><td>4 or more</td></tr>
+<tr><td>Worst 9 m hairpin: distance with fewer than 2 cones</td><td class="mid">4.0 m, ≈ 9 cm odometry drift</td><td class="good">none</td><td class="good">none</td><td class="good">none</td></tr>
+<tr><td>Points per second to process</td><td>3.84 M</td><td>0.3 M</td><td>4.14 M</td><td>5.24 M</td></tr>
+<tr><td>Price</td><td>≈ $1,540</td><td>owned</td><td>≈ $1,540</td><td class="bad">≈ $17,700</td></tr>
+<tr><td>Integration</td><td>one lidar</td><td>one lidar</td><td class="mid">two: PTP and PPS time sync, lidar-to-lidar calibration</td><td>one lidar</td></tr>
+</table></div>
+<p><b>Conclusion.</b> Within the budget, the ATX is the better single lidar for this car. The theory supports both halves of the claim:</p>
+<ul>
+<li><b>The 256 channels are an advantage.</b> Their close vertical spacing keeps every cone the car will race towards sampled by several rings, which the spinners in budget cannot do past 5–10 m. That sets how fast the car may approach a hairpin it has never seen.</li>
+<li><b>120° is enough</b>, as long as the SLAM keeps every mapped cone and can ride odometry for up to about a second in the tightest hairpins.</li>
+</ul>
+<p>Adding the VLP-16 makes no difference ahead, but it closes the localisation gap in the turn. It is insurance whose cost is engineering time, not money.</p>
+<p><b>What would prove this wrong</b>, and the test for each:</p>
+<ol>
+<li><b>The ATX puts far fewer rays on a cone at 20–30 m than this model.</b> This is ISC’s “too sparse” comment. Test: with the sensor rig, count points on a cone at 10, 20 and 30 m.</li>
+<li><b>Odometry drifts much more than 1–2% plus 1° per half turn.</b> Test: drive a 4 m arc in a car park and compare odometry with the RTK track.</li>
+<li><b>The SLAM declares a failure, or mismatches cones, after a second with fewer than 2 in view.</b> This is the failure ISC hit on 12 May 2026 (<a href="lidar_coverage_and_hairpins.html#software">coverage page</a>). Test: run our SLAM in simulation through the worst 9 m hairpin with the ATX alone.</li>
+<li><b>The far field cannot be processed in time on the CPU.</b> Test: time cone detection on recorded ATX frames with and without the far band.</li>
+</ol>
+<p>If test 2 or 3 fails, mount the VLP-16 as well; if test 1 fails, the reach argument for the ATX weakens and the comparison should be redone with the measured counts.</p>
+
+<h2 id="assume">Assumptions</h2>
+<ul>
+<li>Cone: the small FS cone, 228 mm base, 325 mm tall, modelled as a frustum with a 50 mm top. Flat ground; the cone straight ahead of the lidar for Figures 1–4.</li>
+<li>Lidars as on the coverage page: the ATX’s 256 channels spread evenly over ±10° (the real unit packs them closer near the middle, 0.05° at the finest, so its reach at the horizon is if anything longer), 0.08° columns, 0.57 m up; the spinners 0.70 m up, VLP-16 and Helios at 0.2°, the Ousters at 2048 columns (0.18°). The car’s own body is ignored here; the coverage page includes it.</li>
+<li>Pitch: all channels tilt together; ±1° covers every vertical phase for every lidar here.</li>
+<li>Detection range is purely geometric. Every lidar here is rated beyond 90 m on a 10% target, so return energy is not the limit inside 80 m.</li>
+<li>Figure 4’s error leaves out mixed returns at cone edges, ground-removal leftovers and occlusion, so it is a lower bound. ISC’s weighting is the field-tuned alternative and is used in Figure 6.</li>
+<li>Figure 6’s cones in view come from the coverage page’s ray-cast, which includes the car body and cones hiding each other. The pose bound uses only the current scan, with the map known.</li>
+</ul>
+</main>
+<div id="tip" hidden></div>
+<script type="application/json" id="hpData">{"h11":{"name":"11 m hairpin, cones as on the page","R":4,"len":12.57,"cx":0,"cy":0,"cones":[[-24,-2.5,"b",0],[-19.2,-2.5,"b",0],[-14.4,-2.5,"b",0],[-9.6,-2.5,"b",0],[-4.8,-2.5,"b",0],[0,-2.5,"b",0],[-24,-5.5,"y",0],[-19.2,-5.5,"y",0],[-14.4,-5.5,"y",0],[-9.6,-5.5,"y",0],[-4.8,-5.5,"y",0],[0,-5.5,"y",0],[1.08,-2.25,"b",1],[1.95,-1.56,"b",1],[2.44,-0.56,"b",1],[2.44,0.56,"b",1],[1.95,1.56,"b",1],[1.08,2.25,"b",1],[0,2.5,"b",1],[1.88,-5.17,"y",0],[3.54,-4.21,"y",0],[4.76,-2.75,"y",0],[5.42,-0.96,"y",0],[5.42,0.96,"y",0],[4.76,2.75,"y",0],[3.54,4.21,"y",0],[1.88,5.17,"y",0],[0,5.5,"y",0],[-4,2.5,"b",0],[-8,2.5,"b",0],[-12,2.5,"b",0],[-16,2.5,"b",0],[-4,5.5,"y",0],[-8,5.5,"y",0],[-12,5.5,"y",0],[-16,5.5,"y",0]],"smp":[[-16,-16,-4,0,-14.81,-4,-14.81,-4,[[2,0,13],[3,255,17],[4,236,4],[5,107,0],[8,0,13],[9,255,17],[10,236,4],[11,107,0],[12,78,0],[13,59,0],[14,80,0],[15,72,0],[16,80,0],[17,84,0],[18,92,0],[19,85,0],[20,72,0],[21,60,0],[22,35,0],[23,54,0],[24,54,0],[25,54,0],[26,67,0],[27,80,0],[28,149,5],[29,255,4],[30,0,7],[31,0,7],[32,115,0],[33,180,5],[34,0,4],[35,0,4]]],[-15.75,-15.75,-4,0,-14.56,-4,-14.56,-4,[[2,0,13],[3,255,16],[4,251,4],[5,115,0],[8,0,13],[9,255,16],[10,251,4],[11,115,0],[12,85,0],[13,67,0],[14,79,0],[15,80,0],[16,79,0],[17,85,0],[18,92,0],[19,84,0],[20,71,0],[21,67,0],[22,31,0],[23,54,0],[24,53,0],[25,49,0],[26,66,0],[27,80,0],[28,161,5],[29,255,3],[30,0,8],[31,0,8],[32,119,0],[33,178,5],[34,0,4],[35,0,3]]],[-15.5,-15.5,-4,0,-14.31,-4,-14.31,-4,[[2,0,12],[3,255,15],[4,255,3],[5,116,0],[8,0,12],[9,255,15],[10,255,3],[11,116,0],[12,81,0],[13,74,0],[14,81,0],[15,79,0],[16,79,0],[17,85,0],[18,102,0],[19,93,0],[20,70,0],[21,67,0],[22,31,0],[23,61,0],[24,61,0],[25,43,0],[26,68,0],[27,78,0],[28,156,5],[29,255,3],[30,0,7],[31,0,7],[32,123,0],[33,187,5],[34,0,4],[35,0,4]]],[-15.25,-15.25,-4,0,-14.06,-4,-14.06,-4,[[2,0,13],[3,255,14],[4,255,3],[5,123,0],[8,0,13],[9,255,14],[10,255,3],[11,123,0],[12,83,0],[13,88,0],[14,85,0],[15,80,0],[16,86,0],[17,92,0],[18,99,0],[19,93,0],[20,80,0],[21,66,0],[22,32,0],[23,61,0],[24,60,0],[25,38,0],[26,73,0],[27,85,0],[28,168,4],[29,255,3],[30,0,7],[31,0,7],[32,122,0],[33,187,4],[34,0,3],[35,0,4]]],[-15,-15,-4,0,-13.81,-4,-13.81,-4,[[2,0,14],[3,255,25],[4,255,3],[5,122,0],[8,0,14],[9,255,25],[10,255,3],[11,122,0],[12,88,0],[13,92,0],[14,85,0],[15,86,0],[16,85,0],[17,93,0],[18,98,0],[19,102,0],[20,79,0],[21,66,0],[22,32,0],[23,60,0],[24,58,0],[25,27,0],[26,72,0],[27,85,0],[28,179,4],[29,255,3],[30,0,7],[31,0,7],[32,133,0],[33,198,4],[34,0,3],[35,0,3]]],[-14.75,-14.75,-4,0,-13.56,-4,-13.56,-4,[[2,0,26],[3,255,23],[4,255,4],[5,133,0],[8,0,26],[9,255,23],[10,255,4],[11,133,0],[12,86,0],[13,101,0],[14,92,0],[15,85,0],[16,84,0],[17,92,0],[18,108,0],[19,99,0],[20,82,0],[21,73,0],[22,33,0],[23,60,0],[24,58,0],[25,18,0],[26,71,0],[27,84,0],[28,178,5],[29,255,3],[30,0,7],[31,0,7],[32,132,0],[33,183,4],[34,0,4],[35,0,3]]],[-14.5,-14.5,-4,0,-13.31,-4,-13.31,-4,[[2,0,30],[3,255,21],[4,255,3],[5,132,5],[8,0,30],[9,255,21],[10,255,3],[11,132,5],[12,94,0],[13,98,0],[14,93,0],[15,92,0],[16,93,0],[17,102,0],[18,106,0],[19,103,0],[20,85,0],[21,71,0],[22,30,0],[23,67,0],[24,62,0],[25,14,0],[26,81,0],[27,90,0],[28,188,4],[29,255,3],[30,0,7],[31,0,8],[32,139,5],[33,0,5],[34,0,4],[35,0,3]]],[-14.25,-14.25,-4,0,-13.06,-4,-13.06,-4,[[2,0,44],[3,255,20],[4,255,2],[5,140,5],[8,0,44],[9,255,20],[10,255,2],[11,140,5],[12,88,0],[13,105,0],[14,92,0],[15,93,0],[16,92,0],[17,99,0],[18,118,0],[19,108,0],[20,85,0],[21,71,0],[22,26,0],[23,66,0],[24,59,0],[25,28,0],[26,79,0],[27,73,0],[28,198,4],[29,255,2],[30,0,7],[31,0,9],[32,141,5],[33,0,4],[34,0,3],[35,0,3]]],[-14,-14,-4,0,-12.81,-4,-12.81,-4,[[2,0,3],[3,255,37],[4,255,3],[5,148,4],[8,0,3],[9,255,37],[10,255,3],[11,148,4],[12,95,0],[13,107,0],[14,103,0],[15,92,0],[16,101,0],[17,104,0],[18,115,0],[19,107,0],[20,94,0],[21,80,0],[22,22,0],[23,67,0],[24,55,0],[25,41,0],[26,78,0],[27,44,0],[28,198,4],[29,255,8],[30,0,7],[31,0,10],[32,139,5],[33,0,4],[34,0,4],[35,0,4]]],[-13.75,-13.75,-4,0,-12.56,-4,-12.56,-4,[[3,255,35],[4,255,11],[5,148,5],[9,255,35],[10,255,11],[11,148,5],[12,95,0],[13,106,0],[14,98,0],[15,101,0],[16,99,0],[17,108,0],[18,123,0],[19,116,0],[20,92,0],[21,79,0],[22,18,0],[23,63,0],[24,52,0],[25,54,0],[26,79,0],[27,45,0],[28,207,4],[29,255,11],[30,0,7],[31,0,10],[32,150,5],[33,0,4],[34,0,3],[35,0,4]]],[-13.5,-13.5,-4,0,-12.31,-4,-12.31,-4,[[3,255,49],[4,255,10],[5,161,5],[9,255,49],[10,255,10],[11,161,5],[12,100,0],[13,116,0],[14,109,0],[15,98,0],[16,98,0],[17,107,0],[18,122,0],[19,113,0],[20,92,0],[21,78,0],[22,14,0],[23,73,0],[24,47,0],[25,62,0],[26,85,0],[27,78,0],[28,220,4],[29,255,10],[30,0,7],[31,0,10],[32,149,5],[33,0,4],[34,0,4],[35,0,4]]],[-13.25,-13.25,-4,0,-12.06,-4,-12.06,-4,[[3,255,45],[4,255,10],[5,165,4],[9,255,45],[10,255,10],[11,165,4],[12,105,3],[13,113,0],[14,107,0],[15,107,0],[16,107,0],[17,117,0],[18,132,0],[19,123,0],[20,101,0],[21,85,0],[22,16,0],[23,72,0],[24,40,0],[25,75,0],[26,85,0],[27,96,0],[28,229,4],[29,255,11],[30,0,7],[31,0,11],[32,160,4],[33,0,4],[34,0,4],[35,0,4]]],[-13,-13,-4,0,-11.81,-4,-11.81,-4,[[3,255,62],[4,255,10],[5,168,5],[9,255,62],[10,255,10],[11,168,5],[12,102,2],[13,124,0],[14,116,0],[15,107,0],[16,108,0],[17,115,0],[18,133,0],[19,128,0],[20,98,0],[21,85,0],[22,17,0],[23,71,0],[24,33,0],[25,80,0],[26,84,0],[27,108,0],[28,228,4],[29,255,10],[30,0,7],[31,0,11],[32,157,5],[33,0,4],[34,0,3],[35,0,4]]],[-12.75,-12.75,-4,0,-11.56,-4,-11.56,-4,[[3,255,61],[4,255,8],[5,180,5],[9,255,61],[10,255,8],[11,180,5],[12,106,2],[13,128,0],[14,117,0],[15,105,0],[16,118,0],[17,123,0],[18,142,5],[19,132,0],[20,109,0],[21,92,0],[22,23,0],[23,80,0],[24,26,0],[25,79,0],[26,94,0],[27,108,0],[28,241,4],[29,0,10],[30,0,7],[31,0,11],[32,166,4],[33,0,4],[34,0,4],[35,0,4]]],[-12.5,-12.5,-4,0,-11.31,-4,-11.31,-4,[[3,255,49],[4,255,7],[5,188,4],[9,255,49],[10,255,7],[11,188,4],[12,109,3],[13,133,0],[14,121,0],[15,117,0],[16,116,0],[17,123,0],[18,139,4],[19,142,5],[20,107,0],[21,93,0],[22,28,0],[23,79,0],[24,16,0],[25,85,0],[26,93,0],[27,105,0],[28,255,4],[29,0,9],[30,0,7],[31,0,11],[32,169,5],[33,0,3],[34,0,3],[35,0,4]]],[-12.25,-12.25,-4,0,-11.06,-4,-11.06,-4,[[3,255,45],[4,255,7],[5,198,4],[9,235,45],[10,255,7],[11,198,4],[12,108,3],[13,142,5],[14,123,0],[15,113,0],[16,123,0],[17,133,0],[18,150,5],[19,140,5],[20,117,0],[21,91,0],[22,35,0],[23,78,0],[24,17,0],[25,85,0],[26,92,0],[27,117,0],[28,255,3],[29,0,10],[30,0,7],[31,0,3],[32,167,5],[33,0,4],[34,0,4],[35,0,4]]],[-12,-12,-4,0,-10.81,-4,-10.81,-4,[[3,0,32],[4,255,7],[5,203,4],[9,0,32],[10,255,7],[11,203,4],[12,111,3],[13,139,5],[14,129,0],[15,124,0],[16,122,0],[17,133,4],[18,149,5],[19,150,5],[20,115,0],[21,102,0],[22,42,0],[23,86,0],[24,25,0],[25,84,0],[26,103,0],[27,115,0],[28,255,4],[29,0,7],[30,0,7],[31,0,3],[32,180,5],[33,0,4],[34,0,4],[35,0,4]]],[-11.75,-11.75,-4,0,-10.56,-4,-10.56,-4,[[3,0,11],[4,255,7],[5,207,4],[9,0,11],[10,255,7],[11,207,4],[12,114,2],[13,151,5],[14,126,3],[15,122,0],[16,133,0],[17,140,5],[18,161,5],[19,158,5],[20,123,0],[21,98,0],[22,53,0],[23,85,0],[24,37,0],[25,94,0],[26,99,0],[27,119,0],[28,255,3],[29,0,8],[30,0,8],[31,0,3],[32,178,5],[33,0,4],[34,0,3],[35,0,5]]],[-11.5,-11.5,-4,0,-10.31,-4,-10.31,-4,[[4,255,17],[5,219,4],[10,255,17],[11,219,4],[12,113,2],[13,158,5],[14,134,5],[15,133,0],[16,132,1],[17,139,5],[18,156,5],[19,157,4],[20,122,0],[21,108,0],[22,59,0],[23,84,0],[24,49,0],[25,92,0],[26,98,0],[27,123,0],[28,255,3],[29,0,7],[30,0,7],[31,0,3],[32,187,5],[33,0,4],[34,0,4],[35,0,4]]],[-11.25,-11.25,-4,0,-10.06,-4,-10.06,-4,[[3,0,13],[4,255,17],[5,228,4],[9,0,13],[10,255,17],[11,228,4],[12,115,2],[13,156,4],[14,139,5],[15,139,5],[16,143,5],[17,151,4],[18,168,4],[19,169,5],[20,132,0],[21,108,0],[22,72,0],[23,93,0],[24,65,0],[25,92,0],[26,108,0],[27,122,0],[28,255,3],[29,0,7],[30,0,7],[31,0,3],[32,187,4],[33,0,3],[34,0,4],[35,0,5]]],[-11,-11,-4,0,-9.81,-4,-9.81,-4,[[3,0,12],[4,255,16],[5,241,4],[9,0,12],[10,255,16],[11,241,4],[12,117,2],[13,169,4],[14,150,4],[15,139,5],[16,139,4],[17,148,5],[18,179,4],[19,181,4],[20,131,5],[21,118,0],[22,77,0],[23,93,0],[24,75,0],[25,103,0],[26,107,0],[27,133,0],[28,255,3],[29,0,7],[30,0,7],[31,0,3],[32,198,4],[33,0,3],[34,0,3],[35,0,4]]],[-10.75,-10.75,-4,0,-9.56,-4,-9.56,-4,[[3,0,13],[4,255,14],[5,253,4],[9,0,13],[10,255,14],[11,253,4],[12,115,2],[13,179,5],[14,159,5],[15,151,5],[16,149,5],[17,161,5],[18,178,5],[19,181,5],[20,140,5],[21,115,0],[22,83,0],[23,101,0],[24,83,0],[25,98,0],[26,115,0],[27,132,0],[28,255,3],[29,0,7],[30,0,7],[31,0,3],[32,183,4],[33,0,4],[34,0,3],[35,0,4]]],[-10.5,-10.5,-4,0,-9.31,-4,-9.31,-4,[[3,0,13],[4,255,14],[5,255,3],[9,0,13],[10,255,14],[11,255,3],[12,117,2],[13,176,5],[14,156,4],[15,150,5],[16,148,4],[17,167,5],[18,188,4],[19,188,4],[20,149,5],[21,124,0],[22,96,0],[23,99,0],[24,97,0],[25,99,0],[26,115,0],[27,139,5],[28,255,3],[29,0,7],[30,0,8],[32,0,5],[33,0,4],[34,0,3],[35,0,4]]],[-10.25,-10.25,-4,0,-9.06,-4,-9.06,-4,[[3,0,14],[4,255,20],[5,255,3],[9,0,14],[10,255,20],[11,255,3],[12,116,2],[13,187,4],[14,169,4],[15,161,5],[16,160,5],[17,169,4],[18,198,4],[19,198,4],[20,148,5],[21,124,0],[22,100,0],[23,98,0],[24,98,0],[25,108,0],[26,113,0],[27,141,5],[28,255,2],[29,0,7],[30,0,9],[32,0,4],[33,0,3],[34,0,3],[35,0,4]]],[-10,-10,-4,0,-8.81,-4,-8.81,-4,[[3,0,16],[4,255,27],[5,255,3],[9,0,16],[10,255,27],[11,255,3],[12,114,2],[13,199,4],[14,179,5],[15,165,4],[16,168,4],[17,181,4],[18,198,4],[19,208,4],[20,160,5],[21,132,0],[22,113,0],[23,108,0],[24,107,0],[25,106,0],[26,124,0],[27,139,5],[28,255,8],[29,0,7],[30,0,10],[32,0,4],[33,0,4],[34,0,4],[35,0,4]]],[-9.75,-9.75,-4,0,-8.56,-4,-8.56,-4,[[3,0,29],[4,255,22],[5,255,3],[9,0,29],[10,255,22],[11,255,3],[12,113,2],[13,208,4],[14,177,5],[15,168,4],[16,168,4],[17,183,4],[18,207,4],[19,220,4],[20,168,5],[21,130,5],[22,114,0],[23,107,0],[24,107,0],[25,117,0],[26,123,0],[27,150,5],[28,255,11],[29,0,7],[30,0,10],[32,0,4],[33,0,3],[34,0,4],[35,0,4]]],[-9.5,-9.5,-4,0,-8.31,-4,-8.31,-4,[[3,0,34],[4,255,21],[5,255,3],[9,0,34],[10,255,21],[11,255,3],[12,106,2],[13,220,4],[14,186,4],[15,179,5],[16,180,4],[17,186,4],[18,220,4],[19,234,4],[20,167,5],[21,140,5],[22,124,0],[23,117,0],[24,109,0],[25,117,0],[26,131,0],[27,149,5],[28,255,10],[29,0,7],[30,0,10],[32,0,4],[33,0,4],[34,0,4],[35,0,5]]],[-9.25,-9.25,-4,0,-8.06,-4,-8.06,-4,[[3,0,12],[4,255,37],[5,255,3],[9,0,12],[10,255,37],[11,255,3],[12,103,1],[13,233,4],[14,199,4],[15,188,4],[16,186,4],[17,199,4],[18,229,4],[19,242,4],[20,179,4],[21,147,5],[22,122,0],[23,115,0],[24,117,0],[25,119,0],[26,134,0],[27,160,4],[28,255,11],[29,0,7],[30,0,11],[32,0,4],[33,0,4],[34,0,4],[35,0,4]]],[-9,-9,-4,0,-7.81,-4,-7.81,-4,[[4,255,36],[5,255,10],[10,255,36],[11,255,10],[12,93,2],[13,243,4],[14,208,4],[15,186,4],[16,187,4],[17,211,4],[18,228,4],[19,255,4],[20,187,4],[21,150,4],[22,133,0],[23,123,0],[24,113,0],[25,121,0],[26,132,5],[27,157,5],[28,255,10],[29,0,7],[30,0,11],[32,0,4],[33,0,3],[34,0,4],[35,0,5]]],[-8.75,-8.75,-4,0,-7.56,-4,-7.56,-4,[[4,255,39],[5,255,11],[10,255,39],[11,255,11],[12,89,1],[13,255,3],[14,220,4],[15,198,4],[16,198,4],[17,206,4],[18,241,4],[19,255,4],[20,200,4],[21,161,5],[22,131,5],[23,122,0],[24,123,0],[25,113,0],[26,140,5],[27,166,4],[28,0,10],[29,0,7],[30,0,11],[32,0,4],[33,0,4],[34,0,4],[35,0,5]]],[-8.5,-8.5,-4,0,-7.31,-4,-7.31,-4,[[4,255,47],[5,255,10],[10,255,47],[11,255,10],[12,80,1],[13,255,3],[14,232,4],[15,207,4],[16,209,4],[17,220,4],[18,255,4],[19,255,3],[20,211,4],[21,166,4],[22,139,5],[23,133,0],[24,122,0],[25,101,0],[26,139,5],[27,169,5],[28,0,9],[29,0,7],[30,0,11],[32,0,3],[33,0,3],[34,0,4],[35,0,5]]],[-8.25,-8.25,-4,0,-7.06,-4,-7.06,-4,[[4,255,55],[5,255,10],[10,255,55],[11,255,10],[12,71,1],[13,255,3],[14,239,4],[15,221,4],[16,219,4],[17,232,4],[18,255,3],[19,255,3],[20,218,4],[21,168,5],[22,151,4],[23,132,4],[24,133,0],[25,71,2],[26,150,4],[27,167,5],[28,0,10],[29,0,7],[30,0,3],[32,0,4],[33,0,4],[34,0,4],[35,0,5]]],[-8,-8,-4,0,-6.81,-4,-6.81,-4,[[4,255,63],[5,255,7],[10,255,63],[11,255,7],[12,57,2],[13,255,3],[14,252,3],[15,232,4],[16,223,4],[17,242,3],[18,255,4],[19,255,3],[20,230,4],[21,178,5],[22,149,5],[23,140,5],[24,131,5],[25,38,2],[26,150,5],[27,180,5],[28,0,7],[29,0,7],[30,0,3],[32,0,4],[33,0,4],[34,0,4],[35,0,5]]],[-7.75,-7.75,-4,0,-6.56,-4,-6.56,-4,[[4,255,51],[5,255,7],[10,255,51],[11,255,7],[12,54,3],[13,255,3],[14,255,4],[15,242,4],[16,228,4],[17,252,4],[18,255,3],[19,255,3],[20,240,3],[21,188,4],[22,161,4],[23,138,4],[24,139,5],[25,52,1],[26,161,5],[27,178,5],[28,0,8],[29,0,8],[30,0,3],[32,0,4],[33,0,3],[34,0,5],[35,0,4]]],[-7.5,-7.5,-4,0,-6.31,-4,-6.31,-4,[[4,255,45],[5,255,7],[10,255,45],[11,255,7],[12,69,3],[13,255,3],[14,255,4],[15,253,4],[16,242,4],[17,254,3],[18,255,3],[19,255,3],[20,254,4],[21,201,4],[22,165,5],[23,149,4],[24,138,5],[25,99,3],[26,157,5],[27,187,5],[28,0,7],[29,0,7],[30,0,3],[32,0,4],[33,0,4],[34,0,4]]],[-7.25,-7.25,-4,0,-6.06,-4,-6.06,-4,[[4,0,32],[5,255,6],[10,0,32],[11,255,6],[12,105,4],[13,255,3],[14,255,4],[15,255,3],[16,255,4],[17,255,3],[18,255,3],[19,255,11],[20,255,4],[21,207,5],[22,167,4],[23,157,5],[24,149,5],[25,132,4],[26,167,4],[27,187,4],[28,0,7],[29,0,7],[30,0,3],[32,0,3],[33,0,4],[34,0,5]]],[-7,-7,-4,0,-5.81,-4,-5.81,-4,[[4,0,14],[5,255,6],[10,0,14],[11,255,6],[12,146,2],[13,255,3],[14,255,3],[15,255,4],[16,255,3],[17,255,3],[18,255,3],[19,255,11],[20,255,4],[21,206,4],[22,171,5],[23,157,5],[24,150,5],[25,159,4],[26,168,5],[27,198,4],[28,0,7],[29,0,7],[30,0,3],[32,0,3],[33,0,3],[34,0,4]]],[-6.75,-6.75,-4,0,-5.56,-4,-5.56,-4,[[5,255,16],[11,255,16],[12,194,2],[13,255,12],[14,255,4],[15,255,4],[16,255,4],[17,255,3],[18,255,3],[19,255,10],[20,255,3],[21,219,4],[22,154,4],[23,167,4],[24,161,5],[25,157,4],[26,175,4],[27,183,4],[28,0,7],[29,0,7],[30,0,3],[32,0,4],[33,0,3],[34,0,4]]],[-6.5,-6.5,-4,0,-5.31,-4,-5.31,-4,[[4,0,14],[5,255,16],[10,0,14],[11,255,16],[12,255,4],[13,255,11],[14,255,3],[15,255,3],[16,255,3],[17,255,3],[18,255,3],[19,255,9],[20,255,3],[21,228,4],[22,132,4],[23,167,5],[24,167,5],[25,167,4],[26,179,4],[27,0,5],[28,0,7],[29,0,8],[32,0,4],[33,0,3],[34,0,4]]],[-6.25,-6.25,-4,0,-5.06,-4,-5.06,-4,[[4,0,13],[5,255,16],[10,0,13],[11,255,16],[12,255,3],[13,255,10],[14,255,3],[15,255,4],[16,255,3],[17,255,4],[18,255,2],[19,255,7],[20,255,3],[21,241,4],[22,113,5],[23,155,4],[24,167,4],[25,167,4],[26,171,4],[27,0,4],[28,0,7],[29,0,9],[32,0,3],[33,0,3],[34,0,4]]],[-6,-6,-4,0,-4.81,-4,-4.81,-4,[[4,0,12],[5,255,15],[10,0,12],[11,255,15],[12,255,5],[13,255,10],[14,255,11],[15,255,3],[16,255,3],[17,255,3],[18,255,8],[19,255,8],[20,255,3],[21,255,4],[22,116,4],[23,127,3],[24,179,5],[25,180,4],[26,117,3],[27,0,4],[28,0,7],[29,0,10],[32,0,4],[33,0,4],[34,0,4]]],[-5.75,-5.75,-4,0,-4.56,-4,-4.56,-4,[[4,0,13],[5,255,15],[10,0,13],[11,255,15],[12,255,6],[13,255,7],[14,255,11],[15,255,3],[16,255,3],[17,255,3],[18,255,11],[19,255,7],[20,255,6],[21,255,3],[22,138,4],[23,90,2],[24,177,4],[25,178,5],[26,65,1],[27,0,4],[28,0,7],[29,0,10],[32,0,3],[33,0,4],[34,0,4]]],[-5.5,-5.5,-4,0,-4.31,-4,-4.31,-4,[[4,0,14],[5,255,13],[10,0,14],[11,255,13],[12,255,13],[13,255,8],[14,255,10],[15,255,3],[16,255,3],[17,255,3],[18,255,10],[19,255,6],[20,255,11],[21,255,3],[22,189,3],[23,77,3],[24,186,4],[25,188,4],[26,144,4],[27,0,4],[28,0,7],[29,0,10],[32,0,4],[33,0,4],[34,0,5]]],[-5.25,-5.25,-4,0,-4.06,-4,-4.06,-4,[[4,0,16],[5,255,27],[10,0,16],[11,255,27],[12,255,13],[13,255,6],[14,255,10],[15,255,11],[16,255,3],[17,255,8],[18,255,11],[19,255,6],[20,255,10],[21,255,3],[22,237,3],[23,118,2],[24,200,4],[25,194,4],[26,194,4],[27,0,4],[28,0,7],[29,0,11],[32,0,4],[33,0,4],[34,0,4]]],[-5,-5,-4,0,-3.81,-4,-3.81,-4,[[4,0,29],[5,255,22],[10,0,29],[11,255,22],[12,255,16],[13,255,7],[14,255,9],[15,255,10],[16,255,11],[17,255,11],[18,255,10],[19,255,10],[20,255,10],[21,255,4],[22,255,4],[23,180,4],[24,203,4],[25,199,5],[26,208,4],[27,0,4],[28,0,7],[29,0,11],[32,0,3],[33,0,4],[34,0,5]]],[-4.75,-4.75,-4,0,-3.56,-4,-3.56,-4,[[4,0,32],[5,255,21],[10,0,32],[11,255,21],[12,255,16],[13,255,6],[14,255,7],[15,255,10],[16,255,11],[17,255,11],[18,0,10],[19,255,18],[20,255,8],[21,255,3],[22,255,4],[23,227,4],[24,208,4],[25,211,4],[26,206,4],[27,0,4],[28,0,7],[29,0,11],[32,0,4],[33,0,4],[34,0,5]]],[-4.5,-4.5,-4,0,-3.31,-4,-3.31,-4,[[4,0,27],[5,255,37],[10,0,27],[11,255,37],[12,255,14],[13,255,8],[14,255,7],[15,255,10],[16,255,11],[17,255,10],[18,0,9],[19,255,17],[20,255,7],[21,255,3],[22,255,3],[23,243,3],[24,220,4],[25,206,5],[26,10,4],[27,0,3],[28,0,7],[29,0,11],[32,0,3],[33,0,4],[34,0,5]]],[-4.25,-4.25,-4,0,-3.06,-4,-3.06,-4,[[5,255,36],[11,255,36],[12,255,25],[13,255,11],[14,255,7],[15,255,10],[16,255,10],[17,255,10],[18,0,10],[19,255,15],[20,255,7],[21,255,10],[22,255,3],[23,255,4],[24,231,3],[25,221,4],[26,0,4],[27,0,4],[28,0,7],[29,0,3],[32,0,4],[33,0,4],[34,0,5]]],[-4,-4,-4,0,-2.81,-4,-2.81,-4,[[5,255,32],[11,255,32],[12,255,26],[13,255,13],[14,255,6],[15,255,7],[16,255,10],[17,255,10],[18,0,7],[19,255,15],[20,255,6],[21,255,11],[22,255,3],[23,255,4],[24,200,4],[25,223,4],[26,0,4],[27,0,4],[28,0,7],[29,0,3],[32,0,4],[33,0,4],[34,0,5]]],[-3.75,-3.75,-4,0,-2.56,-4,-2.56,-4,[[5,255,46],[11,255,46],[12,255,22],[13,255,16],[14,255,7],[15,255,7],[16,255,10],[17,255,9],[18,0,8],[19,255,14],[20,255,7],[21,255,10],[22,255,3],[23,255,4],[24,131,4],[25,231,4],[26,0,4],[27,0,4],[28,0,8],[29,0,3],[32,0,3],[33,0,5],[34,0,4]]],[-3.5,-3.5,-4,0,-2.31,-4,-2.31,-4,[[5,255,44],[11,255,44],[12,255,21],[13,255,16],[14,255,6],[15,255,7],[16,255,8],[17,0,8],[18,0,7],[19,255,27],[20,255,6],[21,255,9],[22,255,2],[23,255,4],[24,111,4],[25,240,4],[26,0,4],[27,0,4],[28,0,7],[29,0,3],[32,0,4],[33,0,4]]],[-3.25,-3.25,-4,0,-2.06,-4,-2.06,-4,[[5,255,63],[11,255,63],[12,255,37],[13,255,14],[14,255,17],[15,255,7],[16,255,7],[17,0,8],[18,0,7],[19,255,22],[20,255,16],[21,255,7],[22,255,10],[23,255,3],[24,216,4],[25,241,4],[26,0,4],[27,0,3],[28,0,7],[29,0,3],[32,0,4],[33,0,5]]],[-3,-3,-4,0,-1.81,-4,-1.81,-4,[[5,255,53],[11,255,53],[12,255,36],[13,255,22],[14,255,17],[15,255,7],[16,255,8],[17,0,7],[18,0,7],[19,255,21],[20,255,17],[21,255,7],[22,255,11],[23,255,3],[24,255,3],[25,251,4],[26,0,4],[27,0,3],[28,0,7],[29,0,3],[32,0,3],[33,0,4]]],[-2.75,-2.75,-4,0,-1.56,-4,-1.56,-4,[[5,255,48],[11,255,48],[12,255,32],[13,255,21],[14,255,16],[15,255,6],[16,255,7],[17,0,8],[18,0,7],[19,255,37],[20,255,16],[21,255,7],[22,255,11],[23,255,3],[24,255,4],[25,175,3],[26,0,4],[27,0,4],[28,0,7],[29,0,3],[32,0,3],[33,0,4]]],[-2.5,-2.5,-4,0,-1.31,-4,-1.31,-4,[[5,0,34],[11,0,34],[12,255,47],[13,255,14],[14,255,16],[15,255,6],[16,255,7],[17,0,7],[18,0,7],[19,255,36],[20,255,14],[21,255,7],[22,255,10],[23,255,3],[24,255,3],[25,105,4],[26,0,3],[27,0,4],[28,0,8],[32,0,3],[33,0,4]]],[-2.25,-2.25,-4,0,-1.06,-4,-1.06,-4,[[5,0,20],[11,0,20],[12,255,45],[13,255,11],[14,255,15],[15,255,16],[16,0,7],[17,0,7],[18,0,7],[19,255,32],[20,255,14],[21,255,6],[22,255,9],[23,255,3],[24,255,3],[25,0,3],[26,0,3],[27,0,3],[28,0,9],[32,0,3],[33,0,4]]],[-2,-2,-4,0,-0.81,-4,-0.81,-4,[[5,0,10],[11,0,10],[12,255,65],[13,255,21],[14,255,14],[15,255,17],[16,0,7],[17,0,7],[18,0,7],[19,255,47],[20,255,27],[21,255,17],[22,255,7],[23,255,10],[24,255,3],[25,0,4],[26,0,4],[27,0,4],[28,0,10],[32,0,4],[33,0,4]]],[-1.75,-1.75,-4,0,-0.56,-4,-0.56,-4,[[5,0,7],[11,0,7],[12,255,53],[13,255,35],[14,255,13],[15,255,17],[16,0,6],[17,0,7],[18,0,7],[19,255,57],[20,255,23],[21,255,16],[22,255,7],[23,255,10],[24,255,3],[25,0,4],[26,0,4],[27,0,3],[28,0,10],[32,0,4],[33,0,4]]],[-1.5,-1.5,-4,0,-0.31,-4,-0.31,-4,[[5,0,13],[11,0,13],[12,0,49],[13,255,34],[14,255,27],[15,255,17],[16,0,6],[17,0,7],[18,0,7],[19,255,61],[20,255,20],[21,255,16],[22,255,7],[23,255,10],[24,255,3],[25,0,4],[26,0,3],[27,0,4],[28,0,10],[32,0,4],[33,0,5]]],[-1.25,-1.25,-4,0,-0.06,-4,-0.06,-4,[[5,0,13],[11,0,13],[12,0,24],[13,235,32],[14,255,23],[15,0,16],[16,0,6],[17,0,7],[18,0,7],[19,255,49],[20,255,39],[21,255,15],[22,255,6],[23,255,10],[24,255,3],[25,0,3],[26,0,4],[27,0,4],[28,0,11],[32,0,4],[33,0,4]]],[-1,-1,-4,0,0.19,-4,0.19,-4,[[5,0,12],[11,0,12],[12,0,14],[13,76,47],[14,227,22],[15,0,16],[16,0,7],[17,0,6],[18,0,7],[19,255,43],[20,255,35],[21,255,14],[22,255,7],[23,255,10],[24,255,2],[25,0,3],[26,0,3],[27,0,3],[28,0,11],[32,0,4],[33,0,5]]],[-0.75,-0.75,-4,0,0.44,-4,0.44,-4,[[5,0,13],[11,0,13],[12,0,23],[13,0,45],[14,85,19],[15,0,15],[16,0,15],[17,0,6],[18,0,7],[19,255,30],[20,255,48],[21,255,24],[22,255,6],[23,255,8],[24,255,11],[25,0,3],[26,0,4],[27,0,4],[28,0,11],[32,0,4],[33,0,5]]],[-0.5,-0.5,-4,0,0.69,-4,0.69,-4,[[5,0,15],[11,0,15],[12,0,30],[13,0,43],[14,0,13],[15,0,15],[16,0,16],[17,0,7],[18,0,7],[19,83,16],[20,255,45],[21,255,23],[22,255,16],[23,255,7],[24,255,10],[25,0,4],[26,0,3],[27,0,3],[28,0,11],[32,0,4],[33,0,5]]],[-0.25,-0.25,-4,0,0.94,-4,0.94,-4,[[5,0,28],[11,0,28],[12,0,27],[13,0,43],[14,0,15],[15,0,15],[16,0,18],[17,0,6],[18,0,7],[19,0,13],[20,255,66],[21,255,22],[22,255,16],[23,255,7],[24,48,10],[25,0,3],[26,0,3],[27,0,4],[28,0,3],[32,0,4],[33,0,5]]],[0,0,-4,0,1.19,-4,1.19,-4,[[5,0,32],[11,0,32],[12,0,26],[13,0,64],[14,0,33],[15,0,14],[16,0,16],[17,0,7],[18,0,7],[20,255,51],[21,255,21],[22,255,16],[23,255,7],[24,0,10],[25,0,3],[26,0,4],[27,0,4],[28,0,3],[32,0,4],[33,0,5]]],[0.25,0.25,-3.99,0.0625,1.44,-3.92,1.44,-3.92,[[5,0,43],[11,0,12],[12,0,26],[13,0,60],[14,0,36],[15,0,13],[16,0,17],[17,0,6],[18,0,7],[20,255,45],[21,255,37],[22,255,14],[23,255,7],[24,255,10],[25,0,3],[26,0,3],[27,0,4],[28,0,2],[32,0,4],[33,0,5]]],[0.5,0.5,-3.97,0.125,1.68,-3.82,1.68,-3.82,[[5,0,30],[12,0,16],[13,0,50],[14,0,34],[15,0,28],[16,0,17],[17,0,6],[18,0,7],[20,255,31],[21,255,33],[22,255,14],[23,255,7],[24,255,10],[25,0,3],[26,0,3],[27,0,4],[28,0,3],[32,0,5],[33,0,4]]],[0.75,0.75,-3.93,0.1875,1.92,-3.71,1.92,-3.71,[[5,0,2],[12,0,15],[13,0,46],[14,0,33],[15,0,27],[16,0,16],[17,0,7],[18,0,7],[20,255,16],[21,255,47],[22,255,27],[23,255,6],[24,255,8],[25,0,8],[26,0,4],[27,0,3],[28,0,3],[32,0,4]]],[1,0.99,-3.88,0.25,2.14,-3.58,2.14,-3.58,[[12,0,16],[13,0,44],[14,0,48],[15,0,19],[16,0,16],[17,0,6],[18,0,6],[19,0,14],[20,172,13],[21,255,42],[22,255,24],[23,255,17],[24,255,7],[25,0,11],[26,0,3],[27,0,3],[28,0,3],[29,0,4],[32,0,4]]],[1.25,1.23,-3.81,0.3125,2.36,-3.44,2.36,-3.44,[[12,0,28],[13,0,32],[14,0,45],[15,0,13],[16,0,16],[17,0,6],[18,0,7],[19,0,30],[21,255,62],[22,255,21],[23,255,17],[24,255,7],[25,0,11],[26,0,4],[27,0,4],[28,0,3],[29,0,4],[32,0,4]]],[1.5,1.47,-3.72,0.375,2.57,-3.29,2.57,-3.29,[[12,0,29],[13,0,30],[14,0,43],[15,0,14],[16,0,16],[17,0,17],[18,0,6],[19,0,42],[21,255,49],[22,255,34],[23,255,15],[24,255,7],[25,0,10],[26,0,3],[27,0,3],[28,0,3],[29,0,5],[32,0,4]]],[1.75,1.69,-3.62,0.4375,2.77,-3.12,2.77,-3.12,[[12,0,32],[13,0,28],[14,0,64],[15,0,30],[16,0,14],[17,0,16],[18,0,7],[21,255,43],[22,255,35],[23,255,15],[24,255,7],[25,255,10],[26,0,3],[27,0,3],[28,0,3],[29,0,5],[32,0,4]]],[2,1.92,-3.51,0.5,2.96,-2.94,2.96,-2.94,[[12,0,42],[13,0,26],[14,0,61],[15,0,36],[16,0,14],[17,0,17],[18,0,6],[21,255,29],[22,255,31],[23,255,14],[24,255,7],[25,255,9],[26,0,3],[27,0,4],[28,0,3],[29,0,5],[32,0,4]]],[2.25,2.13,-3.38,0.5625,3.14,-2.75,3.14,-2.75,[[12,0,36],[13,0,16],[14,0,51],[15,0,35],[16,0,26],[17,0,17],[18,0,6],[20,0,13],[21,255,14],[22,255,45],[23,255,27],[24,255,17],[25,255,8],[26,0,11],[27,0,3],[28,0,3],[29,0,5],[32,0,4]]],[2.5,2.34,-3.24,0.625,3.31,-2.55,3.31,-2.55,[[12,0,3],[13,0,15],[14,0,46],[15,0,33],[16,0,27],[17,0,16],[18,0,7],[20,0,15],[21,2,0],[22,255,64],[23,255,22],[24,255,16],[25,255,7],[26,0,10],[27,0,3],[28,0,3],[29,0,4],[32,0,4]]],[2.75,2.54,-3.09,0.6875,3.46,-2.34,3.46,-2.34,[[13,0,16],[14,0,42],[15,0,51],[16,0,18],[17,0,16],[18,0,7],[20,0,30],[22,255,51],[23,255,21],[24,255,16],[25,255,7],[26,0,10],[27,0,3],[28,0,3],[29,0,4],[32,0,5]]],[3,2.73,-2.93,0.75,3.6,-2.11,3.6,-2.11,[[13,0,27],[14,0,33],[15,0,46],[16,0,13],[17,0,15],[18,0,6],[20,0,29],[22,255,47],[23,255,38],[24,255,15],[25,255,7],[26,114,10],[27,0,3],[28,0,3],[29,0,4],[32,0,4]]],[3.25,2.9,-2.75,0.8125,3.72,-1.89,3.72,-1.89,[[0,0,1],[1,0,1],[13,0,28],[14,0,30],[15,0,44],[16,0,13],[17,0,15],[18,0,16],[22,255,32],[23,255,34],[24,255,14],[25,255,7],[26,255,10],[27,0,3],[28,0,3],[29,0,5],[32,0,4]]],[3.5,3.07,-2.56,0.875,3.83,-1.65,3.83,-1.65,[[0,0,1],[1,0,1],[3,0,2],[13,0,30],[14,0,28],[15,0,64],[16,0,20],[17,0,15],[18,0,16],[22,255,27],[23,255,53],[24,255,24],[25,255,6],[26,255,7],[27,0,5],[28,0,3],[29,0,5],[32,0,4]]],[3.75,3.22,-2.37,0.9375,3.93,-1.41,3.93,-1.41,[[0,0,1],[1,0,1],[4,0,3],[6,0,1],[13,0,34],[14,0,28],[15,0,61],[16,0,37],[17,0,14],[18,0,17],[21,0,14],[22,254,13],[23,255,42],[24,255,23],[25,255,18],[26,255,7],[27,0,10],[28,0,3],[29,0,5],[32,0,4]]],[4,3.37,-2.16,1,4.01,-1.16,4.01,-1.16,[[0,0,1],[1,0,1],[4,0,3],[6,0,2],[13,0,41],[14,0,16],[15,0,51],[16,0,35],[17,0,26],[18,0,17],[21,0,28],[23,255,63],[24,255,22],[25,255,16],[26,255,8],[27,0,11],[28,0,3],[29,0,5],[32,0,4]]],[4.25,3.49,-1.95,1.0625,4.07,-0.91,4.07,-0.91,[[0,0,1],[1,0,1],[4,0,4],[6,0,1],[13,0,7],[14,0,16],[15,0,48],[16,0,33],[17,0,27],[18,0,16],[21,0,32],[23,255,50],[24,255,20],[25,255,15],[26,255,7],[27,0,11],[28,0,3],[29,0,5],[32,0,4]]],[4.5,3.61,-1.72,1.125,4.12,-0.65,4.12,-0.65,[[0,0,2],[1,0,1],[4,0,3],[6,0,1],[14,0,15],[15,0,45],[16,0,49],[17,0,20],[18,0,16],[23,255,43],[24,255,36],[25,255,15],[26,255,7],[27,255,10],[28,0,3],[29,0,5],[32,0,3]]],[4.75,3.71,-1.5,1.1875,4.16,-0.39,4.16,-0.39,[[0,0,1],[1,0,1],[4,0,3],[6,0,1],[14,0,26],[15,0,34],[16,0,45],[17,0,15],[18,0,15],[23,255,30],[24,255,33],[25,255,13],[26,255,7],[27,255,9],[28,0,3],[29,0,5],[32,0,4]]],[5,3.8,-1.26,1.25,4.17,-0.13,4.17,-0.13,[[0,0,1],[1,0,1],[4,0,3],[6,0,1],[7,0,1],[14,0,28],[15,0,31],[16,0,43],[17,0,13],[18,0,15],[22,0,12],[23,255,15],[24,255,45],[25,255,27],[26,255,15],[27,255,8],[28,0,3],[29,0,5],[32,0,3],[33,0,4]]],[5.25,3.87,-1.02,1.3125,4.17,0.13,4.17,0.13,[[0,0,1],[1,0,1],[4,0,4],[6,0,2],[7,0,1],[14,0,32],[15,0,28],[16,0,64],[17,0,20],[18,0,14],[22,0,15],[23,75,12],[24,255,61],[25,255,22],[26,255,17],[27,255,7],[28,0,3],[29,0,5],[32,0,4],[33,0,5]]],[5.5,3.92,-0.78,1.375,4.16,0.39,4.16,0.39,[[0,0,1],[1,0,1],[4,0,4],[5,0,1],[6,0,1],[7,0,1],[10,0,4],[14,0,34],[15,0,26],[16,0,62],[17,0,38],[18,0,14],[22,0,30],[24,255,61],[25,255,21],[26,255,17],[27,255,7],[28,0,3],[29,0,5],[32,0,4],[33,0,5]]],[5.75,3.96,-0.53,1.4375,4.12,0.65,4.12,0.65,[[0,0,1],[1,0,1],[4,0,4],[5,0,9],[6,0,1],[7,0,1],[10,0,5],[14,0,44],[15,0,15],[16,0,53],[17,0,36],[18,0,21],[22,0,41],[24,255,48],[25,255,39],[26,255,16],[27,255,7],[28,0,3],[29,0,5],[32,0,3],[33,0,5]]],[6,3.99,-0.28,1.5,4.07,0.91,4.07,0.91,[[0,0,1],[1,0,1],[4,0,4],[5,0,16],[6,0,2],[7,0,1],[10,0,4],[14,0,12],[15,0,16],[16,0,48],[17,0,33],[18,0,27],[24,255,32],[25,255,36],[26,255,14],[27,255,7],[28,0,2],[29,0,4],[32,0,3],[33,0,5]]],[6.25,4,-0.03,1.5625,4.01,1.16,4.01,1.16,[[0,0,1],[1,0,1],[4,0,3],[5,0,17],[6,0,1],[7,0,1],[10,0,4],[15,0,15],[16,0,45],[17,0,45],[18,0,21],[24,255,28],[25,255,48],[26,255,13],[27,255,7],[28,0,3],[29,0,4],[32,0,3],[33,0,5]]],[6.5,3.99,0.22,1.625,3.93,1.41,3.93,1.41,[[0,0,1],[1,0,1],[4,0,3],[5,0,17],[6,0,1],[7,0,1],[10,0,4],[15,0,26],[16,0,34],[17,0,47],[18,0,15],[23,0,13],[24,255,14],[25,255,44],[26,255,26],[27,255,18],[28,0,11],[29,0,4],[32,255,3],[33,0,5]]],[6.75,3.97,0.47,1.6875,3.83,1.65,3.83,1.65,[[0,0,1],[1,0,1],[4,0,3],[5,0,17],[6,0,2],[7,0,1],[10,0,4],[15,0,28],[16,0,30],[17,0,44],[18,0,11],[23,0,28],[25,255,65],[26,255,22],[27,255,16],[28,0,10],[29,0,5],[32,255,3],[33,0,4]]],[7,3.94,0.71,1.75,3.72,1.89,3.72,1.89,[[0,0,1],[1,0,1],[4,0,3],[5,0,17],[6,0,1],[7,0,1],[10,0,4],[15,0,30],[16,0,28],[17,0,63],[18,0,16],[23,0,32],[25,255,51],[26,255,20],[27,255,16],[28,0,11],[29,0,4],[32,255,3],[33,0,5]]],[7.25,3.88,0.96,1.8125,3.6,2.11,3.6,2.11,[[0,0,1],[1,0,1],[4,0,4],[5,0,7],[6,0,1],[7,0,1],[10,0,4],[15,0,32],[16,0,28],[17,0,64],[18,0,37],[23,0,5],[25,255,46],[26,255,36],[27,255,14],[28,0,10],[29,0,4],[32,255,3],[33,125,4]]],[7.5,3.82,1.2,1.875,3.46,2.33,3.46,2.33,[[0,0,1],[1,0,1],[4,0,4],[5,0,7],[6,0,2],[7,0,1],[10,0,4],[12,0,7],[15,0,42],[16,0,16],[17,0,52],[18,0,37],[25,255,30],[26,255,34],[27,255,14],[28,0,10],[29,0,3],[32,255,6],[33,167,4]]],[7.75,3.73,1.43,1.9375,3.31,2.55,3.31,2.55,[[0,0,1],[1,0,1],[4,0,4],[5,0,6],[6,0,1],[7,0,1],[10,0,5],[12,0,15],[15,0,19],[16,0,16],[17,0,48],[18,0,33],[25,255,15],[26,255,48],[27,255,27],[28,0,10],[29,0,3],[32,255,11],[33,180,4],[34,102,0],[35,2,0]]],[8,3.64,1.66,2,3.14,2.75,3.14,2.75,[[0,0,1],[1,0,1],[4,0,4],[5,0,6],[6,0,2],[7,0,1],[10,0,4],[11,0,3],[12,0,17],[16,0,16],[17,0,45],[18,0,31],[24,0,14],[25,133,13],[26,255,42],[27,255,24],[28,0,8],[29,0,4],[32,255,10],[33,185,4],[34,98,0],[35,67,0]]],[8.25,3.53,1.89,2.0625,2.96,2.94,2.96,2.94,[[0,0,1],[1,0,1],[4,0,3],[5,0,7],[6,0,1],[7,0,1],[10,0,5],[11,0,4],[12,0,17],[16,0,26],[17,0,42],[18,0,47],[24,0,29],[26,255,61],[27,255,20],[28,0,7],[29,0,4],[32,255,10],[33,187,4],[34,108,0],[35,67,0]]],[8.5,3.4,2.11,2.125,2.77,3.12,2.77,3.12,[[0,0,2],[1,0,1],[4,0,3],[5,0,7],[6,0,2],[7,0,1],[10,0,4],[11,0,3],[12,0,16],[16,0,28],[17,0,32],[18,0,45],[24,0,43],[26,255,51],[27,255,35],[28,0,7],[29,0,4],[31,18,0],[32,255,10],[33,199,4],[34,107,0],[35,67,0]]],[8.75,3.26,2.31,2.1875,2.57,3.29,2.57,3.29,[[0,0,1],[1,0,1],[4,0,3],[5,0,6],[6,0,1],[7,0,1],[10,0,4],[11,0,4],[12,0,17],[16,0,30],[17,0,28],[18,0,60],[26,255,42],[27,255,35],[28,0,7],[29,218,4],[30,117,0],[31,70,0],[32,255,7],[33,208,4],[34,106,0],[35,64,0]]],[9,3.11,2.51,2.25,2.36,3.44,2.36,3.44,[[0,0,1],[3,0,5],[4,0,3],[5,0,7],[6,0,1],[7,0,1],[10,0,5],[11,0,4],[12,0,6],[16,0,32],[17,0,28],[18,0,64],[26,255,30],[27,255,42],[28,255,6],[29,220,4],[30,115,0],[31,73,0],[32,255,7],[33,220,4],[34,117,0],[35,71,0]]],[9.25,2.95,2.7,2.3125,2.14,3.58,2.14,3.58,[[0,0,1],[1,0,1],[3,0,5],[4,0,4],[5,0,7],[6,0,1],[7,0,1],[10,0,4],[11,0,3],[12,0,7],[13,0,5],[16,0,43],[17,0,16],[18,0,54],[25,0,13],[26,255,14],[27,255,46],[28,255,6],[29,230,4],[30,120,0],[31,71,0],[32,255,7],[33,231,4],[34,112,0],[35,73,0]]],[9.5,2.77,2.88,2.375,1.92,3.71,1.92,3.71,[[0,36,1],[3,0,5],[4,0,4],[5,0,7],[6,0,1],[10,0,5],[11,0,3],[12,0,7],[13,0,14],[16,0,26],[17,0,15],[18,0,49],[19,0,4],[25,0,16],[27,255,65],[28,255,6],[29,242,4],[30,122,0],[31,71,0],[32,255,6],[33,242,4],[34,123,0],[35,71,0]]],[9.75,2.59,3.05,2.4375,1.68,3.82,1.68,3.82,[[0,35,1],[1,50,1],[3,0,5],[4,0,3],[5,0,7],[6,0,1],[7,0,1],[10,0,4],[11,0,4],[12,0,6],[13,0,16],[16,0,1],[17,0,16],[18,0,48],[19,0,3],[25,0,30],[27,255,52],[28,255,6],[29,255,4],[30,127,0],[31,80,0],[32,255,6],[33,255,4],[34,122,0],[35,78,0]]],[10,2.39,3.2,2.5,1.44,3.92,1.44,3.92,[[0,34,1],[1,49,1],[2,83,0],[3,0,5],[4,0,3],[5,0,7],[6,30,1],[10,0,4],[11,0,4],[12,0,6],[13,0,17],[17,0,26],[18,0,42],[19,0,3],[25,0,21],[27,255,46],[28,255,17],[29,255,4],[30,132,0],[31,79,0],[32,255,18],[33,255,4],[34,132,0],[35,80,0]]],[10.25,2.19,3.35,2.5625,1.19,4,1.19,4,[[0,35,1],[1,56,0],[2,85,0],[3,0,5],[4,0,4],[5,0,7],[6,33,1],[7,51,1],[10,0,4],[11,0,3],[12,0,7],[13,0,16],[17,0,27],[18,0,31],[19,0,4],[27,255,32],[28,255,17],[29,255,3],[30,141,5],[31,80,0],[32,255,17],[33,255,4],[34,142,4],[35,79,0]]],[10.5,1.98,3.48,2.625,0.94,4.07,0.94,4.07,[[0,36,1],[1,56,0],[2,85,0],[3,0,4],[4,0,3],[5,0,7],[6,36,1],[7,50,1],[10,0,4],[11,0,3],[12,0,6],[13,0,17],[17,0,29],[18,0,30],[19,0,3],[27,255,26],[28,255,16],[29,255,3],[30,138,4],[31,85,0],[32,255,16],[33,255,4],[34,139,5],[35,86,0]]],[10.75,1.75,3.59,2.6875,0.68,4.12,0.68,4.12,[[0,34,1],[1,54,0],[2,84,0],[3,156,5],[4,0,3],[5,0,7],[6,35,2],[7,50,1],[8,47,0],[10,0,4],[11,0,4],[12,0,7],[13,0,6],[17,0,32],[18,0,26],[19,0,3],[20,0,3],[26,0,14],[27,225,13],[28,255,15],[29,255,3],[30,151,4],[31,85,0],[32,255,15],[33,255,3],[34,150,5],[35,84,0]]],[11,1.53,3.7,2.75,0.43,4.15,0.43,4.15,[[0,39,1],[1,54,0],[2,93,0],[3,167,5],[4,0,3],[5,0,7],[6,34,1],[7,49,1],[8,75,0],[10,0,5],[11,0,4],[12,0,6],[13,0,6],[14,0,3],[17,0,43],[18,0,26],[19,0,4],[20,0,3],[26,0,28],[28,255,14],[29,255,3],[30,149,5],[31,85,0],[32,255,14],[33,255,3],[34,157,5],[35,84,0]]],[11.25,1.29,3.79,2.8125,0.17,4.17,0.17,4.17,[[0,41,1],[1,53,0],[2,93,0],[3,172,5],[4,0,3],[5,0,7],[6,35,1],[7,49,1],[8,79,0],[10,0,4],[11,0,4],[12,0,7],[13,0,7],[14,0,13],[17,0,33],[18,0,15],[19,0,4],[20,0,3],[26,0,34],[28,255,26],[29,255,3],[30,157,4],[31,94,0],[32,255,28],[33,255,3],[34,156,5],[35,93,0]]],[11.5,1.05,3.86,2.875,-0.1,4.17,-0.1,4.17,[[0,40,1],[1,61,0],[2,99,0],[3,179,4],[4,0,2],[5,0,8],[6,35,1],[7,55,0],[8,78,0],[10,0,4],[11,0,4],[12,0,7],[13,0,6],[14,0,16],[17,0,2],[18,0,16],[19,0,3],[20,0,4],[28,255,23],[29,255,9],[30,168,4],[31,92,0],[32,255,22],[33,255,11],[34,170,4],[35,92,0]]],[11.75,0.81,3.92,2.9375,-0.36,4.16,-0.36,4.16,[[0,40,1],[1,61,0],[2,100,0],[3,188,4],[4,0,11],[5,0,7],[6,34,1],[7,57,0],[8,86,0],[9,132,5],[10,0,4],[11,0,3],[12,0,7],[13,0,6],[14,0,17],[18,0,15],[19,0,3],[20,0,3],[28,255,22],[29,255,10],[30,178,5],[31,101,0],[32,255,22],[33,255,10],[34,178,4],[35,103,0]]],[12,0.56,3.96,3,-0.62,4.13,-0.62,4.13,[[0,39,1],[1,60,0],[2,98,0],[3,198,4],[4,0,11],[5,0,7],[6,39,1],[7,54,0],[8,85,0],[9,140,4],[10,0,4],[11,0,3],[12,0,7],[13,0,7],[14,0,16],[18,0,28],[19,0,4],[20,0,3],[27,0,13],[28,255,20],[29,255,10],[30,181,4],[31,99,0],[32,255,36],[33,255,10],[34,187,4],[35,98,0]]],[12.25,0.32,3.99,3.0625,-0.87,4.08,-0.87,4.08,[[0,39,1],[1,61,0],[2,108,0],[3,198,4],[4,0,10],[5,0,7],[6,41,1],[7,54,0],[8,84,0],[9,140,5],[10,0,4],[11,0,4],[12,0,7],[13,0,7],[14,0,17],[18,0,28],[19,0,4],[20,0,4],[21,0,3],[27,0,15],[28,255,37],[29,255,10],[30,187,5],[31,106,0],[32,255,36],[33,255,10],[34,185,4],[35,107,0]]],[12.5,0.07,4,3.125,-1.12,4.02,-1.12,4.02,[[0,45,1],[1,68,0],[2,107,0],[3,207,4],[4,0,10],[5,0,7],[6,40,1],[7,54,0],[8,94,0],[9,149,5],[10,0,4],[11,0,4],[12,0,7],[13,0,7],[14,0,12],[18,0,30],[19,0,4],[20,0,4],[21,0,3],[27,0,30],[28,255,33],[29,255,7],[30,199,4],[31,107,0],[32,255,34],[33,255,7],[34,198,5],[35,108,0]]],[12.75,-0.18,4,3.1416,-1.38,4,-1.38,4,[[0,43,1],[1,67,0],[2,117,0],[3,219,4],[4,0,10],[5,0,7],[6,40,1],[7,61,0],[8,93,0],[9,148,4],[10,0,4],[11,0,3],[12,0,7],[13,0,7],[14,0,6],[18,0,42],[19,0,4],[20,0,4],[21,0,4],[27,0,42],[28,255,48],[29,255,7],[30,207,4],[31,112,0],[32,255,48],[33,255,7],[34,207,4],[35,112,0]]],[13,-0.43,4,3.1416,-1.63,4,-1.63,4,[[0,44,1],[1,64,0],[2,116,0],[3,233,4],[4,0,9],[5,0,7],[6,40,1],[7,61,0],[8,93,0],[9,160,5],[10,0,4],[11,0,4],[12,0,7],[13,0,7],[14,0,6],[19,0,4],[20,0,4],[21,0,3],[28,255,43],[29,255,7],[30,220,4],[31,117,0],[32,255,43],[33,255,7],[34,220,4],[35,117,0]]],[13.25,-0.68,4,3.1416,-1.88,4,-1.88,4,[[0,43,1],[1,74,0],[2,123,0],[3,240,4],[4,0,7],[5,0,8],[6,40,1],[7,60,0],[8,101,0],[9,156,4],[10,0,4],[11,0,3],[12,0,7],[13,0,7],[14,0,7],[19,0,4],[20,0,3],[21,0,4],[28,255,64],[29,255,7],[30,233,4],[31,118,0],[32,255,64],[33,255,7],[34,233,4],[35,118,0]]],[13.5,-0.93,4,3.1416,-2.13,4,-2.13,4,[[0,43,1],[1,72,0],[2,123,0],[3,240,3],[4,0,7],[5,0,8],[6,45,1],[7,59,0],[8,99,0],[9,170,5],[10,0,4],[11,0,3],[12,0,7],[13,0,8],[14,0,4],[19,0,3],[20,0,4],[28,255,54],[29,255,6],[30,242,4],[31,123,0],[32,255,54],[33,255,6],[34,242,4],[35,123,0]]],[13.75,-1.18,4,3.1416,-2.38,4,-2.38,4,[[0,48,1],[1,72,0],[2,132,0],[3,254,3],[4,0,7],[5,0,8],[6,43,1],[7,69,0],[8,99,0],[9,167,4],[10,0,4],[11,0,4],[12,0,9],[13,0,8],[19,0,4],[20,0,4],[28,255,48],[29,255,6],[30,255,4],[31,131,0],[32,255,48],[33,255,6],[34,255,4],[35,131,0]]],[14,-1.43,4,3.1416,-2.63,4,-2.63,4,[[0,50,0],[1,77,0],[2,132,2],[3,255,3],[4,0,8],[5,0,7],[6,43,1],[7,67,0],[8,108,0],[9,179,4],[10,0,4],[11,0,4],[12,0,10],[13,0,10],[19,0,4],[20,0,4],[28,0,42],[29,255,16],[30,255,4],[31,131,3],[32,0,42],[33,255,16],[34,255,4],[35,131,3]]],[14.25,-1.68,4,3.1416,-2.88,4,-2.88,4,[[0,50,0],[1,79,0],[2,141,5],[3,255,3],[4,0,8],[5,0,8],[6,43,1],[7,67,0],[8,108,0],[9,179,4],[10,0,4],[11,0,4],[12,0,10],[13,0,10],[19,0,4],[20,0,4],[28,0,29],[29,255,17],[30,255,4],[31,140,5],[32,0,29],[33,255,17],[34,255,4],[35,140,5]]],[14.5,-1.93,4,3.1416,-3.13,4,-3.13,4,[[0,49,0],[1,79,0],[2,140,5],[3,255,4],[4,0,7],[5,0,10],[6,43,1],[7,64,0],[8,105,0],[9,183,4],[10,0,3],[11,0,3],[12,0,10],[13,0,11],[19,0,4],[20,0,4],[28,0,11],[29,255,15],[30,255,3],[31,138,5],[32,0,11],[33,255,15],[34,255,3],[35,138,5]]],[14.75,-2.18,4,3.1416,-3.38,4,-3.38,4,[[0,49,0],[1,79,0],[2,151,4],[3,255,3],[4,0,7],[5,0,10],[6,43,1],[7,66,0],[8,116,0],[9,188,4],[10,0,4],[11,0,4],[12,0,10],[13,0,10],[19,0,4],[20,0,4],[29,255,15],[30,255,3],[31,150,5],[33,255,15],[34,255,3],[35,150,5]]],[15,-2.43,4,3.1416,-3.63,4,-3.63,4,[[0,56,0],[1,85,0],[2,150,4],[3,255,3],[4,0,7],[5,0,10],[6,51,1],[7,50,0],[8,117,0],[9,185,4],[10,0,4],[11,0,4],[12,0,11],[13,0,5],[19,0,4],[20,0,4],[28,0,13],[29,255,14],[30,255,3],[31,160,4],[32,0,13],[33,255,14],[34,255,3],[35,160,4]]],[15.25,-2.68,4,3.1416,-3.88,4,-3.88,4,[[0,56,0],[1,84,0],[2,160,4],[3,255,3],[4,0,6],[5,0,10],[6,50,1],[7,30,0],[8,121,0],[9,199,4],[10,0,3],[11,0,3],[12,0,11],[19,0,4],[20,0,4],[28,0,13],[29,255,27],[30,255,3],[31,156,5],[32,0,13],[33,255,27],[34,255,3],[35,156,5]]],[15.5,-2.93,4,3.1416,-4.13,4,-4.13,4,[[0,55,0],[1,90,0],[2,162,4],[3,255,3],[4,0,7],[5,0,10],[6,49,1],[7,33,0],[8,123,0],[9,97,4],[10,0,4],[11,0,4],[12,0,3],[19,0,4],[20,0,5],[28,0,13],[29,255,23],[30,255,11],[31,166,5],[32,0,13],[33,255,23],[34,255,11],[35,166,5]]],[15.75,-3.18,4,3.1416,-4.38,4,-4.38,4,[[0,54,0],[1,93,0],[2,166,5],[3,255,3],[4,0,7],[5,0,10],[6,50,1],[7,60,0],[8,121,0],[9,0,5],[10,0,3],[11,0,4],[12,0,3],[19,0,3],[20,0,4],[28,0,13],[29,255,22],[30,255,10],[31,179,4],[32,0,13],[33,255,22],[34,255,10],[35,179,4]]],[16,-3.43,4,3.1416,-4.63,4,-4.63,4,[[0,53,0],[1,92,0],[2,179,5],[3,255,3],[4,0,7],[5,0,11],[6,48,0],[7,75,0],[8,134,0],[9,0,4],[10,0,4],[11,0,4],[12,0,3],[19,0,1],[20,0,4],[28,0,15],[29,255,31],[30,255,10],[31,185,4],[32,0,15],[33,255,31],[34,255,10],[35,185,4]]],[16.25,-3.68,4,3.1416,-4.88,4,-4.88,4,[[0,61,0],[1,102,0],[2,177,4],[3,255,10],[4,0,7],[5,0,3],[6,57,0],[7,78,0],[8,132,2],[9,0,4],[10,0,4],[11,0,4],[12,0,3],[19,0,3],[28,0,27],[29,255,37],[30,255,10],[31,187,4],[32,0,27],[33,255,37],[34,255,10],[35,187,4]]],[16.5,-3.93,4,3.1416,-5.13,4,-5.13,4,[[0,60,0],[1,99,0],[2,187,5],[3,255,11],[4,0,7],[5,0,3],[6,55,0],[7,86,0],[8,141,5],[9,0,4],[10,0,3],[11,0,4],[12,0,3],[19,0,5],[28,0,30],[29,255,34],[30,255,8],[31,199,4],[32,0,30],[33,255,34],[34,255,8],[35,199,4]]],[16.75,-4.18,4,3.1416,-5.38,4,-5.38,4,[[0,60,0],[1,98,0],[2,200,4],[3,255,11],[4,0,7],[5,0,3],[6,53,0],[7,85,0],[8,139,5],[9,0,4],[10,0,4],[11,0,4],[19,0,5],[28,0,42],[29,255,48],[30,255,7],[31,207,4],[32,0,42],[33,255,48],[34,255,7],[35,207,4]]],[17,-4.43,4,3.1416,-5.63,4,-5.63,4,[[0,60,0],[1,108,0],[2,198,4],[3,255,10],[4,0,7],[5,0,3],[6,53,0],[7,85,0],[8,139,5],[9,0,4],[10,0,3],[11,0,4],[19,0,4],[29,255,43],[30,255,7],[31,220,4],[33,255,43],[34,255,7],[35,220,4]]],[17.25,-4.68,4,3.1416,-5.88,4,-5.88,4,[[0,67,0],[1,107,0],[2,207,4],[3,158,10],[4,0,7],[5,0,4],[6,53,0],[7,94,0],[8,151,4],[9,0,3],[10,0,4],[11,0,4],[19,0,5],[29,255,64],[30,255,7],[31,233,4],[33,255,64],[34,255,7],[35,233,4]]],[17.5,-4.93,4,3.1416,-6.13,4,-6.13,4,[[0,67,0],[1,117,0],[2,220,4],[3,0,10],[4,0,7],[5,0,4],[6,61,0],[7,94,0],[8,149,5],[9,0,4],[10,0,4],[11,0,5],[19,0,4],[29,255,54],[30,255,6],[31,242,4],[33,255,54],[34,255,6],[35,242,4]]],[17.75,-5.18,4,3.1416,-6.38,4,-6.38,4,[[0,65,0],[1,116,0],[2,233,3],[3,0,9],[4,0,7],[5,0,3],[6,60,0],[7,93,0],[8,160,5],[9,0,4],[10,0,3],[11,0,4],[19,0,5],[29,255,48],[30,255,6],[31,255,4],[33,255,48],[34,255,6],[35,255,4]]],[18,-5.43,4,3.1416,-6.63,4,-6.63,4,[[0,71,0],[1,122,0],[2,232,4],[3,0,8],[4,0,7],[6,60,0],[7,101,0],[8,156,4],[9,0,3],[10,0,4],[11,0,4],[19,0,5],[29,0,42],[30,255,16],[31,255,4],[33,0,42],[34,255,16],[35,255,4]]],[18.25,-5.68,4,3.1416,-6.88,4,-6.88,4,[[0,72,0],[1,124,0],[2,241,3],[3,0,7],[4,0,8],[6,60,0],[7,101,0],[8,167,5],[9,0,3],[10,0,4],[11,0,4],[19,0,4],[29,0,29],[30,255,17],[31,255,4],[33,0,29],[34,255,17],[35,255,4]]],[18.5,-5.93,4,3.1416,-7.13,4,-7.13,4,[[0,72,0],[1,132,0],[2,255,3],[3,0,7],[4,0,8],[6,68,0],[7,98,0],[8,167,5],[9,0,3],[10,0,4],[11,0,4],[19,0,4],[29,0,11],[30,255,15],[31,255,3],[33,0,11],[34,255,15],[35,255,3]]],[18.75,-6.18,4,3.1416,-7.38,4,-7.38,4,[[0,73,0],[1,131,0],[2,255,3],[3,0,8],[4,0,7],[6,68,0],[7,107,0],[8,173,4],[9,0,3],[10,0,4],[11,0,5],[19,0,2],[30,255,15],[31,255,3],[34,255,15],[35,255,3]]],[19,-6.43,4,3.1416,-7.63,4,-7.63,4,[[0,80,0],[1,141,5],[2,255,3],[3,0,8],[4,0,8],[6,67,0],[7,108,0],[8,180,4],[9,0,4],[10,0,4],[11,0,5],[29,0,13],[30,255,14],[31,255,3],[33,0,13],[34,255,14],[35,255,3]]],[19.25,-6.68,4,3.1416,-7.88,4,-7.88,4,[[0,79,0],[1,139,5],[2,255,4],[3,0,7],[4,0,10],[6,64,0],[7,107,0],[8,175,4],[9,0,4],[10,0,4],[11,0,5],[29,0,13],[30,255,27],[31,255,3],[33,0,13],[34,255,27],[35,255,3]]],[19.5,-6.93,4,3.1416,-8.13,4,-8.13,4,[[0,78,0],[1,149,5],[2,255,3],[3,0,7],[4,0,10],[6,68,0],[7,117,0],[8,187,4],[9,0,3],[10,0,4],[11,0,5],[29,0,13],[30,255,23],[31,255,11],[33,0,13],[34,255,23],[35,255,11]]],[19.75,-7.18,4,3.1416,-8.38,4,-8.38,4,[[0,85,0],[1,150,5],[2,255,3],[3,0,7],[4,0,10],[6,54,0],[7,116,0],[8,186,5],[9,0,4],[10,0,4],[11,0,5],[29,0,13],[30,255,22],[31,255,10],[33,0,13],[34,255,22],[35,255,10]]],[20,-7.43,4,3.1416,-8.63,4,-8.63,4,[[0,85,0],[1,161,5],[2,255,3],[3,0,7],[4,0,10],[6,34,0],[7,117,0],[8,200,4],[9,0,4],[10,0,4],[11,0,5],[29,0,15],[30,255,31],[31,255,10],[33,0,15],[34,255,31],[35,255,10]]],[20.25,-7.68,4,3.1416,-8.88,4,-8.88,4,[[0,84,0],[1,156,5],[2,255,3],[3,0,7],[4,0,10],[6,30,0],[7,123,0],[8,157,4],[9,0,3],[10,0,4],[11,0,5],[29,0,27],[30,255,37],[31,255,10],[33,0,27],[34,255,37],[35,255,10]]],[20.5,-7.93,4,3.1416,-9.13,4,-9.13,4,[[0,93,0],[1,169,5],[2,255,3],[3,0,7],[4,0,11],[6,54,0],[7,122,0],[8,0,4],[9,0,4],[10,0,4],[11,0,5],[29,0,30],[30,255,34],[31,255,8],[33,0,30],[34,255,34],[35,255,8]]],[20.75,-8.18,4,3.1416,-9.38,4,-9.38,4,[[0,93,0],[1,180,4],[2,255,2],[3,0,7],[4,0,11],[6,72,0],[7,133,0],[8,0,4],[9,0,3],[10,0,4],[11,0,5],[29,0,42],[30,255,48],[31,255,7],[33,0,42],[34,255,48],[35,255,7]]],[21,-8.43,4,3.1416,-9.63,4,-9.63,4,[[0,100,0],[1,177,5],[2,255,8],[3,0,7],[4,0,8],[6,79,0],[7,133,0],[8,0,4],[9,0,4],[10,0,4],[30,255,43],[31,255,7],[34,255,43],[35,255,7]]],[21.25,-8.68,4,3.1416,-9.88,4,-9.88,4,[[0,101,0],[1,188,4],[2,255,11],[3,0,7],[4,0,3],[6,86,0],[7,138,5],[8,0,4],[9,0,4],[10,0,4],[30,255,64],[31,255,7],[34,255,64],[35,255,7]]],[21.5,-8.93,4,3.1416,-10.13,4,-10.13,4,[[0,98,0],[1,196,5],[2,255,10],[3,0,7],[4,0,3],[6,84,0],[7,140,4],[8,0,4],[9,0,3],[10,0,4],[30,255,54],[31,255,6],[34,255,54],[35,255,6]]],[21.75,-9.18,4,3.1416,-10.38,4,-10.38,4,[[0,108,0],[1,198,4],[2,255,11],[3,0,7],[4,0,3],[6,84,0],[7,138,4],[8,0,4],[9,0,4],[10,0,5],[30,255,48],[31,255,6],[34,255,48],[35,255,6]]],[22,-9.43,4,3.1416,-10.63,4,-10.63,4,[[0,108,0],[1,208,4],[2,255,10],[3,0,7],[4,0,3],[6,91,0],[7,150,5],[8,0,4],[9,0,3],[10,0,4],[30,0,42],[31,255,16],[34,0,42],[35,255,16]]],[22.25,-9.68,4,3.1416,-10.88,4,-10.88,4,[[0,115,0],[1,221,4],[2,0,10],[3,0,7],[4,0,3],[6,93,0],[7,149,5],[8,0,4],[9,0,4],[10,0,5],[30,0,29],[31,255,17],[34,0,29],[35,255,17]]],[22.5,-9.93,4,3.1416,-11.13,4,-11.13,4,[[0,116,0],[1,227,4],[2,0,10],[3,0,7],[4,0,3],[6,92,0],[7,159,5],[8,0,3],[9,0,4],[10,0,4],[30,0,11],[31,255,15],[34,0,11],[35,255,15]]]]},"w11":{"name":"11 m hairpin, worst legal cones","R":4,"len":12.57,"cx":-3.3306690738754696e-15,"cy":-8.881784197001252e-16,"cones":[[-24,-2.5,"b",0],[-19.04,-2.5,"b",0],[-14.04,-2.5,"b",0],[-9.04,-2.5,"b",0],[-4.08,-2.5,"b",0],[0.9,-2.33,"b",1],[-0.36,2.5,"b",0],[-5.32,2.5,"b",0],[-10.28,2.5,"b",0],[-15.24,2.5,"b",0],[-16,2.5,"b",0],[-24,-5.5,"y",0],[-19.04,-5.5,"y",0],[-14.04,-5.5,"y",0],[-9.04,-5.5,"y",0],[-4.08,-5.5,"y",0],[0.87,-5.43,"y",0],[4.89,-2.51,"y",0],[4.92,2.46,"y",0],[0.93,5.42,"y",0],[-4.04,5.5,"y",0],[-9,5.5,"y",0],[-13.96,5.5,"y",0],[-16,5.5,"y",0]],"smp":[[-16,-16,-4,0,-14.81,-4,-14.81,-4,[[3,255,7],[4,208,4],[5,98,0],[6,92,0],[7,180,5],[8,255,10],[9,0,7],[10,0,7],[14,255,7],[15,208,4],[16,100,0],[17,60,0],[18,54,0],[19,72,0],[20,116,0],[21,198,4],[22,0,4],[23,0,4]]],[-15.75,-15.75,-4,0,-14.56,-4,-14.56,-4,[[2,0,13],[3,255,17],[4,219,4],[5,101,0],[6,101,0],[7,186,4],[8,255,11],[9,0,7],[10,0,8],[13,0,13],[14,255,17],[15,219,4],[16,99,0],[17,60,0],[18,53,0],[19,71,0],[20,122,0],[21,183,4],[22,0,3],[23,0,3]]],[-15.5,-15.5,-4,0,-14.31,-4,-14.31,-4,[[2,0,13],[3,255,18],[4,231,4],[5,98,0],[6,98,0],[7,198,4],[8,255,11],[9,0,7],[10,0,7],[13,0,13],[14,255,18],[15,231,4],[16,97,0],[17,68,0],[18,61,0],[19,71,0],[20,124,0],[21,0,5],[22,0,4],[23,0,4]]],[-15.25,-15.25,-4,0,-14.06,-4,-14.06,-4,[[2,0,12],[3,255,16],[4,240,4],[5,107,0],[6,108,0],[7,208,4],[8,255,11],[9,0,7],[10,0,7],[13,0,12],[14,255,16],[15,240,4],[16,106,0],[17,67,0],[18,61,0],[19,81,0],[20,121,0],[21,0,4],[22,0,3],[23,0,4]]],[-15,-15,-4,0,-13.81,-4,-13.81,-4,[[2,0,13],[3,255,15],[4,254,4],[5,107,0],[6,107,0],[7,206,4],[8,0,10],[9,0,7],[10,0,7],[13,0,13],[14,255,15],[15,254,4],[16,106,0],[17,65,0],[18,61,0],[19,79,0],[20,133,0],[21,0,4],[22,0,4],[23,0,3]]],[-14.75,-14.75,-4,0,-13.56,-4,-13.56,-4,[[2,0,13],[3,255,15],[4,255,3],[5,117,0],[6,110,0],[7,220,4],[8,0,9],[9,0,8],[10,0,7],[13,0,13],[14,255,15],[15,255,3],[16,117,0],[17,73,0],[18,60,0],[19,79,0],[20,131,3],[21,0,4],[22,0,3],[23,0,3]]],[-14.5,-14.5,-4,0,-13.31,-4,-13.31,-4,[[2,0,15],[3,255,19],[4,255,3],[5,115,0],[6,117,0],[7,232,4],[8,0,9],[9,0,7],[10,0,8],[13,0,15],[14,255,19],[15,255,3],[16,113,0],[17,71,0],[18,69,0],[19,85,0],[20,141,4],[21,0,4],[22,0,4],[23,0,3]]],[-14.25,-14.25,-4,0,-13.06,-4,-13.06,-4,[[2,0,28],[3,255,27],[4,255,4],[5,123,0],[6,113,0],[7,238,4],[8,0,7],[9,0,7],[10,0,9],[13,0,28],[14,255,27],[15,255,4],[16,123,0],[17,72,0],[18,68,0],[19,85,0],[20,140,4],[21,0,4],[22,0,3],[23,0,3]]],[-14,-14,-4,0,-12.81,-4,-12.81,-4,[[2,0,32],[3,255,22],[4,255,3],[5,122,0],[6,124,0],[7,241,4],[8,0,7],[9,0,8],[10,0,10],[13,0,32],[14,255,22],[15,255,3],[16,124,0],[17,79,0],[18,67,0],[19,84,0],[20,138,4],[21,0,4],[22,0,4],[23,0,4]]],[-13.75,-13.75,-4,0,-12.56,-4,-12.56,-4,[[2,0,30],[3,255,22],[4,255,3],[5,133,0],[6,123,0],[7,255,4],[8,0,8],[9,0,7],[10,0,10],[13,0,30],[14,255,22],[15,255,3],[16,131,0],[17,81,0],[18,64,0],[19,84,0],[20,151,4],[21,0,4],[22,0,3],[23,0,4]]],[-13.5,-13.5,-4,0,-12.31,-4,-12.31,-4,[[3,255,37],[4,255,3],[5,136,5],[6,132,0],[7,255,4],[8,0,7],[9,0,8],[10,0,10],[14,255,37],[15,255,3],[16,142,5],[17,79,0],[18,74,0],[19,94,0],[20,149,5],[21,0,3],[22,0,4],[23,0,4]]],[-13.25,-13.25,-4,0,-12.06,-4,-12.06,-4,[[3,255,34],[4,255,3],[5,139,5],[6,132,5],[7,255,3],[8,0,8],[9,0,10],[10,0,11],[14,255,34],[15,255,3],[16,138,4],[17,86,0],[18,71,0],[19,92,0],[20,161,5],[21,0,4],[22,0,4],[23,0,4]]],[-13,-13,-4,0,-11.81,-4,-11.81,-4,[[3,255,32],[4,255,11],[5,151,4],[6,140,5],[7,255,3],[8,0,7],[9,0,9],[10,0,11],[14,255,32],[15,255,11],[16,149,5],[17,86,0],[18,72,0],[19,92,0],[20,157,4],[21,0,4],[22,0,4],[23,0,4]]],[-12.75,-12.75,-4,0,-11.56,-4,-11.56,-4,[[3,255,45],[4,255,10],[5,149,5],[6,138,5],[7,255,3],[8,0,7],[9,0,10],[10,0,11],[14,255,45],[15,255,10],[16,156,5],[17,84,0],[18,80,0],[19,102,0],[20,167,5],[21,0,4],[22,0,3],[23,0,4]]],[-12.5,-12.5,-4,0,-11.31,-4,-11.31,-4,[[3,255,50],[4,255,10],[5,159,5],[6,151,4],[7,255,3],[8,0,7],[9,0,11],[10,0,11],[14,255,50],[15,255,10],[16,157,4],[17,94,0],[18,79,0],[19,99,0],[20,168,5],[21,0,4],[22,0,3],[23,0,4]]],[-12.25,-12.25,-4,0,-11.06,-4,-11.06,-4,[[3,255,64],[4,255,10],[5,167,4],[6,156,4],[7,255,3],[8,0,7],[9,0,10],[10,0,3],[14,255,64],[15,255,10],[16,169,5],[17,93,0],[18,79,0],[19,100,0],[20,175,4],[21,0,3],[22,0,3],[23,0,4]]],[-12,-12,-4,0,-10.81,-4,-10.81,-4,[[3,255,52],[4,255,7],[5,171,4],[6,157,4],[7,255,3],[8,0,7],[9,0,10],[10,0,3],[14,255,52],[15,255,7],[16,178,5],[17,99,0],[18,85,0],[19,107,0],[20,180,4],[21,0,3],[22,0,4],[23,0,4]]],[-11.75,-11.75,-4,0,-10.56,-4,-10.56,-4,[[3,255,46],[4,255,7],[5,179,4],[6,169,4],[7,255,3],[8,0,7],[9,0,11],[10,0,3],[14,255,46],[15,255,7],[16,175,4],[17,99,0],[18,85,0],[19,107,0],[20,176,4],[21,0,4],[22,0,4],[23,0,5]]],[-11.5,-11.5,-4,0,-10.31,-4,-10.31,-4,[[3,0,32],[4,255,7],[5,186,4],[6,167,5],[7,255,2],[8,0,7],[9,0,3],[10,0,3],[14,0,32],[15,255,7],[16,186,4],[17,98,0],[18,84,0],[19,116,0],[20,189,5],[21,0,4],[22,0,4],[23,0,4]]],[-11.25,-11.25,-4,0,-10.06,-4,-10.06,-4,[[3,0,14],[4,255,6],[5,200,4],[6,179,5],[7,255,10],[8,0,7],[9,0,3],[10,0,3],[14,0,14],[15,255,6],[16,199,4],[17,108,0],[18,94,0],[19,116,0],[20,186,4],[21,0,3],[22,0,4],[23,0,5]]],[-11,-11,-4,0,-9.81,-4,-9.81,-4,[[4,255,6],[5,211,4],[6,186,4],[7,255,11],[8,0,7],[9,0,3],[10,0,3],[15,255,6],[16,208,4],[17,106,0],[18,93,0],[19,113,0],[20,199,4],[21,0,4],[22,0,3],[23,0,4]]],[-10.75,-10.75,-4,0,-9.56,-4,-9.56,-4,[[3,0,13],[4,255,18],[5,219,4],[6,187,4],[7,255,10],[8,0,7],[9,0,3],[10,0,3],[14,0,13],[15,255,18],[16,221,4],[17,116,0],[18,93,0],[19,123,0],[20,151,4],[21,0,3],[22,0,4],[23,0,4]]],[-10.5,-10.5,-4,0,-9.31,-4,-9.31,-4,[[3,0,13],[4,255,16],[5,230,4],[6,200,5],[7,255,10],[8,0,6],[9,0,3],[14,0,13],[15,255,16],[16,232,3],[17,113,0],[18,101,0],[19,122,0],[20,0,5],[21,0,4],[22,0,4],[23,0,4]]],[-10.25,-10.25,-4,0,-9.06,-4,-9.06,-4,[[3,0,12],[4,255,16],[5,239,4],[6,211,4],[7,193,10],[8,0,7],[9,0,3],[14,0,12],[15,255,16],[16,242,3],[17,124,0],[18,99,0],[19,131,0],[20,0,4],[21,0,4],[22,0,4],[23,0,4]]],[-10,-10,-4,0,-8.81,-4,-8.81,-4,[[3,0,13],[4,255,16],[5,253,4],[6,207,4],[7,0,9],[8,0,7],[9,0,4],[14,0,13],[15,255,16],[16,255,3],[17,123,0],[18,109,0],[19,132,0],[20,0,4],[21,0,3],[22,0,4],[23,0,4]]],[-9.75,-9.75,-4,0,-8.56,-4,-8.56,-4,[[3,0,13],[4,255,14],[5,255,3],[6,219,4],[7,0,10],[8,0,7],[14,0,13],[15,255,14],[16,255,3],[17,132,0],[18,107,0],[19,131,5],[20,0,4],[21,0,4],[22,0,4],[23,0,4]]],[-9.5,-9.5,-4,0,-8.31,-4,-8.31,-4,[[3,0,15],[4,255,26],[5,255,4],[6,233,4],[7,0,10],[8,0,7],[14,0,15],[15,255,26],[16,255,3],[17,141,5],[18,106,0],[19,141,5],[20,0,3],[21,0,3],[22,0,4],[23,0,5]]],[-9.25,-9.25,-4,0,-8.06,-4,-8.06,-4,[[3,0,28],[4,255,23],[5,255,3],[6,243,4],[7,0,7],[8,0,7],[14,0,28],[15,255,23],[16,255,4],[17,139,5],[18,117,0],[19,139,5],[20,0,4],[21,0,4],[22,0,4],[23,0,4]]],[-9,-9,-4,0,-7.81,-4,-7.81,-4,[[3,0,32],[4,255,22],[5,255,3],[6,249,4],[7,0,7],[8,0,7],[14,0,32],[15,255,22],[16,255,3],[17,151,4],[18,113,0],[19,151,5],[20,0,4],[21,0,4],[22,0,4],[23,0,5]]],[-8.75,-8.75,-4,0,-7.56,-4,-7.56,-4,[[3,0,30],[4,255,21],[5,255,3],[6,254,4],[7,0,7],[8,0,8],[14,0,30],[15,255,21],[16,255,3],[17,148,5],[18,123,0],[19,149,5],[20,0,4],[21,0,3],[22,0,5],[23,0,5]]],[-8.5,-8.5,-4,0,-7.31,-4,-7.31,-4,[[4,255,36],[5,255,3],[6,255,4],[7,0,7],[8,0,9],[15,255,36],[16,255,3],[17,157,5],[18,122,0],[19,156,5],[20,0,3],[21,0,4],[22,0,5],[23,0,5]]],[-8.25,-8.25,-4,0,-7.06,-4,-7.06,-4,[[4,255,35],[5,255,3],[6,255,4],[7,0,7],[8,0,9],[15,255,35],[16,255,10],[17,169,4],[18,133,0],[19,160,4],[20,0,4],[21,0,4],[22,0,5],[23,0,5]]],[-8,-8,-4,0,-6.81,-4,-6.81,-4,[[4,255,48],[5,255,11],[6,255,3],[7,0,8],[8,0,10],[15,255,48],[16,255,10],[17,176,4],[18,132,5],[19,156,5],[20,0,4],[21,0,3],[22,0,5],[23,0,5]]],[-7.75,-7.75,-4,0,-6.56,-4,-6.56,-4,[[4,255,45],[5,255,10],[6,255,3],[7,0,7],[8,0,10],[15,255,45],[16,255,10],[17,178,5],[18,140,5],[19,168,4],[20,0,4],[21,0,3],[22,0,4],[23,0,4]]],[-7.5,-7.5,-4,0,-6.31,-4,-6.31,-4,[[4,255,61],[5,255,9],[6,255,3],[7,0,7],[8,0,11],[15,255,61],[16,255,10],[17,188,5],[18,139,4],[19,167,4],[20,0,3],[21,0,3],[22,0,5]]],[-7.25,-7.25,-4,0,-6.06,-4,-6.06,-4,[[4,255,62],[5,255,10],[6,255,3],[7,0,7],[8,0,11],[15,255,62],[16,255,8],[17,199,4],[18,150,4],[19,179,5],[20,0,3],[21,0,3],[22,0,5]]],[-7,-7,-4,0,-5.81,-4,-5.81,-4,[[4,255,51],[5,255,7],[6,255,3],[7,0,6],[8,0,10],[15,255,51],[16,255,8],[17,209,4],[18,154,5],[19,179,5],[20,0,4],[21,0,4],[22,0,5]]],[-6.75,-6.75,-4,0,-5.56,-4,-5.56,-4,[[4,255,45],[5,255,7],[6,255,3],[7,0,6],[8,0,10],[15,255,45],[16,255,7],[17,219,4],[18,157,5],[19,186,4],[20,0,4],[21,0,4],[22,0,4]]],[-6.5,-6.5,-4,0,-5.31,-4,-5.31,-4,[[4,0,33],[5,255,7],[6,255,2],[7,0,6],[8,0,3],[15,0,33],[16,255,7],[17,232,4],[18,167,4],[19,187,4],[20,0,3],[21,0,4],[22,0,4]]],[-6.25,-6.25,-4,0,-5.06,-4,-5.06,-4,[[4,0,12],[5,255,7],[6,255,11],[7,0,6],[8,0,3],[15,0,12],[16,255,6],[17,243,4],[18,167,4],[19,197,4],[20,0,4],[21,0,4],[22,0,5]]],[-6,-6,-4,0,-4.81,-4,-4.81,-4,[[5,255,6],[6,255,11],[7,0,6],[8,0,3],[16,255,6],[17,255,4],[18,179,5],[19,199,4],[20,0,3],[21,0,4],[22,0,5]]],[-5.75,-5.75,-4,0,-4.56,-4,-4.56,-4,[[4,0,14],[5,255,17],[6,255,10],[7,0,7],[8,0,3],[15,0,14],[16,255,17],[17,255,3],[18,186,4],[19,170,4],[20,0,4],[21,0,4],[22,0,4]]],[-5.5,-5.5,-4,0,-4.31,-4,-4.31,-4,[[4,0,13],[5,255,17],[6,255,10],[7,0,7],[8,0,3],[15,0,13],[16,255,16],[17,255,3],[18,187,5],[19,0,4],[20,0,3],[21,0,4]]],[-5.25,-5.25,-4,0,-4.06,-4,-4.06,-4,[[4,0,13],[5,255,16],[6,92,10],[7,0,7],[8,0,3],[15,0,13],[16,255,16],[17,255,3],[18,200,4],[19,0,4],[20,0,4],[21,0,4]]],[-5,-5,-4,0,-3.81,-4,-3.81,-4,[[4,0,13],[5,255,14],[6,0,10],[7,0,7],[8,0,3],[15,0,13],[16,255,16],[17,255,3],[18,211,4],[19,0,4],[20,0,3],[21,0,4]]],[-4.75,-4.75,-4,0,-3.56,-4,-3.56,-4,[[4,0,14],[5,255,14],[6,0,10],[7,0,7],[15,0,14],[16,255,14],[17,255,3],[18,207,4],[19,0,4],[20,0,4],[21,0,5]]],[-4.5,-4.5,-4,0,-3.31,-4,-3.31,-4,[[4,0,15],[5,255,18],[6,0,8],[7,0,7],[15,0,15],[16,255,28],[17,255,2],[18,219,4],[19,0,3],[20,0,3],[21,0,4]]],[-4.25,-4.25,-4,0,-3.06,-4,-3.06,-4,[[4,0,30],[5,255,27],[6,0,7],[7,0,7],[15,0,30],[16,255,24],[17,255,8],[18,234,3],[19,0,4],[20,0,4],[21,0,5]]],[-4,-4,-4,0,-2.81,-4,-2.81,-4,[[4,0,34],[5,255,23],[6,0,7],[7,0,8],[15,0,34],[16,255,21],[17,255,11],[18,242,4],[19,0,4],[20,0,3],[21,0,4]]],[-3.75,-3.75,-4,0,-2.56,-4,-2.56,-4,[[4,0,18],[5,255,21],[6,0,8],[7,0,7],[15,0,18],[16,255,20],[17,255,10],[18,249,3],[19,0,4],[20,0,4],[21,0,4]]],[-3.5,-3.5,-4,0,-2.31,-4,-2.31,-4,[[5,255,37],[6,0,8],[7,0,10],[16,255,37],[17,255,10],[18,255,3],[19,0,4],[20,0,4],[21,0,4]]],[-3.25,-3.25,-4,0,-2.06,-4,-2.06,-4,[[5,255,35],[6,0,7],[7,0,10],[16,255,33],[17,255,8],[18,255,3],[19,0,3],[20,0,3],[21,0,4]]],[-3,-3,-4,0,-1.81,-4,-1.81,-4,[[5,255,33],[6,0,7],[7,0,9],[16,255,48],[17,255,7],[18,255,3],[19,0,3],[20,0,3],[21,0,4]]],[-2.75,-2.75,-4,0,-1.56,-4,-1.56,-4,[[5,255,47],[6,0,7],[7,0,10],[16,255,44],[17,255,7],[18,255,4],[19,0,3],[20,0,4],[21,0,4]]],[-2.5,-2.5,-4,0,-1.31,-4,-1.31,-4,[[5,255,43],[6,0,6],[7,0,10],[16,255,65],[17,255,6],[18,255,3],[19,0,4],[20,0,4],[21,0,5]]],[-2.25,-2.25,-4,0,-1.06,-4,-1.06,-4,[[5,255,64],[6,0,7],[7,0,11],[16,255,60],[17,255,6],[18,255,3],[19,0,4],[20,0,3],[21,0,4]]],[-2,-2,-4,0,-0.81,-4,-0.81,-4,[[5,255,54],[6,0,7],[7,0,11],[16,255,49],[17,255,6],[18,255,3],[19,0,4],[20,0,3],[21,0,5]]],[-1.75,-1.75,-4,0,-0.56,-4,-0.56,-4,[[5,0,50],[6,0,7],[7,0,10],[16,255,43],[17,255,18],[18,255,3],[19,0,3],[20,0,4],[21,0,5]]],[-1.5,-1.5,-4,0,-0.31,-4,-0.31,-4,[[5,0,38],[6,0,7],[7,0,3],[16,0,31],[17,255,16],[18,255,3],[19,0,4],[20,0,4],[21,0,5]]],[-1.25,-1.25,-4,0,-0.06,-4,-0.06,-4,[[5,0,13],[6,0,7],[7,0,3],[16,0,10],[17,255,16],[18,255,3],[19,0,3],[20,0,4],[21,0,5]]],[-1,-1,-4,0,0.19,-4,0.19,-4,[[5,0,12],[6,0,7],[7,0,3],[17,255,16],[18,255,12],[19,0,4],[20,0,4],[21,0,5]]],[-0.75,-0.75,-4,0,0.44,-4,0.44,-4,[[5,0,28],[6,0,7],[7,0,3],[16,0,13],[17,255,14],[18,255,10],[19,0,3],[20,0,4],[21,0,4]]],[-0.5,-0.5,-4,0,0.69,-4,0.69,-4,[[5,0,15],[6,0,7],[7,0,3],[17,255,27],[18,255,10],[19,0,3],[20,0,4]]],[-0.25,-0.25,-4,0,0.94,-4,0.94,-4,[[5,0,15],[6,0,7],[7,0,3],[17,255,23],[18,255,11],[19,0,4],[20,0,4]]],[0,0,-4,0,1.19,-4,1.19,-4,[[5,0,16],[6,0,7],[7,0,2],[17,255,22],[18,225,10],[19,0,3],[20,0,4]]],[0.25,0.25,-3.99,0.0625,1.44,-3.92,1.44,-3.92,[[5,0,16],[6,0,7],[7,0,4],[16,0,14],[17,255,20],[18,255,10],[19,0,3],[20,0,5]]],[0.5,0.5,-3.97,0.125,1.68,-3.82,1.68,-3.82,[[5,0,16],[6,0,7],[7,0,3],[16,0,28],[17,255,37],[18,255,7],[19,0,4],[20,0,4]]],[0.75,0.75,-3.93,0.1875,1.92,-3.71,1.92,-3.71,[[5,0,26],[6,0,7],[7,0,3],[16,0,42],[17,255,33],[18,255,8],[19,0,3],[20,0,4]]],[1,0.99,-3.88,0.25,2.14,-3.58,2.14,-3.58,[[5,0,27],[6,0,7],[7,0,4],[17,255,46],[18,255,7],[19,0,3],[20,0,4]]],[1.25,1.23,-3.81,0.3125,2.36,-3.44,2.36,-3.44,[[5,0,30],[6,0,7],[7,0,3],[17,255,58],[18,255,7],[19,0,4],[20,0,4]]],[1.5,1.47,-3.72,0.375,2.57,-3.29,2.57,-3.29,[[5,0,32],[6,0,7],[7,0,4],[17,255,62],[18,255,6],[19,0,3],[20,0,4]]],[1.75,1.69,-3.62,0.4375,2.77,-3.12,2.77,-3.12,[[5,0,42],[6,0,6],[7,0,4],[17,255,48],[18,255,6],[19,0,3],[20,0,4]]],[2,1.92,-3.51,0.5,2.96,-2.94,2.96,-2.94,[[5,0,27],[6,0,7],[7,0,4],[17,255,34],[18,255,17],[19,0,3],[20,0,4]]],[2.25,2.13,-3.38,0.5625,3.14,-2.75,3.14,-2.75,[[5,0,1],[6,0,6],[7,0,4],[17,255,28],[18,255,17],[19,0,3],[20,0,5]]],[2.5,2.34,-3.24,0.625,3.31,-2.55,3.31,-2.55,[[6,0,7],[7,0,4],[17,255,14],[18,255,16],[19,0,3],[20,0,5]]],[2.75,2.54,-3.09,0.6875,3.46,-2.34,3.46,-2.34,[[6,0,6],[7,0,4],[18,255,15],[19,0,2],[20,0,4]]],[3,2.73,-2.93,0.75,3.6,-2.11,3.6,-2.11,[[6,0,6],[7,0,4],[18,255,14],[19,0,11],[20,0,4]]],[3.25,2.9,-2.75,0.8125,3.72,-1.89,3.72,-1.89,[[0,0,1],[1,0,1],[6,0,7],[7,0,4],[18,255,23],[19,0,11],[20,0,4]]],[3.5,3.07,-2.56,0.875,3.83,-1.65,3.83,-1.65,[[0,0,1],[1,0,1],[3,0,5],[6,0,6],[7,0,4],[18,255,23],[19,0,10],[20,0,4]]],[3.75,3.22,-2.37,0.9375,3.93,-1.41,3.93,-1.41,[[0,0,1],[1,0,1],[3,0,4],[4,0,9],[6,0,11],[7,0,3],[11,0,1],[18,255,22],[19,225,10],[20,0,4]]],[4,3.37,-2.16,1,4.01,-1.16,4.01,-1.16,[[0,0,1],[1,0,1],[3,0,5],[4,0,2],[6,0,17],[7,0,4],[11,0,2],[12,0,1],[17,0,14],[18,255,20],[19,255,10],[20,0,4]]],[4.25,3.49,-1.95,1.0625,4.07,-0.91,4.07,-0.91,[[0,0,1],[1,0,1],[3,0,5],[4,0,3],[6,0,16],[7,0,3],[11,0,1],[12,0,1],[17,0,28],[18,255,37],[19,255,7],[20,0,4]]],[4.5,3.61,-1.72,1.125,4.12,-0.65,4.12,-0.65,[[0,0,2],[3,0,5],[4,0,3],[6,0,17],[7,0,4],[11,0,1],[12,0,1],[17,0,42],[18,255,33],[19,255,8],[20,0,4]]],[4.75,3.71,-1.5,1.1875,4.16,-0.39,4.16,-0.39,[[0,0,1],[1,0,1],[3,0,5],[4,0,3],[6,0,17],[7,0,3],[11,0,1],[12,0,1],[18,255,46],[19,255,7],[20,0,4]]],[5,3.8,-1.26,1.25,4.17,-0.13,4.17,-0.13,[[0,0,1],[1,0,1],[3,0,4],[4,0,3],[6,0,16],[7,0,4],[11,0,1],[12,0,1],[18,255,58],[19,255,7],[20,0,4]]],[5.25,3.87,-1.02,1.3125,4.17,0.13,4.17,0.13,[[0,0,1],[1,0,1],[4,0,3],[6,0,16],[7,0,3],[11,0,2],[12,0,1],[18,255,62],[19,255,6],[20,0,3]]],[5.5,3.92,-0.78,1.375,4.16,0.39,4.16,0.39,[[0,0,1],[1,0,1],[4,0,3],[6,0,16],[7,0,4],[11,0,1],[12,0,1],[18,255,48],[19,255,6],[20,0,4]]],[5.75,3.96,-0.53,1.4375,4.12,0.65,4.12,0.65,[[0,0,1],[1,0,1],[4,0,3],[6,0,16],[7,0,4],[11,0,1],[15,0,4],[18,255,34],[19,255,17],[20,0,4]]],[6,3.99,-0.28,1.5,4.07,0.91,4.07,0.91,[[0,0,1],[1,0,1],[4,0,3],[6,0,14],[7,0,3],[11,0,2],[12,0,1],[15,0,4],[18,255,28],[19,255,17],[20,0,4]]],[6.25,4,-0.03,1.5625,4.01,1.16,4.01,1.16,[[0,0,1],[4,0,3],[6,0,13],[7,0,4],[11,0,1],[12,0,1],[15,0,4],[18,255,14],[19,255,16],[20,0,4]]],[6.5,3.99,0.22,1.625,3.93,1.41,3.93,1.41,[[0,0,1],[1,0,1],[4,0,4],[6,0,27],[7,0,3],[11,0,1],[12,0,1],[15,0,4],[19,255,15],[20,255,4]]],[6.75,3.97,0.47,1.6875,3.83,1.65,3.83,1.65,[[0,0,1],[1,0,1],[4,0,3],[6,0,27],[7,0,3],[11,0,2],[12,0,1],[15,0,4],[19,255,14],[20,255,3],[21,0,5]]],[7,3.94,0.71,1.75,3.72,1.89,3.72,1.89,[[0,0,1],[1,0,1],[4,0,3],[5,0,1],[6,0,23],[7,0,3],[11,0,1],[15,0,4],[19,255,23],[20,255,3],[21,0,5]]],[7.25,3.88,0.96,1.8125,3.6,2.11,3.6,2.11,[[0,0,1],[1,0,1],[3,0,3],[4,0,3],[5,0,10],[6,0,21],[7,0,3],[11,0,1],[12,0,1],[15,0,4],[19,255,23],[20,255,3],[21,0,4]]],[7.5,3.82,1.2,1.875,3.46,2.33,3.46,2.33,[[0,0,1],[3,0,4],[4,0,3],[5,0,16],[6,0,22],[7,0,4],[11,0,2],[12,0,1],[15,0,4],[19,255,22],[20,255,2],[21,150,4]]],[7.75,3.73,1.43,1.9375,3.31,2.55,3.31,2.55,[[0,0,1],[3,0,5],[4,0,3],[5,0,17],[6,0,33],[7,0,4],[11,0,1],[12,0,1],[15,0,4],[18,0,14],[19,255,20],[20,255,10],[21,149,4],[22,81,0],[23,2,0]]],[8,3.64,1.66,2,3.14,2.75,3.14,2.75,[[0,0,1],[3,0,5],[4,0,3],[5,0,16],[6,0,36],[7,0,3],[8,0,3],[11,0,2],[12,0,1],[15,0,5],[18,0,28],[19,255,37],[20,255,11],[21,161,5],[22,79,0],[23,67,0]]],[8.25,3.53,1.89,2.0625,2.96,2.94,2.96,2.94,[[0,0,1],[3,0,5],[4,0,4],[5,0,18],[6,0,35],[7,0,3],[8,0,5],[11,0,1],[12,0,1],[15,0,4],[18,0,42],[19,255,33],[20,255,10],[21,156,5],[22,79,0],[23,67,0]]],[8.5,3.4,2.11,2.125,2.77,3.12,2.77,3.12,[[0,0,2],[3,0,5],[4,0,3],[5,0,16],[6,0,33],[7,0,3],[8,0,5],[9,10,0],[10,10,0],[11,0,2],[12,0,1],[15,0,4],[19,255,46],[20,255,9],[21,169,5],[22,86,0],[23,67,0]]],[8.75,3.26,2.31,2.1875,2.57,3.29,2.57,3.29,[[0,0,1],[1,0,1],[3,0,5],[4,0,3],[5,0,6],[6,0,48],[7,81,11],[8,147,5],[9,72,0],[10,16,0],[11,0,1],[12,0,1],[15,0,4],[16,0,3],[19,255,58],[20,255,7],[21,177,5],[22,85,0],[23,64,0]]],[9,3.11,2.51,2.25,2.36,3.44,2.36,3.44,[[0,0,1],[1,0,1],[3,0,5],[4,0,3],[5,0,6],[6,0,45],[7,255,10],[8,150,5],[9,80,0],[10,22,0],[11,0,1],[12,0,1],[15,0,4],[16,0,3],[19,255,62],[20,255,7],[21,178,5],[22,84,0],[23,71,0]]],[9.25,2.95,2.7,2.3125,2.14,3.58,2.14,3.58,[[0,0,1],[3,0,5],[4,0,3],[5,0,7],[6,0,43],[7,255,10],[8,159,4],[9,79,0],[10,25,0],[11,0,1],[15,0,4],[16,0,4],[19,255,48],[20,255,7],[21,186,4],[22,94,0],[23,73,0]]],[9.5,2.77,2.88,2.375,1.92,3.71,1.92,3.71,[[0,36,1],[1,0,1],[3,0,5],[4,0,3],[5,0,7],[6,0,63],[7,255,10],[8,156,5],[9,78,0],[10,29,0],[11,0,1],[12,0,1],[15,0,4],[16,0,3],[19,255,34],[20,255,7],[21,199,5],[22,92,0],[23,71,0]]],[9.75,2.59,3.05,2.4375,1.68,3.82,1.68,3.82,[[0,35,1],[1,49,0],[3,0,5],[4,0,3],[5,0,6],[6,0,61],[7,255,7],[8,167,5],[9,85,0],[10,34,0],[11,0,1],[12,0,1],[15,0,4],[16,0,3],[19,255,28],[20,255,7],[21,207,5],[22,102,0],[23,78,0]]],[10,2.39,3.2,2.5,1.44,3.92,1.44,3.92,[[0,34,1],[1,50,0],[2,84,0],[3,0,5],[4,0,3],[5,0,7],[6,0,51],[7,255,7],[8,175,4],[9,86,0],[10,36,0],[11,30,1],[12,0,1],[15,0,5],[16,0,4],[19,255,14],[20,255,17],[21,220,4],[22,98,0],[23,80,0]]],[10.25,2.19,3.35,2.5625,1.19,4,1.19,4,[[0,35,1],[1,57,0],[2,84,0],[3,0,5],[4,0,3],[5,0,7],[6,0,45],[7,255,7],[8,177,5],[9,85,0],[10,41,0],[11,33,1],[12,50,1],[15,0,4],[16,0,3],[20,255,16],[21,232,3],[22,104,0],[23,78,0]]],[10.5,1.98,3.48,2.625,0.94,4.07,0.94,4.07,[[0,36,1],[1,54,0],[2,92,0],[3,0,4],[4,0,3],[5,0,7],[6,0,42],[7,255,7],[8,187,4],[9,94,0],[10,43,0],[11,36,1],[12,49,1],[15,0,4],[16,0,3],[20,255,16],[21,242,3],[22,108,0],[23,84,0]]],[10.75,1.75,3.59,2.6875,0.68,4.12,0.68,4.12,[[0,34,1],[1,54,0],[2,93,0],[3,36,4],[4,0,3],[5,0,7],[6,0,32],[7,255,6],[8,199,5],[9,92,0],[10,46,0],[11,35,2],[12,50,1],[13,79,0],[15,0,4],[16,0,3],[20,255,14],[21,255,4],[22,111,0],[23,82,0]]],[11,1.53,3.7,2.75,0.43,4.15,0.43,4.15,[[0,39,1],[1,53,0],[2,92,0],[3,178,4],[4,0,10],[5,0,7],[6,0,29],[7,255,6],[8,212,5],[9,102,0],[10,48,0],[11,34,1],[12,50,1],[13,80,0],[15,0,4],[16,0,4],[20,255,14],[21,255,4],[22,116,0],[23,83,0]]],[11.25,1.29,3.79,2.8125,0.17,4.17,0.17,4.17,[[0,41,1],[1,61,0],[2,103,0],[3,187,5],[4,0,11],[5,0,7],[6,0,28],[7,255,17],[8,218,4],[9,98,0],[10,54,0],[11,35,1],[12,49,1],[13,78,0],[14,0,5],[15,0,4],[16,0,4],[20,255,28],[21,255,3],[22,121,0],[23,91,0]]],[11.5,1.05,3.86,2.875,-0.1,4.17,-0.1,4.17,[[0,40,1],[1,60,0],[2,98,0],[3,199,5],[4,0,11],[5,0,7],[6,0,16],[7,255,16],[8,232,3],[9,103,0],[10,54,0],[11,35,1],[12,55,0],[13,86,0],[14,0,4],[15,0,4],[16,0,4],[19,0,14],[20,255,22],[21,255,3],[22,123,0],[23,91,0]]],[11.75,0.81,3.92,2.9375,-0.36,4.16,-0.36,4.16,[[0,40,1],[1,60,0],[2,106,0],[3,198,4],[4,0,10],[5,0,7],[6,0,15],[7,255,16],[8,243,3],[9,107,0],[10,59,0],[11,34,1],[12,55,0],[13,84,0],[14,128,5],[15,0,4],[16,0,3],[19,0,28],[20,255,22],[21,255,3],[22,132,0],[23,101,0]]],[12,0.56,3.96,3,-0.62,4.13,-0.62,4.13,[[0,39,1],[1,60,0],[2,108,0],[3,208,4],[4,0,10],[5,0,7],[6,0,15],[7,255,16],[8,255,4],[9,108,0],[10,58,0],[11,39,1],[12,53,0],[13,84,0],[14,149,5],[15,0,4],[16,0,3],[19,0,42],[20,255,32],[21,255,3],[22,131,4],[23,98,0]]],[12.25,0.32,3.99,3.0625,-0.87,4.08,-0.87,4.08,[[0,39,1],[1,67,0],[2,105,0],[3,220,4],[4,0,10],[5,0,7],[6,0,15],[7,255,14],[8,255,4],[9,116,0],[10,61,0],[11,41,1],[12,53,0],[13,94,0],[14,149,4],[15,0,4],[16,0,4],[20,255,36],[21,255,3],[22,140,5],[23,107,0]]],[12.5,0.07,4,3.125,-1.12,4.02,-1.12,4.02,[[0,45,1],[1,68,0],[2,116,0],[3,233,4],[4,0,9],[5,0,7],[6,0,26],[7,255,27],[8,255,3],[9,119,0],[10,62,0],[11,40,1],[12,61,0],[13,93,0],[14,160,5],[15,0,4],[16,0,4],[17,0,3],[20,255,33],[21,255,10],[22,138,5],[23,108,0]]],[12.75,-0.18,4,3.1416,-1.38,4,-1.38,4,[[0,43,1],[1,67,0],[2,112,0],[3,243,4],[4,0,7],[5,0,7],[6,0,30],[7,255,24],[8,255,3],[9,122,0],[10,64,0],[11,40,1],[12,61,0],[13,92,0],[14,156,4],[15,0,4],[16,0,3],[17,0,4],[20,255,53],[21,255,10],[22,150,5],[23,112,0]]],[13,-0.43,4,3.1416,-1.63,4,-1.63,4,[[0,44,1],[1,69,0],[2,123,0],[3,253,4],[4,0,8],[5,0,7],[6,0,33],[7,255,22],[8,255,3],[9,132,0],[10,70,0],[11,40,1],[12,60,0],[13,101,0],[14,170,5],[15,0,4],[16,0,4],[17,0,2],[20,255,45],[21,255,10],[22,161,4],[23,117,0]]],[13.25,-0.68,4,3.1416,-1.88,4,-1.88,4,[[0,43,1],[1,72,0],[2,122,0],[3,255,3],[4,0,7],[5,0,8],[6,0,21],[7,255,21],[8,255,3],[9,131,3],[10,68,0],[11,40,1],[12,60,0],[13,99,0],[14,166,5],[15,0,4],[16,0,4],[20,255,66],[21,255,10],[22,157,4],[23,118,0]]],[13.5,-0.93,4,3.1416,-2.13,4,-2.13,4,[[0,43,1],[1,72,0],[2,133,0],[3,255,3],[4,0,7],[5,0,7],[7,255,37],[8,255,3],[9,141,5],[10,74,0],[11,45,1],[12,68,0],[13,102,0],[14,181,4],[15,0,3],[16,0,4],[20,255,60],[21,255,8],[22,168,5],[23,123,0]]],[13.75,-1.18,4,3.1416,-2.38,4,-2.38,4,[[0,48,1],[1,72,0],[2,132,5],[3,255,4],[4,0,8],[5,0,7],[7,255,33],[8,255,11],[9,138,5],[10,79,0],[11,43,1],[12,67,0],[13,107,0],[14,178,4],[15,0,3],[16,0,3],[20,255,51],[21,255,7],[22,179,5],[23,131,0]]],[14,-1.43,4,3.1416,-2.63,4,-2.63,4,[[0,50,0],[1,81,0],[2,140,5],[3,255,3],[4,0,7],[5,0,10],[7,255,49],[8,255,10],[9,150,5],[10,83,1],[11,43,1],[12,59,0],[13,107,0],[14,187,5],[15,0,4],[16,0,4],[20,48,43],[21,255,7],[22,188,4],[23,131,3]]],[14.25,-1.68,4,3.1416,-2.88,4,-2.88,4,[[0,50,0],[1,79,0],[2,139,5],[3,255,4],[4,0,7],[5,0,10],[7,255,46],[8,255,10],[9,160,4],[10,87,2],[11,43,1],[12,42,0],[13,115,0],[14,188,5],[15,0,3],[16,0,4],[20,0,32],[21,255,7],[22,195,4],[23,140,5]]],[14.5,-1.93,4,3.1416,-3.13,4,-3.13,4,[[0,49,0],[1,78,0],[2,150,5],[3,255,4],[4,0,7],[5,0,10],[7,255,65],[8,255,10],[9,156,4],[10,90,3],[11,43,1],[12,25,0],[13,117,0],[14,193,4],[15,0,4],[16,0,4],[20,0,11],[21,255,6],[22,198,4],[23,138,5]]],[14.75,-2.18,4,3.1416,-3.38,4,-3.38,4,[[0,49,0],[1,86,0],[2,159,5],[3,255,3],[4,0,7],[5,0,11],[7,255,61],[8,255,7],[9,167,5],[10,99,2],[11,43,1],[12,34,0],[13,113,0],[14,199,5],[15,0,3],[16,0,4],[21,255,6],[22,208,4],[23,150,5]]],[15,-2.43,4,3.1416,-3.63,4,-3.63,4,[[0,56,0],[1,85,0],[2,157,5],[3,255,3],[4,0,7],[5,0,11],[7,255,48],[8,255,8],[9,178,5],[10,105,2],[11,51,1],[12,55,0],[13,124,0],[14,30,4],[15,0,4],[16,0,4],[20,0,14],[21,255,16],[22,219,4],[23,160,4]]],[15.25,-2.68,4,3.1416,-3.88,4,-3.88,4,[[0,56,0],[1,84,0],[2,170,5],[3,255,3],[4,0,7],[5,0,11],[7,190,44],[8,255,7],[9,185,4],[10,106,3],[11,50,1],[12,70,0],[13,123,0],[14,0,4],[15,0,3],[16,0,4],[20,0,12],[21,255,17],[22,229,4],[23,156,5]]],[15.5,-2.93,4,3.1416,-4.13,4,-4.13,4,[[0,55,0],[1,94,0],[2,168,4],[3,255,2],[4,0,7],[5,0,8],[7,0,32],[8,255,6],[9,186,4],[10,113,3],[11,49,1],[12,80,0],[13,129,0],[14,0,4],[15,0,4],[16,0,4],[20,0,12],[21,255,15],[22,241,4],[23,166,5]]],[15.75,-3.18,4,3.1416,-4.38,4,-4.38,4,[[0,54,0],[1,93,0],[2,178,4],[3,255,10],[4,0,7],[5,0,3],[7,0,11],[8,255,6],[9,198,4],[10,125,3],[11,50,1],[12,80,0],[13,134,0],[14,0,4],[15,0,3],[16,0,4],[20,0,13],[21,255,15],[22,254,4],[23,179,4]]],[16,-3.43,4,3.1416,-4.63,4,-4.63,4,[[0,53,0],[1,96,0],[2,187,5],[3,255,11],[4,0,7],[5,0,3],[8,255,6],[9,206,4],[10,130,3],[11,48,0],[12,79,0],[13,131,5],[14,0,4],[15,0,4],[16,0,4],[20,0,14],[21,255,14],[22,255,4],[23,185,4]]],[16.25,-3.68,4,3.1416,-4.88,4,-4.88,4,[[0,61,0],[1,102,0],[2,186,4],[3,255,10],[4,0,7],[5,0,3],[7,0,14],[8,255,18],[9,219,4],[10,137,3],[11,57,0],[12,87,0],[13,140,5],[14,0,4],[15,0,3],[16,0,4],[20,0,26],[21,255,27],[22,255,3],[23,187,4]]],[16.5,-3.93,4,3.1416,-5.13,4,-5.13,4,[[0,60,0],[1,98,0],[2,199,4],[3,255,10],[4,0,7],[5,0,3],[7,0,13],[8,255,16],[9,232,4],[10,147,3],[11,55,0],[12,85,0],[13,139,5],[14,0,3],[15,0,4],[16,0,4],[20,0,30],[21,255,23],[22,255,3],[23,199,4]]],[16.75,-4.18,4,3.1416,-5.38,4,-5.38,4,[[0,60,0],[1,108,0],[2,212,4],[3,33,10],[4,0,7],[5,0,3],[7,0,12],[8,255,16],[9,242,4],[10,155,3],[11,53,0],[12,84,0],[13,149,5],[14,0,4],[15,0,3],[16,0,4],[20,0,42],[21,255,22],[22,255,4],[23,207,4]]],[17,-4.43,4,3.1416,-5.63,4,-5.63,4,[[0,60,0],[1,107,0],[2,213,4],[3,0,10],[4,0,7],[7,0,13],[8,255,15],[9,255,4],[10,167,3],[11,53,0],[12,84,0],[13,149,5],[14,0,4],[15,0,3],[16,0,5],[20,0,4],[21,255,31],[22,255,3],[23,220,4]]],[17.25,-4.68,4,3.1416,-5.88,4,-5.88,4,[[0,67,0],[1,113,0],[2,219,4],[3,0,9],[4,0,7],[7,0,14],[8,255,14],[9,255,4],[10,181,3],[11,53,0],[12,93,0],[13,153,4],[14,0,4],[15,0,4],[16,0,5],[21,255,37],[22,255,2],[23,233,4]]],[17.5,-4.93,4,3.1416,-6.13,4,-6.13,4,[[0,67,0],[1,117,0],[2,233,3],[3,0,7],[4,0,7],[7,0,26],[8,255,28],[9,255,3],[10,191,4],[11,61,0],[12,92,0],[13,160,5],[14,0,4],[15,0,4],[16,0,5],[21,255,34],[22,255,11],[23,242,4]]],[17.75,-5.18,4,3.1416,-6.38,4,-6.38,4,[[0,65,0],[1,112,0],[2,243,4],[3,0,8],[4,0,7],[7,0,30],[8,255,24],[9,255,3],[10,205,4],[11,60,0],[12,92,0],[13,156,4],[14,0,4],[15,0,3],[16,0,4],[21,255,48],[22,255,11],[23,255,4]]],[18,-5.43,4,3.1416,-6.63,4,-6.63,4,[[0,71,0],[1,123,0],[2,253,4],[3,0,7],[4,0,7],[7,0,33],[8,255,22],[9,255,3],[10,217,4],[11,60,0],[12,101,0],[13,170,5],[14,0,4],[15,0,3],[16,0,4],[21,255,43],[22,255,10],[23,255,4]]],[18.25,-5.68,4,3.1416,-6.88,4,-6.88,4,[[0,72,0],[1,122,0],[2,255,3],[3,0,7],[4,0,8],[7,0,9],[8,255,20],[9,255,3],[10,237,4],[11,60,0],[12,99,0],[13,166,5],[14,0,4],[15,0,3],[16,0,5],[21,255,64],[22,255,10],[23,255,4]]],[18.5,-5.93,4,3.1416,-7.13,4,-7.13,4,[[0,72,0],[1,133,0],[2,255,3],[3,0,7],[4,0,10],[8,255,37],[9,255,3],[10,255,3],[11,68,0],[12,102,0],[13,181,4],[14,0,3],[15,0,4],[16,0,4],[21,255,54],[22,255,7],[23,255,3]]],[18.75,-6.18,4,3.1416,-7.38,4,-7.38,4,[[0,73,0],[1,132,5],[2,255,4],[3,0,7],[4,0,10],[8,255,35],[9,255,12],[10,255,3],[11,68,0],[12,107,0],[13,178,4],[14,0,4],[15,0,4],[16,0,5],[21,255,48],[22,255,7],[23,255,3]]],[19,-6.43,4,3.1416,-7.63,4,-7.63,4,[[0,80,0],[1,140,5],[2,255,3],[3,0,7],[4,0,10],[8,255,51],[9,255,10],[10,255,3],[11,63,0],[12,107,0],[13,187,5],[14,0,4],[15,0,4],[16,0,5],[21,0,42],[22,255,7],[23,255,3]]],[19.25,-6.68,4,3.1416,-7.88,4,-7.88,4,[[0,79,0],[1,139,5],[2,255,4],[3,0,7],[4,0,10],[8,255,45],[9,255,10],[10,255,3],[11,48,0],[12,115,0],[13,188,5],[14,0,3],[15,0,4],[16,0,5],[21,0,29],[22,255,7],[23,255,3]]],[19.5,-6.93,4,3.1416,-8.13,4,-8.13,4,[[0,78,0],[1,150,5],[2,255,4],[3,0,7],[4,0,10],[8,255,65],[9,255,10],[10,255,9],[11,32,0],[12,117,0],[13,193,4],[14,0,4],[15,0,4],[16,0,5],[21,0,11],[22,255,7],[23,255,11]]],[19.75,-7.18,4,3.1416,-8.38,4,-8.38,4,[[0,85,0],[1,159,5],[2,255,3],[3,0,7],[4,0,10],[8,255,60],[9,255,8],[10,255,8],[11,26,0],[12,113,0],[13,199,5],[14,0,3],[15,0,4],[16,0,5],[22,255,14],[23,255,10]]],[20,-7.43,4,3.1416,-8.63,4,-8.63,4,[[0,85,0],[1,157,5],[2,255,3],[3,0,7],[4,0,11],[8,255,51],[9,255,7],[10,255,9],[11,49,0],[12,124,0],[13,30,4],[14,0,4],[15,0,4],[16,0,2],[21,0,13],[22,255,18],[23,255,10]]],[20.25,-7.68,4,3.1416,-8.88,4,-8.88,4,[[0,84,0],[1,170,5],[2,255,3],[3,0,7],[4,0,9],[8,42,43],[9,255,7],[10,255,9],[11,66,0],[12,123,0],[13,0,4],[14,0,3],[15,0,4],[21,0,13],[22,255,16],[23,255,10]]],[20.5,-7.93,4,3.1416,-9.13,4,-9.13,4,[[0,93,0],[1,168,4],[2,255,2],[3,0,7],[4,0,3],[8,0,32],[9,255,7],[10,255,8],[11,81,0],[12,129,0],[13,0,4],[14,0,4],[15,0,4],[21,0,13],[22,255,16],[23,255,8]]],[20.75,-8.18,4,3.1416,-9.38,4,-9.38,4,[[0,93,0],[1,178,4],[2,255,10],[3,0,7],[4,0,3],[8,0,10],[9,255,6],[10,255,7],[11,79,0],[12,134,0],[13,0,4],[14,0,3],[15,0,4],[21,0,13],[22,255,14],[23,255,7]]],[21,-8.43,4,3.1416,-9.63,4,-9.63,4,[[0,100,0],[1,187,5],[2,255,11],[3,0,7],[4,0,3],[9,255,9],[10,255,7],[11,79,0],[12,131,5],[13,0,4],[14,0,4],[15,0,4],[21,0,15],[22,255,14],[23,255,7]]],[21.25,-8.68,4,3.1416,-9.88,4,-9.88,4,[[0,101,0],[1,186,4],[2,255,10],[3,0,7],[4,0,3],[8,0,14],[9,255,16],[10,255,7],[11,86,0],[12,140,5],[13,0,4],[14,0,3],[15,0,5],[21,0,27],[22,255,27],[23,255,7]]],[21.5,-8.93,4,3.1416,-10.13,4,-10.13,4,[[0,98,0],[1,199,4],[2,255,10],[3,0,7],[4,0,3],[8,0,12],[9,255,16],[10,255,6],[11,84,0],[12,139,5],[13,0,3],[14,0,4],[15,0,4],[21,0,30],[22,255,23],[23,255,6]]],[21.75,-9.18,4,3.1416,-10.38,4,-10.38,4,[[0,108,0],[1,212,4],[2,33,10],[3,0,7],[4,0,4],[8,0,13],[9,255,15],[10,255,6],[11,84,0],[12,149,5],[13,0,4],[14,0,3],[15,0,4],[21,0,42],[22,255,22],[23,255,6]]],[22,-9.43,4,3.1416,-10.63,4,-10.63,4,[[0,108,0],[1,213,4],[2,0,10],[3,0,8],[4,0,1],[8,0,13],[9,255,16],[10,255,16],[11,91,0],[12,149,5],[13,0,4],[14,0,4],[15,0,5],[22,255,35],[23,255,16]]],[22.25,-9.68,4,3.1416,-10.88,4,-10.88,4,[[0,115,0],[1,219,4],[2,0,9],[3,0,7],[8,0,15],[9,255,13],[10,255,17],[11,93,0],[12,153,4],[13,0,4],[14,0,4],[15,0,5],[22,255,36],[23,255,17]]],[22.5,-9.93,4,3.1416,-11.13,4,-11.13,4,[[0,116,0],[1,233,3],[2,0,7],[3,0,7],[8,0,28],[9,255,27],[10,255,15],[11,92,0],[12,160,5],[13,0,4],[14,0,3],[15,0,5],[22,255,33],[23,255,15]]]]},"w9":{"name":"9 m hairpin, worst legal cones","R":3,"len":9.42,"cx":-3.5110803153770576e-15,"cy":-4.440892098500626e-16,"cones":[[-24,-1.5,"b",0],[-19.04,-1.5,"b",0],[-14.04,-1.5,"b",0],[-9.04,-1.5,"b",0],[-4.08,-1.5,"b",0],[0.91,-1.19,"b",1],[-3.28,1.5,"b",0],[-8.24,1.5,"b",0],[-13.2,1.5,"b",0],[-16,1.5,"b",0],[-24,-4.5,"y",0],[-19.04,-4.5,"y",0],[-14.04,-4.5,"y",0],[-9.04,-4.5,"y",0],[-4.08,-4.5,"y",0],[0.89,-4.41,"y",0],[4.41,-0.89,"y",0],[2.54,3.72,"y",0],[-2.4,4.5,"y",0],[-7.36,4.5,"y",0],[-12.36,4.5,"y",0],[-16,4.5,"y",0]],"smp":[[-16,-16,-3,0,-14.81,-3,-14.81,-3,[[3,255,7],[4,208,4],[5,92,0],[6,161,4],[7,255,11],[8,0,14],[9,0,14],[13,255,7],[14,208,4],[15,101,0],[16,49,0],[17,35,0],[18,115,0],[19,220,4],[20,0,10],[21,0,11]]],[-15.75,-15.75,-3,0,-14.56,-3,-14.56,-3,[[2,0,13],[3,255,17],[4,219,4],[5,101,0],[6,165,5],[7,255,10],[8,0,14],[9,0,14],[12,0,13],[13,255,17],[14,219,4],[15,99,0],[16,51,0],[17,55,0],[18,113,0],[19,218,4],[20,0,6],[21,0,10]]],[-15.5,-15.5,-3,0,-14.31,-3,-14.31,-3,[[2,0,13],[3,255,18],[4,231,4],[5,98,0],[6,168,5],[7,255,10],[8,0,14],[9,0,16],[12,0,13],[13,255,18],[14,231,4],[15,97,0],[16,53,0],[17,66,0],[18,124,0],[19,232,4],[20,0,8],[21,0,10]]],[-15.25,-15.25,-3,0,-14.06,-3,-14.06,-3,[[2,0,12],[3,255,16],[4,240,4],[5,108,0],[6,179,4],[7,255,10],[8,0,14],[9,0,15],[12,0,12],[13,255,16],[14,240,4],[15,107,0],[16,56,0],[17,70,0],[18,123,0],[19,242,4],[20,0,11],[21,0,10]]],[-15,-15,-3,0,-13.81,-3,-13.81,-3,[[2,0,13],[3,255,15],[4,254,4],[5,107,0],[6,188,4],[7,255,10],[8,0,14],[9,0,16],[12,0,13],[13,255,15],[14,254,4],[15,106,0],[16,59,0],[17,80,0],[18,133,0],[19,246,4],[20,0,10],[21,0,10]]],[-14.75,-14.75,-3,0,-13.56,-3,-13.56,-3,[[2,0,13],[3,255,15],[4,255,3],[5,118,0],[6,186,4],[7,255,7],[8,0,21],[9,0,15],[12,0,13],[13,255,15],[14,255,3],[15,116,0],[16,63,0],[17,80,0],[18,132,4],[19,255,3],[20,0,10],[21,0,11]]],[-14.5,-14.5,-3,0,-13.31,-3,-13.31,-3,[[2,0,15],[3,255,19],[4,255,3],[5,115,0],[6,198,4],[7,255,7],[8,0,24],[9,0,16],[12,0,15],[13,255,19],[14,255,3],[15,113,0],[16,63,0],[17,80,0],[18,143,4],[19,255,3],[20,0,10],[21,0,11]]],[-14.25,-14.25,-3,0,-13.06,-3,-13.06,-3,[[2,0,28],[3,255,27],[4,255,4],[5,123,0],[6,209,4],[7,255,7],[8,0,23],[9,0,16],[12,0,28],[13,255,27],[14,255,4],[15,122,0],[16,74,0],[17,86,0],[18,139,5],[19,255,3],[20,0,10],[21,0,10]]],[-14,-14,-3,0,-12.81,-3,-12.81,-3,[[2,0,32],[3,255,22],[4,255,3],[5,122,0],[6,219,4],[7,255,7],[8,0,20],[9,0,17],[12,0,32],[13,255,22],[14,255,3],[15,121,0],[16,74,0],[17,85,0],[18,151,5],[19,255,3],[20,0,11],[21,0,3]]],[-13.75,-13.75,-3,0,-12.56,-3,-12.56,-3,[[2,0,30],[3,255,22],[4,255,3],[5,133,0],[6,232,4],[7,255,7],[8,0,14],[9,0,16],[12,0,30],[13,255,22],[14,255,3],[15,132,0],[16,77,0],[17,84,0],[18,149,5],[19,255,4],[20,0,10],[21,0,3]]],[-13.5,-13.5,-3,0,-12.31,-3,-12.31,-3,[[3,255,37],[4,255,3],[5,132,5],[6,240,4],[7,255,6],[8,0,13],[9,0,6],[13,255,37],[14,255,3],[15,141,4],[16,82,0],[17,94,0],[18,160,4],[19,255,3],[20,0,10],[21,0,3]]],[-13.25,-13.25,-3,0,-12.06,-3,-12.06,-3,[[3,255,34],[4,255,3],[5,140,5],[6,253,4],[7,255,6],[8,0,14],[9,0,7],[13,255,34],[14,255,3],[15,139,5],[16,84,0],[17,93,0],[18,156,5],[19,255,3],[20,0,10],[21,0,3]]],[-13,-13,-3,0,-11.81,-3,-11.81,-3,[[3,255,32],[4,255,11],[5,149,4],[6,255,3],[7,255,17],[8,0,14],[9,0,7],[13,255,32],[14,255,11],[15,151,5],[16,92,0],[17,92,0],[18,167,5],[19,255,3],[20,0,10],[21,0,3]]],[-12.75,-12.75,-3,0,-11.56,-3,-11.56,-3,[[3,255,45],[4,255,10],[5,148,5],[6,255,4],[7,255,16],[8,0,15],[9,0,6],[13,255,45],[14,255,10],[15,151,5],[16,93,0],[17,101,0],[18,168,4],[19,0,3],[20,0,10],[21,0,3]]],[-12.5,-12.5,-3,0,-11.31,-3,-11.31,-3,[[3,255,50],[4,255,10],[5,161,5],[6,255,4],[7,255,17],[8,0,16],[13,255,50],[14,255,10],[15,157,5],[16,92,0],[17,99,0],[18,179,4],[19,0,3],[20,0,11],[21,0,3]]],[-12.25,-12.25,-3,0,-11.06,-3,-11.06,-3,[[3,255,64],[4,255,10],[5,167,5],[6,255,3],[7,255,16],[8,0,15],[13,255,64],[14,255,10],[15,169,4],[16,102,0],[17,107,0],[18,186,4],[19,0,3],[20,0,10],[21,0,3]]],[-12,-12,-3,0,-10.81,-3,-10.81,-3,[[3,255,52],[4,255,7],[5,168,5],[6,255,3],[7,71,15],[8,0,16],[13,255,52],[14,255,7],[15,177,4],[16,98,0],[17,108,0],[18,186,4],[19,0,2],[20,0,10],[21,0,4]]],[-11.75,-11.75,-3,0,-10.56,-3,-10.56,-3,[[3,255,46],[4,255,7],[5,178,4],[6,255,3],[7,0,15],[8,0,16],[13,255,46],[14,255,7],[15,178,5],[16,108,0],[17,105,0],[18,198,5],[19,0,2],[20,0,10],[21,0,3]]],[-11.5,-11.5,-3,0,-10.31,-3,-10.31,-3,[[3,0,32],[4,255,7],[5,188,4],[6,255,3],[7,0,14],[8,0,17],[13,0,32],[14,255,7],[15,187,5],[16,107,0],[17,118,0],[18,205,4],[19,0,10],[20,0,10],[21,0,3]]],[-11.25,-11.25,-3,0,-10.06,-3,-10.06,-3,[[3,0,14],[4,255,6],[5,200,4],[6,255,3],[7,0,16],[8,0,17],[13,0,14],[14,255,6],[15,199,4],[16,116,0],[17,113,0],[18,207,5],[19,0,12],[20,0,10],[21,0,3]]],[-11,-11,-3,0,-9.81,-3,-9.81,-3,[[4,255,6],[5,209,4],[6,255,11],[7,0,15],[8,0,16],[14,255,6],[15,208,4],[16,115,0],[17,123,0],[18,221,4],[19,0,9],[20,0,11],[21,0,4]]],[-10.75,-10.75,-3,0,-9.56,-3,-9.56,-3,[[3,0,13],[4,255,18],[5,214,5],[6,255,11],[7,0,14],[8,0,13],[13,0,13],[14,255,18],[15,221,4],[16,123,0],[17,122,0],[18,226,4],[19,0,6],[20,0,10],[21,0,4]]],[-10.5,-10.5,-3,0,-9.31,-3,-9.31,-3,[[3,0,13],[4,255,16],[5,225,4],[6,255,10],[7,0,14],[8,0,6],[13,0,13],[14,255,16],[15,234,4],[16,122,0],[17,134,0],[18,229,4],[19,0,11],[20,0,7],[21,0,4]]],[-10.25,-10.25,-3,0,-9.06,-3,-9.06,-3,[[3,0,12],[4,255,16],[5,232,4],[6,255,10],[7,0,14],[8,0,7],[13,0,12],[14,255,16],[15,242,4],[16,133,0],[17,130,4],[18,243,3],[19,0,11],[20,0,3],[21,0,4]]],[-10,-10,-3,0,-8.81,-3,-8.81,-3,[[3,0,13],[4,255,16],[5,249,4],[6,255,8],[7,0,12],[8,0,6],[13,0,13],[14,255,16],[15,255,4],[16,132,5],[17,140,5],[18,252,4],[19,0,10],[20,0,3],[21,0,3]]],[-9.75,-9.75,-3,0,-8.56,-3,-8.56,-3,[[3,0,13],[4,255,14],[5,255,3],[6,255,7],[7,0,22],[13,0,13],[14,255,14],[15,255,4],[16,140,5],[17,138,5],[18,255,3],[19,0,10],[20,0,3],[21,0,4]]],[-9.5,-9.5,-3,0,-8.31,-3,-8.31,-3,[[3,0,15],[4,255,26],[5,255,4],[6,255,7],[7,0,24],[13,0,15],[14,255,26],[15,255,4],[16,146,5],[17,149,5],[18,255,3],[19,0,10],[20,0,3]]],[-9.25,-9.25,-3,0,-8.06,-3,-8.06,-3,[[3,0,28],[4,255,23],[5,255,3],[6,255,7],[7,0,24],[13,0,28],[14,255,23],[15,255,3],[16,149,5],[17,148,5],[18,255,3],[19,0,10],[20,0,3]]],[-9,-9,-3,0,-7.81,-3,-7.81,-3,[[3,0,32],[4,255,22],[5,255,4],[6,255,7],[7,0,21],[13,0,32],[14,255,22],[15,255,3],[16,161,5],[17,159,5],[18,255,3],[19,0,11],[20,0,3]]],[-8.75,-8.75,-3,0,-7.56,-3,-7.56,-3,[[3,0,30],[4,255,21],[5,255,3],[6,255,7],[7,0,13],[13,0,30],[14,255,21],[15,255,3],[16,164,5],[17,167,5],[18,255,4],[19,0,10],[20,0,3]]],[-8.5,-8.5,-3,0,-7.31,-3,-7.31,-3,[[4,255,36],[5,255,3],[6,255,7],[7,0,14],[14,255,36],[15,255,3],[16,169,5],[17,167,4],[18,255,3],[19,0,10],[20,0,3]]],[-8.25,-8.25,-3,0,-7.06,-3,-7.06,-3,[[4,255,35],[5,255,3],[6,255,6],[7,0,14],[14,255,35],[15,255,9],[16,178,5],[17,180,5],[18,255,3],[19,0,10],[20,0,3]]],[-8,-8,-3,0,-6.81,-3,-6.81,-3,[[4,255,48],[5,255,11],[6,255,18],[7,0,14],[14,255,48],[15,255,11],[16,188,4],[17,179,4],[18,255,3],[19,0,10],[20,0,4]]],[-7.75,-7.75,-3,0,-6.56,-3,-6.56,-3,[[4,255,45],[5,255,11],[6,255,18],[7,0,14],[14,255,45],[15,255,10],[16,197,4],[17,187,4],[18,0,3],[19,0,10],[20,0,4]]],[-7.5,-7.5,-3,0,-6.31,-3,-6.31,-3,[[4,255,61],[5,255,10],[6,255,17],[7,0,15],[14,255,61],[15,255,10],[16,198,4],[17,199,5],[18,0,3],[19,0,11],[20,0,4]]],[-7.25,-7.25,-3,0,-6.06,-3,-6.06,-3,[[4,255,62],[5,255,10],[6,255,16],[7,0,15],[14,255,62],[15,255,8],[16,206,4],[17,205,5],[18,0,3],[19,0,10],[20,0,4]]],[-7,-7,-3,0,-5.81,-3,-5.81,-3,[[4,255,51],[5,255,7],[6,3,15],[7,0,16],[14,255,51],[15,255,8],[16,220,4],[17,207,4],[18,0,3],[19,0,10],[20,0,4]]],[-6.75,-6.75,-3,0,-5.56,-3,-5.56,-3,[[4,255,45],[5,255,7],[6,0,15],[7,0,16],[14,255,45],[15,255,7],[16,229,4],[17,219,4],[18,0,3],[19,0,10],[20,0,3]]],[-6.5,-6.5,-3,0,-5.31,-3,-5.31,-3,[[4,0,33],[5,255,7],[6,0,15],[7,0,17],[14,0,33],[15,255,7],[16,242,4],[17,230,4],[18,0,10],[19,0,10],[20,0,4]]],[-6.25,-6.25,-3,0,-5.06,-3,-5.06,-3,[[4,0,12],[5,255,7],[6,0,15],[7,0,17],[14,0,12],[15,255,6],[16,255,4],[17,228,4],[18,0,10],[19,0,10],[20,0,4]]],[-6,-6,-3,0,-4.81,-3,-4.81,-3,[[5,255,6],[6,0,14],[7,0,18],[15,255,6],[16,255,4],[17,242,4],[18,0,10],[19,0,11],[20,0,2]]],[-5.75,-5.75,-3,0,-4.56,-3,-4.56,-3,[[4,0,14],[5,255,16],[6,0,14],[7,0,8],[14,0,14],[15,255,18],[16,255,3],[17,255,3],[18,0,6],[19,0,10]]],[-5.5,-5.5,-3,0,-4.31,-3,-4.31,-3,[[4,0,13],[5,255,18],[6,0,14],[7,0,6],[14,0,13],[15,255,16],[16,255,3],[17,255,4],[18,0,10],[19,0,7]]],[-5.25,-5.25,-3,0,-4.06,-3,-4.06,-3,[[4,0,13],[5,255,16],[6,0,13],[7,0,6],[14,0,13],[15,255,16],[16,255,3],[17,255,4],[18,0,10],[19,0,3]]],[-5,-5,-3,0,-3.81,-3,-3.81,-3,[[4,0,13],[5,255,16],[6,0,18],[7,0,6],[14,0,13],[15,255,14],[16,255,3],[17,255,3],[18,0,11],[19,0,3]]],[-4.75,-4.75,-3,0,-3.56,-3,-3.56,-3,[[4,0,14],[5,255,15],[6,0,22],[14,0,14],[15,255,14],[16,255,3],[17,255,3],[18,0,11],[19,0,3]]],[-4.5,-4.5,-3,0,-3.31,-3,-3.31,-3,[[4,0,15],[5,255,13],[6,0,24],[14,0,15],[15,255,28],[16,255,10],[17,255,3],[18,0,10],[19,0,3]]],[-4.25,-4.25,-3,0,-3.06,-3,-3.06,-3,[[4,0,30],[5,255,27],[6,0,22],[14,0,30],[15,255,23],[16,255,11],[17,255,3],[18,0,10],[19,0,3]]],[-4,-4,-3,0,-2.81,-3,-2.81,-3,[[4,0,34],[5,255,22],[6,0,18],[14,0,34],[15,255,22],[16,255,10],[17,255,3],[18,0,10],[19,0,3]]],[-3.75,-3.75,-3,0,-2.56,-3,-2.56,-3,[[4,0,18],[5,255,22],[6,0,14],[14,0,18],[15,255,20],[16,255,9],[17,255,3],[18,0,10],[19,0,3]]],[-3.5,-3.5,-3,0,-2.31,-3,-2.31,-3,[[5,255,32],[6,0,13],[15,255,36],[16,255,7],[17,255,3],[18,0,10],[19,0,3]]],[-3.25,-3.25,-3,0,-2.06,-3,-2.06,-3,[[5,255,36],[6,0,14],[15,255,34],[16,255,7],[17,255,3],[18,0,10],[19,0,3]]],[-3,-3,-3,0,-1.81,-3,-1.81,-3,[[5,255,33],[6,0,14],[15,255,52],[16,255,7],[17,255,10],[18,0,10],[19,0,4]]],[-2.75,-2.75,-3,0,-1.56,-3,-1.56,-3,[[5,255,53],[6,0,14],[15,255,43],[16,255,7],[17,255,11],[18,0,10],[19,0,4]]],[-2.5,-2.5,-3,0,-1.31,-3,-1.31,-3,[[5,255,45],[6,0,15],[15,255,66],[16,255,7],[17,136,11],[18,0,10],[19,0,4]]],[-2.25,-2.25,-3,0,-1.06,-3,-1.06,-3,[[5,255,63],[6,0,15],[15,255,60],[16,255,6],[17,0,11],[18,0,10],[19,0,4]]],[-2,-2,-3,0,-0.81,-3,-0.81,-3,[[5,255,62],[6,0,16],[15,255,48],[16,255,16],[17,0,10],[18,0,11],[19,0,4]]],[-1.75,-1.75,-3,0,-0.56,-3,-0.56,-3,[[5,0,53],[6,0,16],[15,255,44],[16,255,16],[17,0,10],[18,0,11],[19,0,3]]],[-1.5,-1.5,-3,0,-0.31,-3,-0.31,-3,[[5,0,29],[6,0,16],[15,0,31],[16,255,16],[17,0,10],[18,0,11],[19,0,4]]],[-1.25,-1.25,-3,0,-0.06,-3,-0.06,-3,[[5,0,24],[6,0,16],[15,0,11],[16,255,15],[17,0,10],[18,0,10],[19,0,4]]],[-1,-1,-3,0,0.19,-3,0.19,-3,[[5,0,17],[6,0,17],[16,255,14],[17,0,7],[18,0,10],[19,0,2]]],[-0.75,-0.75,-3,0,0.44,-3,0.44,-3,[[5,0,30],[6,0,7],[16,255,24],[17,0,8],[18,0,11]]],[-0.5,-0.5,-3,0,0.69,-3,0.69,-3,[[5,0,30],[6,0,7],[16,255,26],[17,0,7],[18,0,4]]],[-0.25,-0.25,-3,0,0.94,-3,0.94,-3,[[5,0,28],[6,0,7],[16,255,22],[17,0,7],[18,0,3]]],[0,0,-3,0,1.19,-3,1.19,-3,[[5,0,30],[6,0,5],[16,255,20],[17,0,7],[18,0,3]]],[0.25,0.25,-2.99,0.0833,1.44,-2.89,1.44,-2.89,[[5,0,28],[6,0,7],[15,0,14],[16,255,37],[17,0,7],[18,0,3],[19,0,2]]],[0.5,0.5,-2.96,0.1667,1.67,-2.76,1.67,-2.76,[[5,0,28],[6,0,7],[15,0,30],[16,255,34],[17,0,7],[18,0,3],[19,0,4]]],[0.75,0.74,-2.91,0.25,1.9,-2.61,1.9,-2.61,[[5,0,26],[6,0,7],[15,0,40],[16,255,51],[17,0,6],[18,0,3],[19,0,4]]],[1,0.98,-2.83,0.3333,2.11,-2.45,2.11,-2.45,[[5,0,28],[6,0,7],[16,255,42],[17,0,6],[18,0,2],[19,0,5]]],[1.25,1.21,-2.74,0.4167,2.3,-2.26,2.3,-2.26,[[5,0,28],[6,0,7],[16,255,62],[17,0,6],[18,0,3],[19,0,4]]],[1.5,1.44,-2.63,0.5,2.48,-2.06,2.48,-2.06,[[5,0,28],[6,0,7],[7,0,5],[16,255,51],[17,0,15],[18,0,3],[19,0,4]]],[1.75,1.65,-2.5,0.5833,2.65,-1.85,2.65,-1.85,[[5,0,30],[6,0,7],[7,0,4],[16,255,43],[17,255,18],[18,0,5],[19,0,5]]],[2,1.86,-2.36,0.6667,2.79,-1.62,2.79,-1.62,[[5,0,32],[6,0,7],[7,0,5],[16,255,28],[17,255,17],[18,0,10],[19,0,4]]],[2.25,2.04,-2.2,0.75,2.92,-1.38,2.92,-1.38,[[5,0,44],[6,0,8],[7,0,4],[16,255,13],[17,255,15],[18,0,10],[19,0,5]]],[2.5,2.22,-2.02,0.8333,3.02,-1.14,3.02,-1.14,[[0,0,1],[1,0,1],[3,0,5],[4,0,3],[5,0,40],[6,0,7],[7,0,4],[17,255,15],[18,0,10],[19,0,5]]],[2.75,2.38,-1.83,0.9167,3.11,-0.88,3.11,-0.88,[[0,0,1],[3,0,5],[4,0,9],[5,0,18],[6,0,7],[7,0,5],[10,0,1],[17,255,14],[18,0,10],[19,0,4]]],[3,2.52,-1.62,1,3.17,-0.62,3.17,-0.62,[[0,0,1],[1,0,1],[3,0,5],[4,0,10],[5,0,2],[6,0,7],[7,0,5],[10,0,1],[11,0,1],[17,255,27],[18,0,10],[19,0,5]]],[3.25,2.65,-1.41,1.0833,3.21,-0.35,3.21,-0.35,[[0,0,1],[3,0,4],[4,0,10],[6,0,7],[7,0,4],[10,0,1],[17,255,22],[18,0,10],[19,0,4]]],[3.5,2.76,-1.18,1.1667,3.23,-0.08,3.23,-0.08,[[0,0,1],[1,0,1],[3,0,5],[4,0,10],[6,0,7],[7,0,4],[10,0,1],[11,0,1],[13,0,5],[17,255,21],[18,0,9],[19,0,4]]],[3.75,2.85,-0.95,1.25,3.22,0.18,3.22,0.18,[[0,0,1],[3,0,5],[4,0,10],[6,0,7],[7,0,5],[10,0,1],[11,0,1],[13,0,4],[16,0,15],[17,255,38],[18,0,8],[19,0,5]]],[4,2.92,-0.71,1.3333,3.2,0.45,3.2,0.45,[[0,0,1],[1,0,1],[3,0,4],[4,0,11],[6,0,7],[7,0,5],[10,0,1],[11,0,1],[13,0,5],[16,0,30],[17,255,34],[18,0,8],[19,0,5]]],[4.25,2.96,-0.46,1.4167,3.15,0.72,3.15,0.72,[[0,0,2],[1,0,1],[3,0,5],[4,0,10],[6,0,7],[7,0,4],[10,0,2],[11,0,1],[13,0,5],[14,0,3],[16,0,44],[17,255,51],[18,0,7],[19,0,4]]],[4.5,2.99,-0.21,1.5,3.08,0.98,3.08,0.98,[[0,0,1],[1,0,1],[3,0,5],[4,0,10],[6,0,7],[7,0,5],[10,0,2],[11,0,1],[13,0,5],[14,0,4],[17,255,45],[18,0,6],[19,0,5]]],[4.75,3,0.04,1.5833,2.98,1.23,2.98,1.23,[[0,0,1],[1,0,1],[3,0,4],[4,0,10],[6,0,7],[7,0,4],[10,0,1],[11,0,1],[13,0,5],[14,0,4],[17,255,63],[18,255,7],[19,0,4]]],[5,2.99,0.29,1.6667,2.87,1.47,2.87,1.47,[[0,0,1],[1,0,1],[3,0,4],[4,0,10],[6,0,6],[7,0,4],[10,0,1],[11,0,1],[13,0,5],[14,0,3],[17,255,51],[18,255,6],[19,0,4]]],[5.25,2.95,0.53,1.75,2.74,1.71,2.74,1.71,[[0,0,1],[3,0,5],[4,0,10],[6,0,6],[7,0,5],[10,0,1],[11,0,1],[13,0,5],[14,0,3],[17,255,42],[18,255,6],[19,0,4]]],[5.5,2.9,0.78,1.8333,2.59,1.93,2.59,1.93,[[0,0,2],[1,0,1],[3,0,5],[4,0,11],[5,0,1],[6,0,6],[7,0,4],[10,0,1],[13,0,4],[14,0,4],[17,255,28],[18,255,18],[19,14,4]]],[5.75,2.82,1.02,1.9167,2.42,2.14,2.42,2.14,[[0,0,1],[1,0,1],[3,0,5],[4,0,10],[5,0,7],[6,0,17],[7,0,4],[10,0,1],[11,0,1],[13,0,5],[14,0,3],[17,255,14],[18,255,17],[19,244,3]]],[6,2.73,1.25,2,2.23,2.33,2.23,2.33,[[0,0,1],[1,0,1],[3,0,5],[4,0,10],[5,0,13],[6,0,16],[7,0,4],[10,0,1],[11,0,1],[13,0,3],[14,0,4],[18,255,15],[19,255,4],[20,107,0],[21,73,0]]],[6.25,2.61,1.47,2.0833,2.03,2.51,2.03,2.51,[[0,0,1],[3,0,4],[4,0,10],[5,0,20],[6,0,16],[7,0,4],[10,0,2],[11,0,1],[13,0,5],[14,0,3],[18,255,15],[19,255,4],[20,117,0],[21,72,0]]],[6.5,2.48,1.68,2.1667,1.81,2.67,1.81,2.67,[[0,0,1],[3,0,4],[4,0,10],[5,0,22],[6,0,16],[7,0,4],[8,8,0],[9,72,0],[10,0,1],[11,0,1],[13,0,4],[14,0,3],[18,255,13],[19,255,3],[20,114,0],[21,73,0]]],[6.75,2.33,1.88,2.25,1.59,2.81,1.59,2.81,[[0,0,1],[3,0,5],[4,0,7],[5,0,22],[6,0,16],[7,241,4],[8,108,0],[9,80,0],[10,0,1],[11,0,1],[13,0,5],[14,0,4],[15,0,1],[18,255,27],[19,255,3],[20,124,0],[21,80,0]]],[7,2.17,2.07,2.3333,1.35,2.93,1.35,2.93,[[0,35,1],[1,54,0],[3,0,5],[4,0,7],[5,0,22],[6,0,14],[7,254,3],[8,118,0],[9,80,0],[10,0,1],[11,0,1],[13,0,4],[14,0,3],[15,0,9],[18,255,23],[19,255,4],[20,123,0],[21,79,0]]],[7.25,1.99,2.25,2.4167,1.1,3.04,1.1,3.04,[[0,34,1],[1,54,0],[2,98,0],[3,0,4],[4,0,7],[5,0,24],[6,0,14],[7,255,4],[8,116,0],[9,78,0],[10,18,1],[11,0,1],[13,0,5],[14,0,3],[15,0,10],[17,0,14],[18,255,20],[19,255,3],[20,132,0],[21,80,0]]],[7.5,1.8,2.4,2.5,0.84,3.12,0.84,3.12,[[0,40,1],[1,56,0],[2,102,0],[3,0,5],[4,0,7],[5,0,27],[6,237,27],[7,255,3],[8,124,0],[9,85,0],[10,25,1],[11,57,0],[13,0,5],[14,0,4],[15,0,7],[17,0,28],[18,255,37],[19,255,3],[20,141,5],[21,85,0]]],[7.75,1.59,2.54,2.5833,0.58,3.18,0.58,3.18,[[0,40,1],[1,61,0],[2,98,0],[3,207,4],[4,0,7],[5,0,28],[6,255,23],[7,255,3],[8,122,0],[9,84,0],[10,35,1],[11,56,0],[12,84,0],[13,0,5],[14,0,3],[15,0,10],[17,0,44],[18,255,33],[19,255,10],[20,139,5],[21,85,0]]],[8,1.37,2.67,2.6667,0.31,3.21,0.31,3.21,[[0,40,1],[1,60,0],[2,108,0],[3,220,4],[4,0,7],[5,0,27],[6,255,22],[7,255,3],[8,133,0],[9,91,0],[10,34,1],[11,54,0],[12,94,0],[13,0,4],[14,0,3],[15,0,11],[18,255,46],[19,255,10],[20,150,5],[21,92,0]]],[8.25,1.14,2.77,2.75,0.04,3.23,0.04,3.23,[[0,40,1],[1,60,0],[2,106,0],[3,232,4],[4,0,7],[5,0,24],[6,255,20],[7,255,3],[8,132,5],[9,93,0],[10,39,1],[11,53,0],[12,93,0],[13,0,5],[14,0,3],[15,0,11],[18,255,43],[19,255,10],[20,160,5],[21,92,0]]],[8.5,0.91,2.86,2.8333,-0.23,3.22,-0.23,3.22,[[0,39,0],[1,67,0],[2,117,0],[3,242,4],[4,0,7],[5,0,14],[6,255,37],[7,255,3],[8,139,5],[9,92,0],[10,40,1],[11,61,0],[12,92,0],[13,180,4],[14,0,3],[15,0,11],[18,255,64],[19,255,10],[20,157,5],[21,92,0]]],[8.75,0.67,2.92,2.9167,-0.49,3.19,-0.49,3.19,[[0,39,1],[1,67,0],[2,116,0],[3,255,4],[4,0,6],[5,0,13],[6,255,35],[7,255,12],[8,151,5],[9,101,0],[10,40,1],[11,60,0],[12,102,0],[13,182,4],[14,0,3],[15,0,11],[18,255,51],[19,255,8],[20,169,5],[21,101,0]]],[9,0.42,2.97,3,-0.76,3.14,-0.76,3.14,[[0,44,1],[1,66,0],[2,123,0],[3,255,3],[4,0,18],[5,0,14],[6,255,48],[7,255,10],[8,148,5],[9,98,0],[10,39,0],[11,60,0],[12,98,0],[13,186,5],[14,0,3],[15,0,11],[18,255,47],[19,255,7],[20,179,5],[21,98,0]]],[9.25,0.17,2.99,3.0833,-1.01,3.06,-1.01,3.06,[[0,44,1],[1,69,0],[2,122,0],[3,255,3],[4,255,17],[5,0,14],[6,255,43],[7,255,10],[8,157,5],[9,108,0],[10,39,1],[11,59,0],[12,97,0],[13,199,4],[14,0,2],[15,0,10],[18,255,42],[19,255,7],[20,188,4],[21,108,0]]],[9.5,-0.08,3,3.1416,-1.27,3,-1.27,3,[[0,45,1],[1,71,0],[2,133,0],[3,255,3],[4,255,16],[5,0,14],[6,255,62],[7,255,9],[8,169,5],[9,106,0],[10,39,1],[11,68,0],[12,82,0],[13,208,4],[14,0,11],[15,0,11],[18,0,30],[19,255,7],[20,193,4],[21,106,0]]],[9.75,-0.33,3,3.1416,-1.52,3,-1.52,3,[[0,43,0],[1,73,0],[2,137,5],[3,255,4],[4,57,16],[5,0,14],[6,255,51],[7,255,7],[8,179,4],[9,117,0],[10,44,1],[11,67,0],[12,60,0],[13,216,4],[14,0,10],[15,0,11],[18,0,10],[19,255,7],[20,198,4],[21,117,0]]],[10,-0.58,3,3.1416,-1.77,3,-1.77,3,[[0,44,1],[1,70,0],[2,139,5],[3,255,3],[4,0,16],[5,0,15],[6,255,46],[7,255,7],[8,177,4],[9,116,0],[10,45,1],[11,66,0],[12,85,0],[13,219,4],[14,0,10],[15,0,10],[19,255,13],[20,207,4],[21,116,0]]],[10.25,-0.83,3,3.1416,-2.02,3,-2.02,3,[[0,50,1],[1,81,0],[2,151,4],[3,255,3],[4,0,15],[5,0,15],[6,0,34],[7,255,7],[8,188,4],[9,124,0],[10,43,1],[11,68,0],[12,122,0],[13,232,4],[14,0,11],[15,0,11],[18,0,13],[19,255,18],[20,219,4],[21,124,0]]],[10.5,-1.08,3,3.1416,-2.27,3,-2.27,3,[[0,50,0],[1,79,0],[2,149,4],[3,255,3],[4,0,15],[5,0,16],[6,0,14],[7,255,6],[8,199,5],[9,122,0],[10,44,1],[11,73,0],[12,122,0],[13,238,4],[14,0,11],[15,0,10],[18,0,12],[19,255,16],[20,230,4],[21,122,0]]],[10.75,-1.33,3,3.1416,-2.52,3,-2.52,3,[[0,50,1],[1,78,0],[2,160,4],[3,255,12],[4,0,14],[5,0,17],[7,255,6],[8,208,5],[9,134,0],[10,43,1],[11,72,0],[12,127,0],[13,242,3],[14,0,11],[15,0,2],[18,0,12],[19,255,16],[20,242,4],[21,134,0]]],[11,-1.58,3,3.1416,-2.77,3,-2.77,3,[[0,50,1],[1,86,0],[2,164,5],[3,255,10],[4,0,14],[5,0,17],[6,0,14],[7,255,18],[8,219,4],[9,136,5],[10,51,1],[11,71,0],[12,132,0],[13,255,4],[14,0,10],[15,0,3],[18,0,13],[19,255,14],[20,255,4],[21,136,5]]],[11.25,-1.83,3,3.1416,-3.02,3,-3.02,3,[[0,50,0],[1,84,0],[2,169,5],[3,255,10],[4,0,14],[5,0,16],[6,0,13],[7,255,16],[8,234,4],[9,139,5],[10,50,1],[11,79,0],[12,132,5],[13,255,3],[14,0,10],[15,0,3],[18,0,15],[19,255,14],[20,255,4],[21,139,5]]],[11.5,-2.08,3,3.1416,-3.27,3,-3.27,3,[[0,56,0],[1,91,0],[2,180,4],[3,255,10],[4,0,13],[5,0,4],[6,0,12],[7,255,16],[8,242,3],[9,151,4],[10,50,0],[11,80,0],[12,140,5],[13,255,3],[14,0,10],[15,0,3],[18,0,28],[19,255,27],[20,255,3],[21,151,4]]],[11.75,-2.33,3,3.1416,-3.52,3,-3.52,3,[[0,54,0],[1,93,0],[2,188,4],[3,255,7],[4,0,14],[6,0,13],[7,255,16],[8,255,3],[9,148,5],[10,49,0],[11,78,0],[12,139,5],[13,255,3],[14,0,10],[15,0,3],[18,0,30],[19,255,22],[20,255,3],[21,148,5]]],[12,-2.58,3,3.1416,-3.77,3,-3.77,3,[[0,53,0],[1,92,0],[2,186,4],[3,255,8],[4,0,22],[6,0,14],[7,255,14],[8,255,3],[9,159,5],[10,48,1],[11,86,0],[12,150,5],[13,255,4],[14,0,10],[15,0,3],[18,0,42],[19,255,22],[20,255,4],[21,159,5]]],[12.25,-2.83,3,3.1416,-4.02,3,-4.02,3,[[0,53,0],[1,101,0],[2,198,4],[3,255,7],[4,0,23],[6,0,15],[7,255,25],[8,255,4],[9,169,4],[10,56,0],[11,85,0],[12,155,5],[13,255,3],[14,0,7],[15,0,3],[18,0,1],[19,255,35],[20,255,3],[21,169,4]]],[12.5,-3.08,3,3.1416,-4.27,3,-4.27,3,[[0,61,0],[1,98,0],[2,208,4],[3,255,7],[4,0,23],[6,0,29],[7,255,22],[8,255,3],[9,171,4],[10,55,0],[11,84,0],[12,158,4],[13,255,3],[14,0,9],[15,0,3],[19,255,36],[20,255,2],[21,171,4]]],[12.75,-3.33,3,3.1416,-4.52,3,-4.52,3,[[0,61,0],[1,106,0],[2,220,4],[3,255,7],[4,0,20],[6,0,34],[7,255,22],[8,255,3],[9,178,4],[10,54,0],[11,93,0],[12,166,5],[13,255,4],[14,0,10],[15,0,4],[19,255,33],[20,255,11],[21,178,4]]],[13,-3.58,3,3.1416,-4.77,3,-4.77,3,[[0,60,0],[1,108,0],[2,233,4],[3,255,6],[4,0,14],[6,0,27],[7,255,20],[8,255,3],[9,186,5],[10,53,0],[11,92,0],[12,166,5],[13,68,3],[14,0,10],[15,0,3],[19,255,47],[20,255,11],[21,186,5]]],[13.25,-3.83,3,3.1416,-5.02,3,-5.02,3,[[0,59,0],[1,105,0],[2,240,4],[3,255,7],[4,0,13],[7,255,37],[8,255,3],[9,199,4],[10,57,0],[11,92,0],[12,181,4],[13,0,3],[14,0,10],[15,0,3],[19,255,45],[20,255,10],[21,199,4]]],[13.5,-4.08,3,3.1416,-5.27,3,-5.27,3,[[0,68,0],[1,116,0],[2,252,4],[3,255,6],[4,0,13],[7,255,34],[8,255,8],[9,211,4],[10,61,0],[11,102,0],[12,179,4],[13,0,2],[14,0,10],[15,0,4],[19,255,64],[20,255,10],[21,211,4]]],[13.75,-4.33,3,3.1416,-5.52,3,-5.52,3,[[0,67,0],[1,112,0],[2,255,3],[3,255,17],[4,0,14],[7,255,48],[8,255,11],[9,219,4],[10,60,0],[11,99,0],[12,187,4],[13,0,3],[14,0,10],[15,0,4],[19,255,53],[20,255,7],[21,219,4]]],[14,-4.58,3,3.1416,-5.77,3,-5.77,3,[[0,64,0],[1,122,0],[2,255,4],[3,255,17],[4,0,14],[7,255,45],[8,255,10],[9,230,4],[10,60,0],[11,100,0],[12,198,5],[13,0,3],[14,0,10],[15,0,4],[19,255,48],[20,255,7],[21,230,4]]],[14.25,-4.83,3,3.1416,-6.02,3,-6.02,3,[[0,72,0],[1,122,0],[2,255,4],[3,255,18],[4,0,14],[7,255,60],[8,255,10],[9,241,4],[10,59,0],[11,106,0],[12,199,4],[13,0,8],[14,0,10],[15,0,3],[19,0,42],[20,255,6],[21,241,4]]],[14.5,-5.08,3,3.1416,-6.27,3,-6.27,3,[[0,73,0],[1,133,0],[2,255,3],[3,255,16],[4,0,14],[7,255,62],[8,255,7],[9,254,4],[10,67,0],[11,82,0],[12,208,4],[13,0,10],[14,0,10],[15,0,4],[19,0,25],[20,255,7],[21,254,4]]],[14.75,-5.33,3,3.1416,-6.52,3,-6.52,3,[[0,70,0],[1,137,5],[2,255,4],[3,1,15],[4,0,16],[7,255,51],[8,255,7],[9,255,3],[10,68,0],[11,60,0],[12,216,4],[13,0,12],[14,0,12],[15,0,3],[19,0,10],[20,255,7],[21,255,3]]],[15,-5.58,3,3.1416,-6.77,3,-6.77,3,[[0,78,0],[1,139,5],[2,255,3],[3,0,16],[4,0,16],[7,255,46],[8,255,7],[9,255,3],[10,66,0],[11,85,0],[12,219,4],[13,0,10],[14,0,10],[19,0,1],[20,255,13],[21,255,3]]],[15.25,-5.83,3,3.1416,-7.02,3,-7.02,3,[[0,80,0],[1,151,4],[2,255,3],[3,0,16],[4,0,17],[7,0,32],[8,255,7],[9,255,4],[10,71,0],[11,122,0],[12,232,4],[13,0,10],[14,0,10],[19,0,14],[20,255,18],[21,255,4]]],[15.5,-6.08,3,3.1416,-7.27,3,-7.27,3,[[0,80,0],[1,149,4],[2,255,3],[3,0,14],[4,0,18],[7,0,11],[8,255,7],[9,255,3],[10,73,0],[11,122,0],[12,238,4],[13,0,10],[14,0,3],[19,0,13],[20,255,16],[21,255,3]]],[15.75,-6.33,3,3.1416,-7.52,3,-7.52,3,[[0,84,0],[1,160,4],[2,255,12],[3,0,14],[4,0,17],[8,255,7],[9,255,3],[10,72,0],[11,127,0],[12,242,3],[13,0,10],[14,0,3],[19,0,13],[20,255,16],[21,255,3]]],[16,-6.58,3,3.1416,-7.77,3,-7.77,3,[[0,85,0],[1,164,5],[2,255,10],[3,0,14],[4,0,6],[7,0,14],[8,255,17],[9,255,3],[10,72,0],[11,132,0],[12,255,4],[13,0,11],[14,0,3],[19,0,13],[20,255,14],[21,255,3]]],[16.25,-6.83,3,3.1416,-8.02,3,-8.02,3,[[0,84,0],[1,169,5],[2,255,10],[3,0,13],[4,0,7],[7,0,13],[8,255,17],[9,255,3],[10,80,0],[11,132,5],[12,255,3],[13,0,11],[14,0,3],[19,0,15],[20,255,14],[21,255,3]]],[16.5,-7.08,3,3.1416,-8.27,3,-8.27,3,[[0,93,0],[1,180,4],[2,255,10],[3,0,14],[4,0,6],[7,0,13],[8,255,15],[9,255,11],[10,79,0],[11,140,5],[12,255,3],[13,0,10],[14,0,3],[19,0,28],[20,255,27],[21,255,11]]],[16.75,-7.33,3,3.1416,-8.52,3,-8.52,3,[[0,93,0],[1,188,4],[2,255,7],[3,0,16],[4,0,6],[7,0,13],[8,255,15],[9,255,10],[10,80,0],[11,139,5],[12,255,3],[13,0,10],[14,0,3],[19,0,32],[20,255,22],[21,255,10]]],[17,-7.58,3,3.1416,-8.77,3,-8.77,3,[[0,92,0],[1,186,4],[2,255,8],[3,0,23],[7,0,14],[8,255,14],[9,255,10],[10,85,0],[11,150,5],[12,255,4],[13,0,10],[14,0,3],[19,0,44],[20,255,22],[21,255,10]]],[17.25,-7.83,3,3.1416,-9.02,3,-9.02,3,[[0,103,0],[1,198,4],[2,255,7],[3,0,24],[7,0,15],[8,255,27],[9,255,10],[10,85,0],[11,155,5],[12,255,3],[13,0,7],[14,0,3],[20,255,35],[21,255,10]]],[17.5,-8.08,3,3.1416,-9.27,3,-9.27,3,[[0,98,0],[1,208,4],[2,255,7],[3,0,24],[7,0,28],[8,255,22],[9,255,7],[10,84,0],[11,158,4],[12,255,3],[13,0,10],[14,0,4],[20,255,36],[21,255,7]]],[17.75,-8.33,3,3.1416,-9.52,3,-9.52,3,[[0,108,0],[1,220,4],[2,255,7],[3,0,18],[7,0,32],[8,255,22],[9,255,7],[10,93,0],[11,166,5],[12,255,4],[13,0,10],[14,0,4],[20,255,33],[21,255,7]]],[18,-8.58,3,3.1416,-9.77,3,-9.77,3,[[0,107,0],[1,233,4],[2,255,6],[3,0,13],[7,0,18],[8,255,20],[9,255,7],[10,93,0],[11,166,5],[12,68,3],[13,0,10],[14,0,3],[20,255,47],[21,255,7]]],[18.25,-8.83,3,3.1416,-10.02,3,-10.02,3,[[0,114,0],[1,240,4],[2,255,7],[3,0,14],[8,255,37],[9,255,6],[10,93,0],[11,181,4],[12,0,3],[13,0,11],[14,0,3],[20,255,45],[21,255,6]]],[18.5,-9.08,3,3.1416,-10.27,3,-10.27,3,[[0,117,0],[1,252,4],[2,255,6],[3,0,14],[8,255,35],[9,255,6],[10,102,0],[11,179,4],[12,0,2],[13,0,10],[14,0,4],[20,255,64],[21,255,6]]],[18.75,-9.33,3,3.1416,-10.52,3,-10.52,3,[[0,117,0],[1,255,3],[2,255,17],[3,0,15],[8,255,51],[9,255,18],[10,98,0],[11,187,4],[12,0,3],[13,0,10],[14,0,4],[20,255,53],[21,255,18]]],[19,-9.58,3,3.1416,-10.77,3,-10.77,3,[[0,123,0],[1,255,4],[2,255,17],[3,0,15],[8,255,45],[9,255,16],[10,105,0],[11,198,5],[12,0,3],[13,0,11],[14,0,4],[20,255,48],[21,255,16]]],[19.25,-9.83,3,3.1416,-11.02,3,-11.02,3,[[0,128,0],[1,255,4],[2,255,18],[3,0,14],[8,255,66],[9,255,16],[10,107,0],[11,199,4],[12,0,8],[13,0,11],[14,0,4],[20,0,42],[21,255,16]]]]}}</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script>
+/*MODEL*/
+// Rays on one cone straight ahead of a lidar, from exact ray-frustum intersection, plus the single-scan
+// centre estimate. No car body: a cone straight ahead is in the clear for every mount used here.
+function makeModel() {
+  const deg = Math.PI / 180;
+  // small FS cone: 228 mm base, 325 mm tall, 50 mm top; a frustum of a cone whose apex would be at za
+  const CONE = {H: 0.325, r0: 0.114, r1: 0.025};
+  CONE.za = CONE.H * CONE.r0 / (CONE.r0 - CONE.r1);
+  CONE.k = CONE.r0 / CONE.za;
+  CONE.area = CONE.H * (CONE.r0 + CONE.r1);
+  const lin = (a, b, n) => Array.from({length: n}, (_, i) => a + (b - a) * i / (n - 1));
+  const range = (a, b, st) => { const o = []; for (let v = a; v <= b + 1e-9; v += st) o.push(+v.toFixed(4)); return o; };
+  // the same lidars and mounts as the coverage page: the ATX on the plate 0.57 m up, the spinners on a post 0.70 m up
+  const LIDARS = [
+    {key: 'atx', name: 'Hesai ATX', short: 'ATX', h: 0.57, rows: lin(-10, 10, 256), dphi: 0.08, fov: 120, pps: 3.84e6, price: '≈ $1,540', slot: 1},
+    {key: 'vlp', name: 'Velodyne VLP-16', short: 'VLP-16', h: 0.70, rows: range(-15, 15, 2), dphi: 0.2, fov: 360, pps: 0.3e6, price: 'owned', slot: 2},
+    {key: 'h1615', name: 'Helios 1615', short: 'Helios 1615', h: 0.70, rows: range(-16, 15, 1), dphi: 0.2, fov: 360, pps: 0.576e6, price: '$2,550', slot: 3},
+    {key: 'h5515', name: 'Helios 5515', short: 'Helios 5515', h: 0.70, dphi: 0.2, fov: 360, pps: 0.576e6, price: '$2,550', slot: 4,
+      rows: [-55, -52, -49, -46, -43, -40, -37, -34, -31, -28, -25, -22, -19, -16, -13, -10, -8, -6.67, -5.33, -4, -2.67, -1.33, 0, 1.33, 2.67, 4, 5.5, 7, 9, 11, 13, 15]},
+    {key: 'os132', name: 'Ouster OS1-32', short: 'OS1-32', h: 0.70, rows: lin(-21.2, 21.2, 32), dphi: 360 / 2048, fov: 360, pps: 1.31e6, price: '≈ $5,300', slot: 5},
+    {key: 'os164', name: 'Ouster OS1-64', short: 'OS1-64', h: 0.70, rows: lin(-21.2, 21.2, 64), dphi: 360 / 2048, fov: 360, pps: 2.62e6, price: '≈ $16,400', slot: 6},
+    {key: 'os1128', name: 'Ouster OS1-128', short: 'OS1-128', h: 0.70, rows: lin(-21.2, 21.2, 128), dphi: 360 / 2048, fov: 360, pps: 5.24e6, price: '≈ $17,700', slot: 7},
+    {key: 'os2128', name: 'Ouster OS2-128', short: 'OS2-128', h: 0.70, rows: lin(-11.25, 11.25, 128), dphi: 360 / 2048, fov: 360, pps: 2.62e6, price: 'from $10,000', slot: 8},
+  ];
+  const BY = Object.fromEntries(LIDARS.map(l => [l.key, l]));
+
+  // distance along a ray to the cone, or -1 if it misses or meets the ground first
+  function hit(dx, dy, dz, h, cx, cy) {
+    const {H, za, k, r1} = CONE, ux = -cx, uy = -cy, w = za - h, k2 = k * k;
+    let best = Infinity;
+    const A = dx * dx + dy * dy - k2 * dz * dz, B = 2 * (ux * dx + uy * dy + k2 * w * dz), C = ux * ux + uy * uy - k2 * w * w;
+    const disc = B * B - 4 * A * C;
+    if (disc >= 0 && Math.abs(A) > 1e-12) {
+      const sq = Math.sqrt(disc);
+      for (const t of [(-B - sq) / (2 * A), (-B + sq) / (2 * A)]) {
+        if (t <= 0 || t >= best) continue;
+        const z = h + t * dz;
+        if (z >= 0 && z <= H) best = t;
+      }
+    }
+    if (dz < 0 && h > H) {
+      const t = (H - h) / dz, x = t * dx - cx, y = t * dy - cy;
+      if (x * x + y * y <= r1 * r1 && t < best) best = t;
+    }
+    if (dz < 0 && -h / dz < best - 1e-9) return -1;
+    return best < Infinity ? best : -1;
+  }
+
+  // every ray of lidar L that meets a cone r metres straight ahead; pitch tilts all rows (deg),
+  // phase in [0, 1) slides the cone sideways by that fraction of one column
+  function scan(L, r, pitch = 0, phase = 0, want = false) {
+    const {H, r0, r1} = CONE, h = L.h, a0 = phase * L.dphi;
+    const cx = r * Math.cos(a0 * deg), cy = r * Math.sin(a0 * deg);
+    const half = Math.asin(Math.min(1, r0 / r)) / deg;
+    const j0 = Math.ceil((a0 - half) / L.dphi), j1 = Math.floor((a0 + half) / L.dphi);
+    const el = [[r - r0, 0], [r + r0, 0], [r - r1, H], [r + r1, H]].map(([d, z]) => Math.atan2(z - h, Math.max(d, 0.02)) / deg);
+    const eLo = Math.min(...el) - 1e-6, eHi = Math.max(...el) + 1e-6;
+    let n = 0, rings = 0;
+    const pts = want ? [] : null, ringRows = want ? [] : null;
+    for (let k = 0; k < L.rows.length; k++) {
+      const th = L.rows[k] + pitch;
+      if (th < eLo || th > eHi) continue;
+      const ct = Math.cos(th * deg), dz = Math.sin(th * deg);
+      let m = 0;
+      for (let j = j0; j <= j1; j++) {
+        const ph = j * L.dphi * deg, dx = ct * Math.cos(ph), dy = ct * Math.sin(ph);
+        const t = hit(dx, dy, dz, h, cx, cy);
+        if (t < 0) continue;
+        m++;
+        if (want) pts.push([t * dx, t * dy, h + t * dz, dx, dy, dz, t, k, j]);
+      }
+      if (m) { n += m; rings++; if (want) ringRows.push(k); }
+    }
+    return {n, rings, pts, ringRows, cx, cy};
+  }
+
+  // spacing between the two rows either side of an elevation (deg)
+  function spacingAt(L, e) {
+    const R = L.rows;
+    for (let k = 1; k < R.length; k++) if (R[k] >= e) return R[k] - R[k - 1];
+    return R[R.length - 1] - R[R.length - 2];
+  }
+
+  // worst and mean over where the beams fall on the cone: pitch anywhere in ±pMax and any sideways phase.
+  // Rows repeat every spacing, so once ±pMax spans one spacing every vertical phase is covered.
+  function stats(L, r, pMax) {
+    const sp = spacingAt(L, Math.atan2(CONE.H / 2 - L.h, r) / deg);
+    const pitches = [];
+    if (pMax <= 0) pitches.push(0);
+    else if (2 * pMax >= sp) for (let a = 0; a < 8; a++) pitches.push(-sp / 2 + sp * a / 8);
+    else for (let a = 0; a < 8; a++) pitches.push(-pMax + 2 * pMax * a / 7);
+    let min = Infinity, sum = 0, rmin = Infinity, cnt = 0;
+    for (const p of pitches) for (let f = 0; f < 5; f++) {
+      const s = scan(L, r, p, f / 5);
+      min = Math.min(min, s.n); rmin = Math.min(rmin, s.rings); sum += s.n; cnt++;
+    }
+    let lmin = Infinity;
+    for (let f = 0; f < 5; f++) lmin = Math.min(lmin, scan(L, r, 0, f / 5).n);
+    return {min, mean: sum / cnt, ringsMin: rmin, level: lmin, sp};
+  }
+
+  // farthest range out to which a curve stays at or above n, counted from where it first gets there
+  function reach(rs, vals, n) {
+    let i = vals.findIndex(v => v >= n);
+    if (i < 0) return 0;
+    while (i + 1 < vals.length && vals[i + 1] >= n) i++;
+    return rs[i];
+  }
+
+  // the analytic shortcuts: beam gap at the cone, rings guaranteed, mean rays
+  const gap = (L, r, e = Math.atan2(CONE.H / 2 - L.h, r) / deg) => r * Math.tan(spacingAt(L, e) * deg);
+  const ringsSure = (L, r) => Math.floor(CONE.H / gap(L, r));
+  const meanRays = (L, r) => CONE.area / (r * r * Math.tan(spacingAt(L, Math.atan2(CONE.H / 2 - L.h, r) / deg) * deg) * L.dphi * deg);
+
+  // centre of a cone from one scan: fit a circle of the known radius at each point's height (Gauss-Newton)
+  function centre(pts) {
+    const {k, za} = CONE;
+    let mx = 0, my = 0, ux = 0, uy = 0, rho = 0;
+    for (const p of pts) { mx += p[0]; my += p[1]; ux += p[3]; uy += p[4]; rho += k * (za - p[2]); }
+    const n = pts.length, un = Math.hypot(ux, uy);
+    let cx = mx / n + 0.6 * rho / n * ux / un, cy = my / n + 0.6 * rho / n * uy / un;
+    for (let it = 0; it < 8; it++) {
+      let a = 1e-6, b = 0, c = 1e-6, gx = 0, gy = 0;
+      for (const p of pts) {
+        const ex = p[0] - cx, ey = p[1] - cy, d = Math.hypot(ex, ey) || 1e-9, e = d - k * (za - p[2]);
+        const jx = -ex / d, jy = -ey / d;
+        a += jx * jx; b += jx * jy; c += jy * jy; gx += jx * e; gy += jy * e;
+      }
+      const lam = 1e-3 * (a + c), A = a + lam, C = c + lam, det = A * C - b * b;
+      const sx = -(C * gx - b * gy) / det, sy = -(A * gy - b * gx) / det;
+      cx += sx; cy += sy;
+      if (Math.hypot(sx, sy) < 1e-5) break;
+    }
+    return [cx, cy];
+  }
+
+  // a small seeded generator so the Monte Carlo figures do not change between loads
+  function rng(seed) {
+    let s = seed >>> 0;
+    const u = () => { s = (s + 0x6D2B79F5) >>> 0; let t = s; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+    return {u, g: () => Math.sqrt(-2 * Math.log(u() + 1e-12)) * Math.cos(2 * Math.PI * u())};
+  }
+
+  // RMS error of the one-scan centre over random pitch (±pMax) and sideways phase, with range noise sigma (m);
+  // only scans that reach nMin rays count, and det is the share that did
+  function mc(L, r, {trials = 60, pMax = 1, sigma = 0.02, nMin = 3, seed = 1, cap = 400} = {}) {
+    const R = rng(seed + Math.round(r * 100));
+    let se = 0, ok = 0;
+    for (let t = 0; t < trials; t++) {
+      const s = scan(L, r, (2 * R.u() - 1) * pMax, R.u(), true);
+      if (s.n < nMin) continue;
+      let pts = s.pts;
+      if (pts.length > cap) { const st = pts.length / cap; pts = Array.from({length: cap}, (_, i) => pts[Math.floor(i * st)]); }
+      pts = pts.map(p => { const tt = p[6] + sigma * R.g(); return [tt * p[3], tt * p[4], L.h + tt * p[5], p[3], p[4]]; });
+      const [cx, cy] = centre(pts);
+      se += (cx - s.cx) ** 2 + (cy - s.cy) ** 2; ok++;
+    }
+    return {rms: ok ? Math.sqrt(se / ok) : NaN, det: ok / trials};
+  }
+
+  // ISC's weighting of a cone detection in its SLAM (cone_detection.py:456-457)
+  const iscSigma = (r, n) => 1.5 * (0.05 + 0.005 * r) / Math.sqrt(Math.max(1, n) / 10);
+
+
+  // ---- lap-1 look-ahead: distance a cone must be confirmed at, for speed v (m/s)
+  const dreq = (v, o) => v * (o.lat + o.M / o.f) + Math.max(0, (v * v - o.alat * o.Rt) / (2 * o.ab)) + o.look;
+  function vmax(R, o) {
+    if (dreq(0, o) > R) return 0;
+    let a = 0, b = 60;
+    for (let i = 0; i < 60; i++) { const m = (a + b) / 2; if (dreq(m, o) <= R) a = m; else b = m; }
+    return a;
+  }
+  // ---- the smallest bearing (deg, from the heading) at which a lidar L metres ahead of the rear axle sees the
+  // inside edge of a constant turn of outside diameter D on a track w wide, the car on the centreline
+  function betaMin(D, w, L) {
+    const Rc = D / 2 - w / 2, Ri = Rc - w / 2;
+    return 90 + Math.atan(L / Rc) / deg - Math.asin(Math.min(1, Ri / Math.hypot(Rc, L))) / deg;
+  }
+  function dStar(w, L, half) {
+    if (betaMin(400, w, L) > half) return Infinity;
+    let a = 2 * w + 0.01, b = 400;
+    for (let i = 0; i < 60; i++) { const m = (a + b) / 2; if (betaMin(m, w, L) <= half) b = m; else a = m; }
+    return b;
+  }
+  // ---- Cramér-Rao bound on the car pose (x, y, heading) from one scan of mapped cones, each seen with an
+  // isotropic sigma; null when fewer than two cones leave the pose unobservable
+  function crlb(p, meas) {
+    const c = Math.cos(p.h), s = Math.sin(p.h), J = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+    for (const {mx, my, sig} of meas) {
+      const dx = mx - p.x, dy = my - p.y, w = 1 / (sig * sig);
+      for (const a of [[-c, -s, -s * dx + c * dy], [s, -c, -c * dx - s * dy]])
+        for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) J[i][j] += w * a[i] * a[j];
+    }
+    const [[a, b, cc], [, d, e], [, , f]] = J;
+    const A = d * f - e * e, B = -(b * f - cc * e), C = b * e - cc * d, det = a * A + b * B + cc * C;
+    const tr = a + d + f;
+    if (meas.length < 2 || !(det > 1e-9 * tr * tr * tr)) return null;
+    const vxx = A / det, vxy = B / det, vyy = (a * f - cc * cc) / det, vpp = (a * d - b * b) / det;
+    return {vxx, vxy, vyy, sp: Math.sqrt(vxx + vyy), sh: Math.sqrt(vpp) / deg};
+  }
+  // ---- drift of odometry over a gap of d metres round a turn of radius R at speed v: wheel-odometry scale
+  // error eps, gyro scale error sg and gyro bias bg (deg/s)
+  function drift({d, R, eps, sg, bg, v}) {
+    const t = d / v, head = sg * d / R + bg * deg * t, along = eps * d, cross = d * head / 2;
+    return {t, head: head / deg, along, cross, total: Math.hypot(along, cross)};
+  }
+
+  return {deg, CONE, LIDARS, BY, hit, scan, stats, reach, spacingAt, gap, ringsSure, meanRays, centre, mc, iscSigma, rng, dreq, vmax, betaMin, dStar, crlb, drift};
+}
+/*/MODEL*/
+const LM = makeModel();
+const $ = s => document.querySelector(s);
+const deg = LM.deg;
+const NS = 'http://www.w3.org/2000/svg';
+const col = slot => `var(--c${slot})`;
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;'}[c]));
+const tip = $('#tip');
+function showTip(html, x, y) {
+  tip.innerHTML = html; tip.hidden = false;
+  const r = tip.getBoundingClientRect();
+  let L = x + 14, T = y + 14;
+  if (L + r.width > innerWidth - 8) L = x - r.width - 14;
+  if (T + r.height > innerHeight - 8) T = y - r.height - 14;
+  tip.style.left = Math.max(4, L) + 'px'; tip.style.top = Math.max(4, T) + 'px';
+}
+const hideTip = () => { tip.hidden = true; };
+// build SVG from a list of [tag, attrs, text?]
+function S(svg, items) {
+  svg.textContent = '';
+  for (const it of items) {
+    const [tag, at, tx] = it, e = document.createElementNS(NS, tag);
+    for (const [k, v] of Object.entries(at || {})) if (v !== undefined && v !== null) e.setAttribute(k, v);
+    if (tx !== undefined) e.textContent = tx;
+    svg.appendChild(e);
+  }
+  return svg;
+}
+// segmented buttons
+function seg(el, opts, val, on) {
+  el.textContent = '';
+  for (const [v, label] of opts) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = label; b.setAttribute('aria-pressed', String(v === val));
+    b.addEventListener('click', () => { el.querySelectorAll('button').forEach(o => o.setAttribute('aria-pressed', String(o === b))); on(v); });
+    el.appendChild(b);
+  }
+}
+const fmt = (v, d = 1) => (Math.round(v * 10 ** d) / 10 ** d).toFixed(d);
+const debounce = (f, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => f(...a), ms); }; };
+
+// ---- a small line chart. o: {W, H, x:{min,max,ticks,label,fmt}, y:{min,max,log,ticks,label,fmt}, series:[{label,slot,pts,dash,w}],
+// refs:[{y,label}], bands:[{x0,x1,label}], dots:[{x,y,slot,label}], tipAt(x) -> html}
+function lineChart(svg, o) {
+  const W = o.W || 760, Hh = o.H || 340, ml = 54, mr = o.mr ?? 112, mt = 14, mb = 44;
+  const pw = W - ml - mr, ph = Hh - mt - mb, X = o.x, Y = o.y;
+  const lg = v => Math.log10(v);
+  const sx = v => ml + (v - X.min) / (X.max - X.min) * pw;
+  const sy = v => Y.log ? mt + ph - (lg(Math.max(v, Y.min)) - lg(Y.min)) / (lg(Y.max) - lg(Y.min)) * ph : mt + ph - (Math.min(Math.max(v, Y.min), Y.max) - Y.min) / (Y.max - Y.min) * ph;
+  const it = [];
+  for (const b of o.bands || []) {
+    it.push(['rect', {x: sx(b.x0), y: mt, width: sx(b.x1) - sx(b.x0), height: ph, class: 'band'}]);
+    if (b.label) it.push(['text', {x: (sx(b.x0) + sx(b.x1)) / 2, y: mt + 12, class: 'tk', 'text-anchor': 'middle'}, b.label]);
+  }
+  for (const t of Y.ticks) it.push(['line', {x1: ml, x2: ml + pw, y1: sy(t), y2: sy(t), class: 'gl'}], ['text', {x: ml - 6, y: sy(t) + 4, class: 'tk', 'text-anchor': 'end'}, (Y.fmt || String)(t)]);
+  for (const t of X.ticks) it.push(['line', {x1: sx(t), x2: sx(t), y1: mt + ph, y2: mt + ph + 4, class: 'ax'}], ['text', {x: sx(t), y: mt + ph + 17, class: 'tk', 'text-anchor': 'middle'}, (X.fmt || String)(t)]);
+  it.push(['line', {x1: ml, x2: ml + pw, y1: mt + ph, y2: mt + ph, class: 'ax'}]);
+  it.push(['text', {x: ml + pw / 2, y: Hh - 6, class: 'al', 'text-anchor': 'middle'}, X.label]);
+  it.push(['text', {x: 12, y: mt + ph / 2, class: 'al', 'text-anchor': 'middle', transform: `rotate(-90 12 ${mt + ph / 2})`}, Y.label]);
+  for (const r of o.refs || []) {
+    if (r.y !== undefined) it.push(['line', {x1: ml, x2: ml + pw, y1: sy(r.y), y2: sy(r.y), class: 'ref'}], ['text', {x: ml + 4, y: sy(r.y) - 5, class: 'reft'}, r.label]);
+  }
+  const ends = [];
+  for (const s of o.series) {
+    if (!s.pts.length) continue;
+    let d = '', pen = false;
+    for (const [x, y] of s.pts) {
+      if (y === null || !isFinite(y) || x < X.min || x > X.max) { pen = false; continue; }
+      d += (pen ? 'L' : 'M') + sx(x).toFixed(1) + ' ' + sy(y).toFixed(1); pen = true;
+    }
+    it.push(['path', {d, fill: 'none', style: `stroke:${s.color || col(s.slot)}`, 'stroke-width': s.w || 2, 'stroke-dasharray': s.dash, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', opacity: s.op}]);
+    if (s.label) {
+      const last = s.end || [...s.pts].reverse().find(([x, y]) => y !== null && isFinite(y) && x <= X.max);
+      if (last) ends.push({y: sy(last[1]), x: sx(Math.min(last[0], X.max)), label: s.label, slot: s.slot, color: s.color});
+    }
+  }
+  for (const dt of o.dots || []) {
+    it.push(['circle', {cx: sx(dt.x), cy: sy(dt.y), r: 4.5, style: `fill:${col(dt.slot)};stroke:var(--card)`, 'stroke-width': 2}]);
+    if (dt.label) it.push(['text', {x: sx(dt.x) + (dt.below ? -7 : 7), y: sy(dt.y) + (dt.below ? 17 : -7), class: 'lb', 'text-anchor': dt.below ? 'end' : 'start'}, dt.label]);
+  }
+  // direct labels at the right, nudged apart
+  ends.sort((a, b) => a.y - b.y);
+  for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 13) ends[i].y = ends[i - 1].y + 13;
+  for (let i = ends.length - 2; i >= 0; i--) if (ends[i].y > ends[i + 1].y - 13) ends[i].y = ends[i + 1].y - 13;
+  for (const e of ends) {
+    it.push(['line', {x1: ml + pw + 2, x2: ml + pw + 8, y1: e.y, y2: e.y, style: `stroke:${e.color || col(e.slot)}`, 'stroke-width': 2}]);
+    it.push(['text', {x: ml + pw + 11, y: e.y + 4, class: 'lb'}, e.label]);
+  }
+  const cross = ['line', {x1: 0, x2: 0, y1: mt, y2: mt + ph, class: 'cross', visibility: 'hidden', id: svg.id + 'X'}];
+  it.push(cross, ['rect', {x: ml, y: mt, width: pw, height: ph, fill: 'transparent', id: svg.id + 'H'}]);
+  S(svg, it);
+  if (o.tipAt) {
+    const hit = svg.querySelector('#' + svg.id + 'H'), xl = svg.querySelector('#' + svg.id + 'X');
+    const move = ev => {
+      const r = svg.getBoundingClientRect(), k = W / r.width, px = (ev.clientX - r.left) * k;
+      const xv = X.min + (px - ml) / pw * (X.max - X.min);
+      if (xv < X.min || xv > X.max) return;
+      xl.setAttribute('x1', px); xl.setAttribute('x2', px); xl.setAttribute('visibility', 'visible');
+      showTip(o.tipAt(xv), ev.clientX, ev.clientY);
+    };
+    hit.addEventListener('pointermove', move);
+    hit.addEventListener('pointerleave', () => { xl.setAttribute('visibility', 'hidden'); hideTip(); });
+  }
+  return {sx, sy};
+}
+
+// ---- shared state
+const ST = {show: new Set(['atx', 'vlp', 'os132', 'os1128']), nMin: 3, pitch: 1};
+const RS = []; for (let r = 1; r <= 80.001; r += 0.25) RS.push(+r.toFixed(2));
+const CACHE = {};
+function curves(key, p) {
+  const id = key + '|' + p;
+  if (!CACHE[id]) {
+    const L = LM.BY[key], S0 = RS.map(r => LM.stats(L, r, p));
+    CACHE[id] = {min: S0.map(s => s.min), level: S0.map(s => s.level), mean: S0.map(s => s.mean), rings: S0.map(s => s.ringsMin), best: RS.map(r => LM.scan(L, r, 0, 0).n)};
+  }
+  return CACHE[id];
+}
+const listeners = [];
+const changed = () => listeners.forEach(f => f());
+
+// ---- Figure 1
+(function fig1() {
+  const st = {key: 'vlp', r: 15, p: 0, f: 0.5};
+  seg($('#f1L'), LM.LIDARS.map(l => [l.key, l.short]), st.key, v => { st.key = v; draw(); });
+  const R = $('#f1r'), P = $('#f1p'), F = $('#f1f');
+  for (const el of [R, P, F]) el.addEventListener('input', () => { st.r = +R.value; st.p = +P.value; st.f = +F.value; draw(); });
+  const cv = $('#f1eye');
+  function eye(L, sc) {
+    const dpr = window.devicePixelRatio || 1, W = cv.clientWidth || 440, H = Math.round(W * 280 / 440);
+    cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + 'px';
+    const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.fillStyle = cssv('--gbg'); g.fillRect(0, 0, W, H);
+    const {H: CH, r0, r1} = LM.CONE, h = L.h, r = st.r;
+    const az0 = st.f * L.dphi, elB = Math.atan2(-h, r) / deg, elT = Math.atan2(CH - h, r) / deg, elC = (elB + elT) / 2;
+    const sp = LM.spacingAt(L, elC);
+    const hw = Math.max(1.8 * Math.atan(r0 / r) / deg, 6 * L.dphi), hh = Math.max(1.8 * (elT - elB) / 2, 3.2 * sp);
+    const s = Math.min((W - 16) / (2 * hw), (H - 30) / (2 * hh));
+    const X = a => W / 2 + (a - az0) * s, Y = e => (H - 14) / 2 + 4 - (e - elC) * s;
+    // silhouette
+    const c = cssv('--c' + L.slot);
+    g.beginPath();
+    g.moveTo(X(az0 - Math.atan(r0 / r) / deg), Y(elB)); g.lineTo(X(az0 + Math.atan(r0 / r) / deg), Y(elB));
+    g.lineTo(X(az0 + Math.atan(r1 / r) / deg), Y(elT)); g.lineTo(X(az0 - Math.atan(r1 / r) / deg), Y(elT)); g.closePath();
+    g.globalAlpha = 0.16; g.fillStyle = c; g.fill(); g.globalAlpha = 1; g.strokeStyle = c; g.lineWidth = 1.2; g.stroke();
+    // ground line
+    g.strokeStyle = cssv('--mut'); g.setLineDash([3, 3]); g.beginPath(); g.moveTo(0, Y(elB)); g.lineTo(W, Y(elB)); g.stroke(); g.setLineDash([]);
+    const hits = new Set(sc.pts.map(q => q[7] + ',' + q[8]));
+    const aMin = az0 - (W / 2) / s, aMax = az0 + (W / 2) / s, eMin = elC - H / 2 / s, eMax = elC + H / 2 / s;
+    const j0 = Math.ceil(aMin / L.dphi), j1 = Math.floor(aMax / L.dphi);
+    const rad = Math.max(1, Math.min(4.5, 0.32 * Math.min(s * L.dphi, s * sp)));
+    const nDots = (j1 - j0 + 1) * L.rows.filter(t => t + st.p >= eMin && t + st.p <= eMax).length;
+    const mutc = cssv('--mut');
+    for (let k = 0; k < L.rows.length; k++) {
+      const e = L.rows[k] + st.p;
+      if (e < eMin || e > eMax) continue;
+      for (let j = j0; j <= j1; j++) {
+        const x = X(j * L.dphi), y = Y(e);
+        if (hits.has(k + ',' + j)) { g.fillStyle = c; g.beginPath(); g.arc(x, y, rad + 0.6, 0, 2 * Math.PI); g.fill(); }
+        else if (nDots < 40000) { g.fillStyle = mutc; g.globalAlpha = 0.55; g.fillRect(x - 0.6, y - 0.6, 1.2, 1.2); g.globalAlpha = 1; }
+      }
+    }
+    // a 1° scale bar
+    const bar = Math.min(s, W / 3);
+    g.strokeStyle = cssv('--fg'); g.lineWidth = 1.5; g.beginPath(); g.moveTo(10, H - 8); g.lineTo(10 + bar, H - 8); g.stroke();
+    g.fillStyle = cssv('--fg'); g.font = '11px system-ui, sans-serif'; g.fillText(bar === s ? '1°' : (W / 3 / s).toFixed(2) + '°', 14 + bar, H - 4);
+  }
+  function side(L, sc) {
+    const svg = $('#f1side'), W = 640, Hh = 280, ml = 44, mr = 70, mt = 12, mb = 36;
+    const xMax = Math.max(4, st.r * 1.22), y0 = -0.06, y1 = 1.0;
+    const pw = W - ml - mr, ph = Hh - mt - mb;
+    const sx = x => ml + x / xMax * pw, sy = y => mt + ph - (y - y0) / (y1 - y0) * ph;
+    const ex = (ph / (y1 - y0)) / (pw / xMax);
+    const it = [];
+    for (const t of [0, 0.25, 0.5, 0.75, 1]) it.push(['line', {x1: ml, x2: ml + pw, y1: sy(t), y2: sy(t), class: 'gl'}], ['text', {x: ml - 6, y: sy(t) + 4, class: 'tk', 'text-anchor': 'end'}, t.toFixed(2)]);
+    const step = xMax > 40 ? 10 : xMax > 16 ? 5 : xMax > 6 ? 2 : 1;
+    for (let t = 0; t <= xMax; t += step) it.push(['text', {x: sx(t), y: mt + ph + 16, class: 'tk', 'text-anchor': 'middle'}, t]);
+    it.push(['text', {x: ml + pw / 2, y: Hh - 4, class: 'al', 'text-anchor': 'middle'}, `distance from the lidar (m) · heights stretched ×${Math.round(ex)}`]);
+    it.push(['text', {x: 11, y: mt + ph / 2, class: 'al', 'text-anchor': 'middle', transform: `rotate(-90 11 ${mt + ph / 2})`}, 'height (m)']);
+    it.push(['line', {x1: ml, x2: ml + pw, y1: sy(0), y2: sy(0), style: 'stroke:var(--fg)', 'stroke-width': 1.2}]);
+    const hitRows = new Set(sc.ringRows), hitX = {};
+    for (const q of sc.pts) hitX[q[7]] = Math.max(hitX[q[7]] || 0, Math.hypot(q[0], q[1]));
+    const c = col(L.slot), h = L.h;
+    let d = '';
+    const ticks = [];
+    for (let k = 0; k < L.rows.length; k++) {
+      const th = (L.rows[k] + st.p) * deg, tn = Math.tan(th);
+      let xe = xMax;
+      if (tn < 0) xe = Math.min(xMax, (h - y0) / -tn); else if (tn > 0) xe = Math.min(xMax, (y1 - h) / tn);
+      const yr = h + st.r * tn;
+      if (yr >= y0 && yr <= y1) ticks.push(yr);
+      if (hitRows.has(k)) continue;
+      d += `M${sx(0).toFixed(1)} ${sy(h).toFixed(1)}L${sx(xe).toFixed(1)} ${sy(h + xe * tn).toFixed(1)}`;
+    }
+    it.push(['path', {d, fill: 'none', style: 'stroke:var(--mut)', 'stroke-width': L.rows.length > 100 ? 0.4 : 0.8, opacity: L.rows.length > 100 ? 0.35 : 0.6}]);
+    for (const k of hitRows) {
+      const tn = Math.tan((L.rows[k] + st.p) * deg), xe = hitX[k];
+      it.push(['line', {x1: sx(0), y1: sy(h), x2: sx(xe), y2: sy(h + xe * tn), style: `stroke:${c}`, 'stroke-width': 1.6}]);
+    }
+    const {H: CH, r0, r1} = LM.CONE, cxp = sx(st.r), hb = Math.max(r0 / xMax * pw, 5), ht = Math.max(r1 / xMax * pw, 1.5);
+    it.push(['path', {d: `M${cxp - hb} ${sy(0)}L${cxp + hb} ${sy(0)}L${cxp + ht} ${sy(CH)}L${cxp - ht} ${sy(CH)}Z`, style: `fill:${c};fill-opacity:.22;stroke:${c}`, 'stroke-width': 1.2}]);
+    const rx = cxp + hb + 10;
+    it.push(['line', {x1: rx, x2: rx, y1: sy(y0), y2: sy(y1), style: 'stroke:var(--mut)', 'stroke-width': 0.8}], ['line', {x1: rx, x2: rx, y1: sy(0), y2: sy(CH), style: 'stroke:var(--fg)', 'stroke-width': 2}]);
+    for (const y of ticks) it.push(['line', {x1: rx - 4, x2: rx + 4, y1: sy(y), y2: sy(y), style: 'stroke:var(--fg)', 'stroke-width': 1.2}]);
+    it.push(['text', {x: rx + 8, y: sy(CH) + 4, class: 'tk'}, 'cone top']);
+    it.push(['circle', {cx: sx(0), cy: sy(h), r: 4.5, style: 'fill:var(--fg)'}], ['text', {x: sx(0) + 8, y: sy(h) - 8, class: 'lb'}, `${L.short}, ${h.toFixed(2)} m up`]);
+    S(svg, it);
+  }
+  function draw() {
+    const L = LM.BY[st.key], sc = LM.scan(L, st.r, st.p, st.f, true);
+    $('#f1ro').textContent = st.r.toFixed(1) + ' m'; $('#f1po').textContent = (st.p > 0 ? '+' : '') + st.p.toFixed(2) + '°'; $('#f1fo').textContent = st.f.toFixed(2);
+    side(L, sc); eye(L, sc);
+    const g = LM.gap(L, st.r), sure = Math.floor(LM.CONE.H / g);
+    $('#f1read').innerHTML = `<b>${esc(L.name)} at ${st.r.toFixed(1)} m:</b> channels ${LM.spacingAt(L, Math.atan2(LM.CONE.H / 2 - L.h, st.r) / deg).toFixed(2)}° apart, so the beams are <b>${fmt(g * 100)} cm</b> apart at the cone (cone 32.5 cm tall). ` +
+      `Now: <b>${sc.rings} ring${sc.rings === 1 ? '' : 's'}</b>, <b>${sc.n} ray${sc.n === 1 ? '' : 's'}</b> on the cone. ` +
+      `Guaranteed wherever the beams fall: ⌊32.5 / ${fmt(g * 100)}⌋ = <b>${sure} ring${sure === 1 ? '' : 's'}</b>. Mean over positions ≈ ${fmt(LM.meanRays(L, st.r))} rays.`;
+  }
+  draw();
+  window.addEventListener('resize', debounce(draw, 150));
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+})();
+
+// ---- Figure 2
+(function fig2() {
+  const chips = $('#f2chips');
+  for (const L of LM.LIDARS) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip'; b.setAttribute('aria-pressed', String(ST.show.has(L.key)));
+    b.innerHTML = `<i class="sw" style="background:${col(L.slot)}"></i>${esc(L.short)}`;
+    b.addEventListener('click', () => { if (ST.show.has(L.key)) ST.show.delete(L.key); else ST.show.add(L.key); b.setAttribute('aria-pressed', String(ST.show.has(L.key))); changed(); });
+    chips.appendChild(b);
+  }
+  const N = $('#f2n');
+  N.addEventListener('input', () => { ST.nMin = +N.value; changed(); });
+  seg($('#f2p'), [[0, '0°'], [0.25, '0.25°'], [0.5, '0.5°'], [1, '1°']], ST.pitch, v => { ST.pitch = v; changed(); });
+  function draw() {
+    $('#f2no').textContent = ST.nMin + ' ray' + (ST.nMin > 1 ? 's' : '');
+    const keys = LM.LIDARS.filter(l => ST.show.has(l.key));
+    const series = [];
+    for (const L of keys) {
+      const C = curves(L.key, ST.pitch);
+      series.push({slot: L.slot, pts: RS.map((r, i) => [r, C.level[i] > 0 ? C.level[i] : 0.6]), dash: '4 4', w: 1.2, op: 0.8});
+      series.push({slot: L.slot, label: L.short, pts: RS.map((r, i) => [r, C.min[i] > 0 ? C.min[i] : 0.6]), w: 2.2, end: [60, Math.max(0.6, C.min[RS.indexOf(60)])]});
+    }
+    const dots = keys.map(L => { const C = curves(L.key, ST.pitch), R = LM.reach(RS, C.min, ST.nMin); return R && R < 60 ? {x: R, y: ST.nMin, slot: L.slot} : null; }).filter(Boolean);
+    lineChart($('#f2c'), {
+      x: {min: 0, max: 60, ticks: [0, 10, 20, 30, 40, 50, 60], label: 'range to the cone (m)'},
+      y: {min: 0.6, max: 3000, log: true, ticks: [1, 3, 10, 30, 100, 300, 1000], label: 'rays on the cone', fmt: t => t === 1 ? '0–1' : t},
+      series, dots, refs: [{y: ST.nMin, label: `detector minimum: ${ST.nMin}`}],
+      tipAt: x => {
+        const i = Math.max(0, Math.min(RS.length - 1, Math.round((x - 1) / 0.25))), r = RS[i];
+        return `<b>${r.toFixed(2)} m</b><table>` + keys.map(L => { const C = curves(L.key, ST.pitch); return `<tr><td><i class="sw" style="background:${col(L.slot)}"></i> ${esc(L.short)}</td><td>worst ${C.min[i]}</td><td>level ${C.level[i]}</td></tr>`; }).join('') + '</table>';
+      },
+    });
+    // table: all lidars
+    const n = ST.nMin;
+    let t = `<tr><th>Lidar</th><th class="n">Vertical spacing at the horizon</th><th class="n">2 rings guaranteed out to</th><th class="n">${n}+ rays, worst case (±${ST.pitch}°)</th><th class="n">${n}+ rays, car level, worst sideways position</th><th class="n">${n}+ rays, car level, cone centred on a column</th><th class="n">Mean rays at 10 / 20 / 30 m</th></tr>`;
+    for (const L of LM.LIDARS) {
+      const C = curves(L.key, ST.pitch), sp = LM.spacingAt(L, -1.5);
+      const at = d => C.mean[RS.indexOf(d)];
+      t += `<tr><td><i class="sw" style="background:${col(L.slot)}"></i> ${esc(L.name)}</td><td class="n">${sp.toFixed(2)}°</td><td class="n">${fmt(LM.CONE.H / 2 / Math.tan(sp * deg))} m</td><td class="n">${LM.reach(RS, C.min, n)} m</td><td class="n">${LM.reach(RS, C.level, n)} m</td><td class="n">${LM.reach(RS, C.best, n)} m</td><td class="n">${fmt(at(10), 0)} / ${fmt(at(20), 0)} / ${fmt(at(30), 0)}</td></tr>`;
+    }
+    $('#f2t').innerHTML = t;
+  }
+  listeners.push(draw);
+})();
+
+// ---- Figure 3
+(function fig3() {
+  const o = {lat: 0.3, M: 3, f: 10, alat: 3, Rt: 4, ab: 4, look: 5}, st = {mode: 'min'};
+  const bind = (id, k, f) => { const el = $('#' + id); el.addEventListener('input', () => { o[k] = +el.value; draw(); }); };
+  bind('f3lat', 'lat'); bind('f3M', 'M'); bind('f3ab', 'ab'); bind('f3look', 'look');
+  seg($('#f3mode'), [['min', 'worst case'], ['level', 'car level']], 'min', v => { st.mode = v; draw(); });
+  function draw() {
+    $('#f3lato').textContent = o.lat.toFixed(2) + ' s'; $('#f3Mo').textContent = o.M; $('#f3abo').textContent = o.ab + ' m/s²'; $('#f3looko').textContent = o.look + ' m';
+    const keys = LM.LIDARS.filter(l => ST.show.has(l.key)), vs = [];
+    for (let v = 0; v <= 15.001; v += 0.1) vs.push(+v.toFixed(1));
+    const series = [{label: 'needed', color: 'var(--fg)', pts: vs.map(v => [v, LM.dreq(v, o)]), w: 2.4}];
+    const dots = [], rows = [];
+    for (const L of keys) {
+      const C = curves(L.key, ST.pitch), R = LM.reach(RS, C[st.mode], ST.nMin), vm = LM.vmax(R, o);
+      series.push({slot: L.slot, label: `${L.short}: ${vm > 15 ? 'not the limit' : fmt(vm, 1) + ' m/s'}`, pts: [[0, R], [15, R]], w: 1.8, dash: '6 3'});
+      if (vm <= 15) dots.push({x: vm, y: R, slot: L.slot});
+      rows.push([L, R, vm]);
+    }
+    lineChart($('#f3c'), {
+      x: {min: 0, max: 15, ticks: [0, 3, 6, 9, 12, 15], label: 'speed on the approach (m/s)'},
+      y: {min: 0, max: 60, ticks: [0, 10, 20, 30, 40, 50, 60], label: 'distance (m)'},
+      series, dots, mr: 150, bands: [{x0: 4, x1: 10, label: 'ADS-DV on a track, est.'}],
+      tipAt: v => `<b>${v.toFixed(1)} m/s</b>: needs ${fmt(LM.dreq(v, o))} m`,
+    });
+    $('#f3t').innerHTML = '<tr><th>Lidar</th><th class="n">Detection range used</th><th class="n">Highest speed allowed</th></tr>' +
+      rows.map(([L, R, vm]) => `<tr><td>${esc(L.name)}</td><td class="n">${R >= 79 ? '79+ (model limit)' : fmt(R, 1)} m</td><td class="n">${vm > 15 ? 'over 15 m/s, not the limit' : fmt(vm, 1) + ' m/s'}</td></tr>`).join('');
+  }
+  listeners.push(draw);
+})();
+
+// ---- Figure 4 (Monte Carlo, run in slices so the page stays responsive)
+(function fig4() {
+  const st = {sigma: 0.02}, MC = {};
+  const rs = []; for (let r = 2; r <= 40; r += 1) rs.push(r);
+  const Sg = $('#f4s');
+  Sg.addEventListener('input', debounce(() => { st.sigma = +Sg.value / 100; run(); }, 200));
+  let job = 0;
+  function run() {
+    $('#f4so').textContent = (st.sigma * 100).toFixed(1) + ' cm';
+    const my = ++job, keys = LM.LIDARS.filter(l => ST.show.has(l.key)).map(l => l.key);
+    const todo = [];
+    for (const k of keys) for (const r of rs) { const id = [k, r, st.sigma, ST.pitch, ST.nMin].join('|'); if (!MC[id]) todo.push([k, r, id]); }
+    $('#f4busy').textContent = todo.length ? 'computing…' : '';
+    const step = () => {
+      if (my !== job) return;
+      const t0 = performance.now();
+      while (todo.length && performance.now() - t0 < 30) {
+        const [k, r, id] = todo.shift();
+        MC[id] = LM.mc(LM.BY[k], r, {trials: 40, pMax: ST.pitch, sigma: st.sigma, nMin: ST.nMin, seed: 7});
+      }
+      draw(keys);
+      if (todo.length) setTimeout(step, 0); else $('#f4busy').textContent = '';
+    };
+    step();
+  }
+  function draw(keys) {
+    const get = (k, r) => MC[[k, r, st.sigma, ST.pitch, ST.nMin].join('|')];
+    const sA = [], sB = [];
+    for (const k of keys) {
+      const L = LM.BY[k];
+      sA.push({slot: L.slot, label: L.short, pts: rs.map(r => { const m = get(k, r); return [r, m ? m.det * 100 : null]; })});
+      sB.push({slot: L.slot, label: L.short, pts: rs.map(r => { const m = get(k, r); return [r, m && m.det >= 0.25 ? m.rms * 100 : null]; })});
+    }
+    const tipF = (which) => x => {
+      const r = Math.round(x);
+      return `<b>${r} m</b><table>` + keys.map(k => { const m = get(k, r), L = LM.BY[k]; return `<tr><td><i class="sw" style="background:${col(L.slot)}"></i> ${esc(L.short)}</td><td>${m ? (which ? (m.det >= 0.25 ? fmt(m.rms * 100) + ' cm' : '—') : Math.round(m.det * 100) + '% detected') : '…'}</td></tr>`; }).join('') + '</table>';
+    };
+    lineChart($('#f4a'), {W: 520, H: 300, mr: 90, x: {min: 0, max: 40, ticks: [0, 10, 20, 30, 40], label: 'range (m)'}, y: {min: 0, max: 100, ticks: [0, 25, 50, 75, 100], label: `scans with ${ST.nMin}+ rays (%)`}, series: sA, tipAt: tipF(false)});
+    lineChart($('#f4b'), {W: 520, H: 300, mr: 90, x: {min: 0, max: 40, ticks: [0, 10, 20, 30, 40], label: 'range (m)'}, y: {min: 0, max: 5, ticks: [0, 1, 2, 3, 4, 5], label: 'centre error, RMS (cm)'}, series: sB, tipAt: tipF(true)});
+  }
+  listeners.push(run);
+})();
+
+// ---- Figure 5
+(function fig5() {
+  const st = {D: 11, w: 3, L: 1.19, fov: 120};
+  const bind = (id, k) => { const el = $('#' + id); el.addEventListener('input', () => { st[k] = +el.value; draw(); }); };
+  bind('f5D', 'D'); bind('f5w', 'w'); bind('f5L', 'L');
+  seg($('#f5fov'), [[120, '120°'], [270, '270° (spinner, rear blocked)']], 120, v => { st.fov = v; draw(); });
+  function draw() {
+    if (st.D < 2 * st.w + 1) st.D = 2 * st.w + 1;
+    $('#f5Do').textContent = st.D.toFixed(1) + ' m'; $('#f5wo').textContent = st.w.toFixed(1) + ' m'; $('#f5Lo').textContent = st.L.toFixed(2) + ' m';
+    const Ro = st.D / 2, Rc = Ro - st.w / 2, Ri = Rc - st.w / 2, half = st.fov / 2;
+    // car on the right of the centre, heading up (+y), turning left; lidar L ahead
+    const W = 520, H = 440, ext = Ro * 1.25, s = Math.min(W, H) / (2 * ext);
+    const X = x => W / 2 + x * s, Y = y => H / 2 - y * s;
+    const it = [];
+    const circ = (r, cls, style) => it.push(['circle', {cx: X(0), cy: Y(0), r: r * s, fill: 'none', style}]);
+    it.push(['circle', {cx: X(0), cy: Y(0), r: Ro * s, style: 'fill:var(--track)'}], ['circle', {cx: X(0), cy: Y(0), r: Ri * s, style: 'fill:var(--card)'}]);
+    circ(Ro, '', 'stroke:var(--mut);stroke-width:1.2'); circ(Ri, '', 'stroke:var(--mut);stroke-width:1.2'); circ(Rc, '', 'stroke:var(--mut);stroke-width:.8;stroke-dasharray:4 4');
+    const lx = Rc, ly = st.L;
+    // field of view wedge (heading +y = 90° in math angles); bearing positive to the left
+    const reach = ext * 1.6, a0 = (90 - half) * deg, a1 = (90 + half) * deg;
+    const big = st.fov > 180 ? 1 : 0;
+    it.push(['path', {d: `M${X(lx)} ${Y(ly)}L${X(lx + reach * Math.cos(a0))} ${Y(ly + reach * Math.sin(a0))}A${reach * s} ${reach * s} 0 ${big} 0 ${X(lx + reach * Math.cos(a1))} ${Y(ly + reach * Math.sin(a1))}Z`, style: 'fill:var(--c1);fill-opacity:.12;stroke:var(--c1);stroke-opacity:.6', 'stroke-width': 1}]);
+    // edge arcs inside the view
+    const inView = (px, py) => { const b = Math.atan2(-(px - lx), py - ly) / deg; return Math.abs(b) <= half; };
+    for (const [R, slot] of [[Ri, 2], [Ro, 1]]) {
+      let d = '', pen = false;
+      for (let a = 0; a <= 360; a += 0.5) {
+        const px = R * Math.cos(a * deg), py = R * Math.sin(a * deg), ok = inView(px, py) && Math.hypot(px - lx, py - ly) > 1.4;
+        if (ok) { d += (pen ? 'L' : 'M') + X(px).toFixed(1) + ' ' + Y(py).toFixed(1); pen = true; } else pen = false;
+      }
+      if (d) it.push(['path', {d, fill: 'none', style: `stroke:${col(slot)}`, 'stroke-width': 5, 'stroke-linecap': 'round', opacity: 0.85}]);
+    }
+    // tangent to the inside edge
+    const D0 = Math.hypot(lx, ly), gam = Math.asin(Math.min(1, Ri / D0)), toC = Math.atan2(-ly, -lx);
+    const tA = toC - gam, tl = Math.sqrt(Math.max(0, D0 * D0 - Ri * Ri));
+    const tx = lx + tl * Math.cos(tA), ty = ly + tl * Math.sin(tA);
+    it.push(['line', {x1: X(lx), y1: Y(ly), x2: X(lx + (tx - lx) * 1.6), y2: Y(ly + (ty - ly) * 1.6), style: 'stroke:var(--fg)', 'stroke-width': 1, 'stroke-dasharray': '3 3'}]);
+    it.push(['circle', {cx: X(tx), cy: Y(ty), r: 3.5, style: 'fill:var(--fg)'}]);
+    // car: rear axle at (Rc, 0), body to the lidar and beyond
+    const cw = 1.2 * s;
+    it.push(['rect', {x: X(Rc) - cw / 2, y: Y(st.L + 0.8), width: cw, height: (st.L + 1.4) * s, rx: 4, style: 'fill:var(--fg);fill-opacity:.75'}]);
+    it.push(['circle', {cx: X(lx), cy: Y(ly), r: 4, style: 'fill:var(--c1);stroke:var(--card)', 'stroke-width': 1.5}]);
+    it.push(['line', {x1: X(Rc) - cw, x2: X(Rc) + cw, y1: Y(0), y2: Y(0), style: 'stroke:var(--fg)', 'stroke-width': 1.5}], ['text', {x: X(Rc) + cw + 4, y: Y(0) + 4, class: 'tk'}, 'rear axle']);
+    const bm = LM.betaMin(st.D, st.w, st.L);
+    it.push(['text', {x: 10, y: 18, class: 'lb'}, `β_min = ${fmt(bm)}° · half view = ${half}°`]);
+    it.push(['text', {x: 10, y: 34, class: 'tk'}, bm <= half ? 'inside edge in view (orange arc)' : 'inside edge never in view mid-turn']);
+    S($('#f5top'), it);
+    // β_min against diameter
+    const Ds = []; for (let d = 2 * st.w + 1; d <= 40.001; d += 0.25) Ds.push(d);
+    const star = LM.dStar(st.w, st.L, half);
+    lineChart($('#f5plot'), {W: 520, H: 440, mr: 30, x: {min: 6, max: 40, ticks: [10, 20, 30, 40], label: 'outside diameter of the turn (m)'},
+      y: {min: 0, max: 120, ticks: [0, 30, 60, 90, 120], label: 'smallest bearing to the inside edge (°)'},
+      series: [{slot: 2, pts: Ds.map(d => [d, LM.betaMin(d, st.w, st.L)]), w: 2.4}],
+      refs: [{y: half > 120 ? undefined : half, label: `half the view: ${half}°`}],
+      dots: [{x: st.D, y: bm, slot: 2, label: fmt(bm) + '°'}],
+      tipAt: d => `<b>${d.toFixed(1)} m</b>: β_min ${fmt(LM.betaMin(d, st.w, st.L))}°`});
+    $('#f5read').innerHTML = `β_min = 90° + arctan(${st.L.toFixed(2)} / ${Rc.toFixed(2)}) − arcsin(${Ri.toFixed(2)} / ${Math.hypot(Rc, st.L).toFixed(2)}) = <b>${fmt(bm)}°</b>. ` +
+      (st.fov > 200 ? 'A spinner whose rear 90° is hidden by the car sees ±135°, so it always sees the inside edge.' :
+        (isFinite(star) ? `With this mount and track width a ${st.fov}° lidar sees the inside edge mid-turn only in turns of at least <b>${fmt(star)} m</b> outside diameter.` : 'It never sees the inside edge mid-turn.'));
+  }
+  draw();
+})();
+
+// ---- Figures 6 and 7
+(function fig6() {
+  const HP = JSON.parse($('#hpData').textContent);
+  const st = {sc: 'w9', cfg: 'atx', i: 0};
+  const CFG = {atx: ['ATX alone', [1], 1], vlp: ['VLP-16 alone', [2], 2], both: ['ATX + VLP-16', [1, 2], 3]};
+  const S6 = $('#f6s');
+  seg($('#f6sc'), Object.entries(HP).map(([k, v]) => [k, v.name]), st.sc, v => { st.sc = v; setup(); });
+  seg($('#f6cfg'), Object.entries(CFG).map(([k, v]) => [k, v[0]]), st.cfg, v => { st.cfg = v; draw(); });
+  S6.addEventListener('input', () => { st.i = +S6.value; draw(); });
+  const seen = (h, which) => which.some(w => h[w] >= 3);
+  function gapLen(D, which) { let g = 0; for (const sm of D.smp) if (sm[0] >= 0 && sm[0] <= D.len && sm[8].filter(h => seen(h, which)).length < 2) g += 0.25; return g; }
+  function setup() {
+    const D = HP[st.sc];
+    S6.max = D.smp.length - 1;
+    st.i = D.smp.findIndex(sm => sm[0] >= D.len * 0.45);
+    S6.value = st.i;
+    $('#f7d').value = gapLen(D, [1]); $('#f7R').value = D.R; f7();
+    draw();
+  }
+  function meas(sm, which, D) {
+    const out = [];
+    for (const hh of sm[8]) for (const w of which) {
+      if (hh[w] < 3) continue;
+      const [mx, my] = D.cones[hh[0]], ox = w === 1 ? sm[4] : sm[6], oy = w === 1 ? sm[5] : sm[7];
+      out.push({mx, my, sig: LM.iscSigma(Math.hypot(mx - ox, my - oy), hh[w])});
+    }
+    return out;
+  }
+  function draw() {
+    const D = HP[st.sc], sm = D.smp[st.i], which = CFG[st.cfg][1];
+    $('#f6so').textContent = (sm[0] >= 0 ? '+' : '') + sm[0].toFixed(2) + ' m from turn-in';
+    // top view
+    const xs = D.cones.map(c => c[0]), ys = D.cones.map(c => c[1]);
+    const x0 = Math.min(...xs) - 1.5, x1 = Math.max(...xs) + 1.5, y0 = Math.min(...ys) - 1.5, y1 = Math.max(...ys) + 1.5;
+    const W = 520, H = 420, s = Math.min(W / (x1 - x0), H / (y1 - y0));
+    const X = x => (W - (x1 - x0) * s) / 2 + (x - x0) * s, Y = y => (H - (y1 - y0) * s) / 2 + (y1 - y) * s;
+    const it = [];
+    // path
+    let d = '';
+    D.smp.forEach((q, k) => { d += (k ? 'L' : 'M') + X(q[1]).toFixed(1) + ' ' + Y(q[2]).toFixed(1); });
+    it.push(['path', {d, fill: 'none', style: 'stroke:var(--mut)', 'stroke-width': 1, 'stroke-dasharray': '2 4'}]);
+    // fields of view (schematic radius)
+    const hd = sm[3];
+    const wedge = (ox, oy, half, R, slot) => {
+      const a0 = hd - half * deg, a1 = hd + half * deg, big = half > 90 ? 1 : 0;
+      it.push(['path', {d: `M${X(ox)} ${Y(oy)}L${X(ox + R * Math.cos(a0))} ${Y(oy + R * Math.sin(a0))}A${R * s} ${R * s} 0 ${big} 0 ${X(ox + R * Math.cos(a1))} ${Y(oy + R * Math.sin(a1))}Z`, style: `fill:${col(slot)};fill-opacity:.1;stroke:${col(slot)};stroke-opacity:.5`}]);
+    };
+    if (which.includes(1)) wedge(sm[4], sm[5], 60, 9, 1);
+    if (which.includes(2)) wedge(sm[6], sm[7], 135, 5, 2);
+    const vis = new Set(sm[8].filter(h => seen(h, which)).map(h => h[0]));
+    for (const [k, c] of D.cones.entries()) {
+      const fill = c[2] === 'b' ? '#3d82ff' : c[2] === 'y' ? '#f2c200' : '#ff7a1a';
+      it.push(['circle', {cx: X(c[0]), cy: Y(c[1]), r: vis.has(k) ? 5 : 3.2, style: vis.has(k) ? `fill:${fill};stroke:var(--fg)` : `fill:${fill};fill-opacity:.35`, 'stroke-width': 1.5}]);
+    }
+    // car (schematic) and the pose bound
+    const ca = Math.cos(hd), sa = Math.sin(hd), P = (u, v) => [X(sm[1] + u * ca - v * sa), Y(sm[2] + u * sa + v * ca)];
+    const body = [[-0.6, -0.6], [2.0, -0.45], [2.35, 0], [2.0, 0.45], [-0.6, 0.6]].map(([u, v]) => P(u, v).map(n => n.toFixed(1)).join(' '));
+    it.push(['path', {d: 'M' + body.join('L') + 'Z', style: 'fill:var(--fg);fill-opacity:.8'}]);
+    const cr = LM.crlb({x: sm[1], y: sm[2], h: hd}, meas(sm, which, D));
+    if (cr) {
+      const a = cr.vxx, b = cr.vxy, c2 = cr.vyy, tr = (a + c2) / 2, df = Math.sqrt(((a - c2) / 2) ** 2 + b * b);
+      const l1 = tr + df, l2 = Math.max(tr - df, 0), ang = Math.atan2(l1 - a, b || 1e-12);
+      const k = 10;
+      it.push(['ellipse', {cx: X(sm[1]), cy: Y(sm[2]), rx: Math.max(1, Math.sqrt(l1) * k * s), ry: Math.max(1, Math.sqrt(l2) * k * s), transform: `rotate(${-ang / deg} ${X(sm[1])} ${Y(sm[2])})`, style: `fill:none;stroke:${col(3)}`, 'stroke-width': 2}]);
+    }
+    S($('#f6top'), it);
+    // strip: cones in view along the run, for each set of lidars
+    const series = Object.entries(CFG).map(([k, [lab, wh, slot]]) => ({slot, label: lab, pts: D.smp.map(q => [q[0], q[8].filter(h => seen(h, wh)).length]), w: k === st.cfg ? 2.6 : 1.4, op: k === st.cfg ? 1 : 0.55}));
+    const bands = [];
+    let open = null;
+    for (const q of D.smp) {
+      const low = q[8].filter(h => seen(h, [1])).length < 2;
+      if (low && open === null) open = q[0];
+      if (!low && open !== null) { bands.push({x0: open, x1: q[0]}); open = null; }
+    }
+    if (open !== null) bands.push({x0: open, x1: D.smp[D.smp.length - 1][0]});
+    const xmn = D.smp[0][0], xmx = D.smp[D.smp.length - 1][0];
+    const ymax = Math.max(10, ...series.flatMap(s => s.pts.map(p => p[1]))) + 2;
+    const sc = lineChart($('#f6strip'), {W: 520, H: 420, mr: 104, x: {min: xmn, max: xmx, ticks: [-15, -10, -5, 0, 5, 10, 15, 20].filter(t => t >= xmn && t <= xmx), label: 'distance from turn-in (m)'},
+      y: {min: 0, max: ymax, ticks: [0, 2, 5, 10, 15, 20, 25, 30].filter(t => t <= ymax), label: 'cones seen with 3+ rays'}, series, bands, refs: [{y: 2, label: '2 cones: pose observable'}],
+      tipAt: x => { const q = D.smp.reduce((a, b) => Math.abs(b[0] - x) < Math.abs(a[0] - x) ? b : a); return `<b>${q[0].toFixed(2)} m</b><table>` + Object.values(CFG).map(([lab, wh, slot]) => `<tr><td><i class="sw" style="background:${col(slot)}"></i> ${lab}</td><td>${q[8].filter(h => seen(h, wh)).length}</td></tr>`).join('') + '</table>'; }});
+    const m = $('#f6strip');
+    const ln = document.createElementNS(NS, 'line');
+    ln.setAttribute('x1', sc.sx(sm[0])); ln.setAttribute('x2', sc.sx(sm[0])); ln.setAttribute('y1', 14); ln.setAttribute('y2', 420 - 44);
+    ln.setAttribute('style', 'stroke:var(--fg)'); ln.setAttribute('stroke-width', '1.5');
+    m.insertBefore(ln, m.lastChild.previousSibling);
+    const nv = vis.size, inside = D.cones.filter((c, k) => c[3] && vis.has(k)).length, nIn = D.cones.filter(c => c[3]).length;
+    $('#f6read').innerHTML = `<b>${CFG[st.cfg][0]}, ${sm[0].toFixed(2)} m from turn-in:</b> ${nv} cone${nv === 1 ? '' : 's'} in view, ${inside} of the ${nIn} inside cone${nIn === 1 ? '' : 's'}. ` +
+      (cr ? `Pose bound from this scan: position ±${fmt(cr.sp * 100)} cm, heading ±${fmt(cr.sh, 2)}°.` : '<b>Fewer than 2 cones: position and heading cannot both be fixed from the cones; odometry carries the pose.</b>') +
+      ` In this hairpin the ATX alone sees fewer than 2 cones for <b>${gapLen(D, [1]).toFixed(1)} m</b> of the ${D.len.toFixed(1)} m turn.`;
+  }
+  const ids = ['f7d', 'f7R', 'f7v', 'f7e', 'f7g', 'f7b'];
+  ids.forEach(id => $('#' + id).addEventListener('input', f7));
+  function f7() {
+    const v = id => +$('#' + id).value;
+    const r = LM.drift({d: v('f7d'), R: v('f7R'), v: v('f7v'), eps: v('f7e') / 100, sg: v('f7g') / 100, bg: v('f7b')});
+    $('#f7do').textContent = v('f7d').toFixed(2) + ' m'; $('#f7Ro').textContent = v('f7R').toFixed(1) + ' m'; $('#f7vo').textContent = v('f7v').toFixed(1) + ' m/s';
+    $('#f7eo').textContent = v('f7e').toFixed(1) + '%'; $('#f7go').textContent = v('f7g').toFixed(1) + '%'; $('#f7bo').textContent = v('f7b').toFixed(2) + '°/s';
+    const ratio = 1.5 / Math.max(r.total, 1e-6);
+    $('#f7read').innerHTML = `Over ${v('f7d').toFixed(2)} m (${fmt(r.t, 2)} s): along-track ${fmt(r.along * 100)} cm, heading ${fmt(r.head, 2)}°, cross-track ${fmt(r.cross * 100)} cm. ` +
+      `Total ≈ <b>${fmt(r.total * 100)} cm</b>, against a 1.5 m margin for matching cones: <b>${ratio >= 10 ? 'a factor of ' + fmt(ratio, 0) + ' to spare' : ratio >= 2 ? 'a factor of ' + fmt(ratio, 1) + ' to spare' : 'too close for comfort'}</b>.`;
+  }
+  setup();
+})();
+
+changed();
+window.addEventListener('load', () => {
+  if (window.renderMathInElement) renderMathInElement(document.body, {delimiters: [{left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}], throwOnError: false});
+});
+</script>
+</body>
+</html>

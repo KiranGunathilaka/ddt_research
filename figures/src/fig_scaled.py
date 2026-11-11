@@ -39,7 +39,7 @@ d.arrow([(1010, 196), (1010, 330)], C['pla'], src='pla', dst='ver'); d.label(101
 
 # car side
 d.box('rx', 1300, 100, 280, 140, 'veh', 'Command receiver', ['DDS, best effort, keep last 1', 'clamped to the 1:10 limits', 'watchdog: no command', '  for 100 ms → brake', 'VESC speed, servo angle'])
-d.box('pose', 1300, 304, 280, 150, 'hw', 'Pose on the car', ['F9P rover, RTK fix', 'MTi-3 yaw rate', 'VESC wheel speed', 'EKF → pose at 50 Hz,', '  stamped in GNSS time'])
+d.box('pose', 1300, 304, 280, 150, 'hw', 'Pose on the car', ['MTi-8 kit: RTK fix from', '  its F9P, yaw rate', 'VESC wheel speed', 'EKF → pose at 50 Hz,', '  stamped in GNSS time'])
 d.box('base', 1300, 540, 280, 72, 'hw', 'RTK base: F9P on a tripod', ['RTCM 3 corrections'])
 d.arrow([(1440, 240), (1440, 304)], '#111827', width=3, src='rx', dst='pose'); d.label(1448, 277, 'the real car moves', 'start', size=10.5, bg=False, bold=True)
 d.arrow([(1440, 540), (1440, 454)], GREY, dash='5 4', src='base', dst='pose'); d.label(1448, 494, 'RTCM over Wi-Fi', 'start', size=10.5, bg=False); d.label(1448, 509, '(str2str on the PC)', 'start', size=10.5, bg=False)

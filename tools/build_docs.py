@@ -32,7 +32,7 @@ SECTIONS = {
     "Reference": "Everything collected, with its sources.",
 }
 DOWNLOADS = [
-    ("xlsx/ddt_essential_costs.xlsx", "Cost workbook", "essential parts with landed cost in LKR, power budget, Jetson vs PC"),
+    ("xlsx/ddt_essential_costs.xlsx", "Cost workbook", "landed cost in LKR for the car, the HiL bench and the test rig, rates and method, power budget"),
     ("ddt_architecture_and_testing.pdf", "Architecture and test plan (PDF)", "printable copy of the plan"),
 ]
 REPO = "https://github.com/KiranGunathilaka/ddt_research"

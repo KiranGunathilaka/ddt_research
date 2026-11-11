@@ -31,6 +31,7 @@ The public copy holds only the docs, their figures and the files listed on the i
 | `01_fsd_open_source_code/` | Open-source Formula Student Driverless code as Git submodules: team stacks, individual modules, simulators and datasets |
 | `02_fsd_papers/` | Papers and theses, grouped by team |
 | `03_fsuk_ddt_ads-dv/` | FS-AI rules, ADS-DV documents, datasheets, community CAN code and the official FS-AI repositories (submodules) |
+| `04_compute_hardware/` | Manuals and vendor software for the computer candidates, one folder per board |
 | `tools/` | Repository housekeeping |
 
 Keep this repository private. It holds copyrighted papers and links to third-party code under mixed licences.

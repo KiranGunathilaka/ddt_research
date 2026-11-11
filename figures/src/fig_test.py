@@ -73,7 +73,7 @@ strip(1, Y[0], '1 · Full simulation', ['FSDS or a CARLA FS sim', 'one PC, no ha
       'all missions; faults injected: dropped sweeps, late images, a stuck wheel speed',
       ret=('commands → sim car', C['pla'], None, 'f1'))
 strip(2, Y[1], '2a · Pushable sensor rig', ['real sensors, ADS-DV heights', 'pushed by hand, our cones', 'truth: RTK + surveyed cones'],
-      ('hw', 'Real world', ['lidar(s), ZED 2, F9P, MTi-3', 'encoder → ESP32 → CAN', '  (fakes the VCU wheel', '  speed frames)'], 'sensors'),
+      ('hw', 'Real world', ['ATX, ZED 2, MTi-8 kit', 'encoder → ESP32 → CAN', '  (fakes the VCU wheel', '  speed frames)'], 'sensors'),
       [(1, ['real drivers, PPS time', 'CAN bridge on ESP32']), (1, ['real lidar + camera', 'our hand-made cones']),
        (1, ['real IMU, GNSS, encoder', 'vs RTK truth']), (0, ['runs, output logged', 'nothing to steer'])],
       'supervisor only: topic rates, latency per stage, timestamp alignment',

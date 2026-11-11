@@ -1,0 +1,444 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1600" viewBox="0 0 1900 1600" font-family="DejaVu Sans, Segoe UI, Helvetica, Arial, sans-serif">
+<title>Falcon DDT architecture: sensors, the MIO-5379 ports and software layers, and the ADS-DV connections</title>
+<defs><marker id="ah000c3d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#000c3d"/></marker><marker id="ah002eef" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#002eef"/></marker><marker id="ah0e7490" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0e7490"/></marker><marker id="ah374151" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#374151"/></marker><marker id="ah475569" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker><marker id="ahb86e00" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b86e00"/></marker><marker id="ahb91c1c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b91c1c"/></marker></defs>
+<rect width="1900" height="1600" fill="#ffffff"/>
+<text x="32.0" y="30.0" font-size="18" font-weight="bold" fill="#111827" text-anchor="start">Falcon FS-AI DDT: hardware and software architecture</text>
+<rect x="32" y="46" width="1118" height="160" rx="12" fill="#ffffff" stroke="#000c3d" stroke-opacity="0.45" stroke-width="1.4"/>
+<text x="46.0" y="67.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">SENSORS</text>
+<rect x="1560" y="46" width="322" height="454" rx="12" fill="#ffffff" stroke="#000c3d" stroke-opacity="0.45" stroke-width="1.4"/>
+<text x="1574.0" y="67.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">OFF THE CAR</text>
+<rect x="32" y="236" width="1498" height="1174" rx="12" fill="#f7f9ff" stroke="#002eef" stroke-opacity="0.5" stroke-width="1.4"/>
+<text x="1196.0" y="257.0" font-size="13" font-weight="bold" fill="#002eef" text-anchor="start">CAR COMPUTER · Advantech MIO-5379</text>
+<rect x="46" y="506" width="530" height="262" rx="12" fill="#f7f9ff" stroke="#002eef" stroke-opacity="0.5" stroke-width="1.4"/>
+<text x="60.0" y="527.0" font-size="13" font-weight="bold" fill="#002eef" text-anchor="start">PERCEIVE</text>
+<rect x="46" y="790" width="1104" height="160" rx="12" fill="#fffaee" stroke="#b86e00" stroke-opacity="0.6" stroke-width="1.4"/>
+<text x="60.0" y="811.0" font-size="13" font-weight="bold" fill="#b86e00" text-anchor="start">MAP + LOCALISE</text>
+<text x="192.3" y="811.0" font-size="11" font-weight="normal" fill="#5b6170" text-anchor="start">SLAM: both at the same time</text>
+<rect x="46" y="972" width="1104" height="178" rx="12" fill="#f7f9ff" stroke="#002eef" stroke-opacity="0.5" stroke-width="1.4"/>
+<text x="60.0" y="993.0" font-size="13" font-weight="bold" fill="#002eef" text-anchor="start">PLAN + CONTROL</text>
+<rect x="46" y="1172" width="790" height="226" rx="12" fill="#f8f9fb" stroke="#475569" stroke-opacity="0.5" stroke-width="1.4"/>
+<text x="60.0" y="1193.0" font-size="13" font-weight="bold" fill="#475569" text-anchor="start">SYSTEM</text>
+<text x="128.8" y="1193.0" font-size="11" font-weight="normal" fill="#5b6170" text-anchor="start">AS state, missions, health</text>
+<rect x="32" y="1440" width="1850" height="130" rx="12" fill="#ffffff" stroke="#000c3d" stroke-opacity="0.45" stroke-width="1.4"/>
+<text x="46.0" y="1461.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">ADS-DV</text>
+<text x="112.5" y="1461.0" font-size="11" font-weight="normal" fill="#5b6170" text-anchor="start">the shared IMechE car: what it gives a team</text>
+<rect x="56" y="80" width="240" height="110" rx="8" fill="#eef0f6" stroke="#000c3d" stroke-width="1.6"/>
+<text x="67.0" y="101.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">Hesai ATX lidar</text>
+<text x="286.0" y="101.0" font-size="11.5" font-weight="bold" fill="#000c3d" text-anchor="end">10 Hz</text>
+<circle cx="70.0" cy="116.0" r="2.1" fill="#000c3d"/>
+<text x="78.0" y="120.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">120° × 20°, 256 channels</text>
+<circle cx="70.0" cy="132.5" r="2.1" fill="#000c3d"/>
+<text x="78.0" y="136.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">interface box: Ethernet</text>
+<text x="78.0" y="153.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">and 12 V power</text>
+<circle cx="70.0" cy="165.5" r="2.1" fill="#000c3d"/>
+<text x="78.0" y="169.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">clock: gPTP slave</text>
+<rect x="326" y="80" width="240" height="110" rx="8" fill="#eef0f6" stroke="#000c3d" stroke-width="1.6"/>
+<text x="337.0" y="101.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">ZED2 camera</text>
+<text x="556.0" y="101.0" font-size="11.5" font-weight="bold" fill="#000c3d" text-anchor="end">30 fps</text>
+<circle cx="340.0" cy="116.0" r="2.1" fill="#000c3d"/>
+<text x="348.0" y="120.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">stereo + colour, 110°</text>
+<circle cx="340.0" cy="132.5" r="2.1" fill="#000c3d"/>
+<text x="348.0" y="136.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">powered over USB</text>
+<circle cx="340.0" cy="149.0" r="2.1" fill="#000c3d"/>
+<text x="348.0" y="153.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">no clock input</text>
+<rect x="596" y="80" width="240" height="110" rx="8" fill="#eef0f6" stroke="#000c3d" stroke-width="1.6"/>
+<text x="607.0" y="101.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">Level shifter</text>
+<circle cx="610.0" cy="116.0" r="2.1" fill="#000c3d"/>
+<text x="618.0" y="120.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">MAX3232</text>
+<circle cx="610.0" cy="132.5" r="2.1" fill="#000c3d"/>
+<text x="618.0" y="136.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">3.3 V PPS → RS-232</text>
+<rect x="866" y="80" width="270" height="110" rx="8" fill="#eef0f6" stroke="#000c3d" stroke-width="1.6"/>
+<text x="877.0" y="101.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">Xsens MTi-8 dev kit</text>
+<circle cx="880.0" cy="116.0" r="2.1" fill="#000c3d"/>
+<text x="888.0" y="120.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">MTi-8: IMU + GNSS/INS</text>
+<circle cx="880.0" cy="132.5" r="2.1" fill="#000c3d"/>
+<text x="888.0" y="136.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">ZED-F9P card: RTK GNSS</text>
+<text x="888.0" y="153.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">and the PPS pulse</text>
+<circle cx="880.0" cy="165.5" r="2.1" fill="#000c3d"/>
+<text x="888.0" y="169.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">two USB ports</text>
+<rect x="1576" y="80" width="290" height="110" rx="8" fill="#eef0f6" stroke="#000c3d" stroke-width="1.6"/>
+<text x="1587.0" y="101.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">RTK corrections</text>
+<circle cx="1590.0" cy="116.0" r="2.1" fill="#000c3d"/>
+<text x="1598.0" y="120.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">our second F9P on a tripod,</text>
+<text x="1598.0" y="136.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">or a network RTK service</text>
+<circle cx="1590.0" cy="149.0" r="2.1" fill="#000c3d"/>
+<text x="1598.0" y="153.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">NTRIP caster on the internet</text>
+<rect x="1576" y="384" width="290" height="100" rx="8" fill="#eef0f6" stroke="#000c3d" stroke-width="1.6"/>
+<text x="1587.0" y="405.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">Pit laptop (Foxglove)</text>
+<circle cx="1590.0" cy="420.0" r="2.1" fill="#000c3d"/>
+<text x="1598.0" y="424.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">live topics and health</text>
+<circle cx="1590.0" cy="436.5" r="2.1" fill="#000c3d"/>
+<text x="1598.0" y="440.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">view only: sends no</text>
+<text x="1598.0" y="457.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">commands to the car</text>
+<rect x="56" y="272" width="240" height="66" rx="8" fill="#eef0f6" stroke="#000c3d" stroke-width="1.6"/>
+<text x="67.0" y="293.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">LAN2 · Intel i226</text>
+<circle cx="70.0" cy="308.0" r="2.1" fill="#000c3d"/>
+<text x="78.0" y="312.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">lidar Ethernet</text>
+<circle cx="70.0" cy="324.5" r="2.1" fill="#000c3d"/>
+<text x="78.0" y="328.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">gPTP grandmaster</text>
+<rect x="326" y="272" width="240" height="66" rx="8" fill="#eef0f6" stroke="#000c3d" stroke-width="1.6"/>
+<text x="337.0" y="293.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">USB 3.2</text>
+<circle cx="340.0" cy="308.0" r="2.1" fill="#000c3d"/>
+<text x="348.0" y="312.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">ZED2 images</text>
+<rect x="596" y="272" width="240" height="66" rx="8" fill="#eef0f6" stroke="#000c3d" stroke-width="1.6"/>
+<text x="607.0" y="293.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">COM1 · RS-232</text>
+<circle cx="610.0" cy="308.0" r="2.1" fill="#000c3d"/>
+<text x="618.0" y="312.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">PPS on the DCD pin</text>
+<rect x="866" y="272" width="270" height="66" rx="8" fill="#eef0f6" stroke="#000c3d" stroke-width="1.6"/>
+<text x="877.0" y="293.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">USB 2.0</text>
+<circle cx="880.0" cy="308.0" r="2.1" fill="#000c3d"/>
+<text x="888.0" y="312.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">MTi-8 kit: IMU, F9P</text>
+<rect x="1196" y="272" width="310" height="66" rx="8" fill="#eef0f6" stroke="#000c3d" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="1207.0" y="293.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">4G USB modem</text>
+<circle cx="1210.0" cy="308.0" r="2.1" fill="#000c3d"/>
+<text x="1218.0" y="312.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">internet for NTRIP</text>
+<circle cx="1210.0" cy="324.5" r="2.1" fill="#000c3d"/>
+<text x="1218.0" y="328.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">good to have</text>
+<rect x="56" y="384" width="240" height="100" rx="8" fill="#eef2ff" stroke="#002eef" stroke-width="1.6"/>
+<text x="67.0" y="405.0" font-size="13" font-weight="bold" fill="#002eef" text-anchor="start">Lidar driver</text>
+<circle cx="70.0" cy="420.0" r="2.1" fill="#002eef"/>
+<text x="78.0" y="424.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">HesaiLidar_ROS_2.0</text>
+<circle cx="70.0" cy="436.5" r="2.1" fill="#002eef"/>
+<text x="78.0" y="440.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">packets → point cloud</text>
+<circle cx="70.0" cy="453.0" r="2.1" fill="#002eef"/>
+<text x="78.0" y="457.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">stamped at capture,</text>
+<text x="78.0" y="473.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">in GNSS time</text>
+<rect x="326" y="384" width="240" height="100" rx="8" fill="#eef2ff" stroke="#002eef" stroke-width="1.6"/>
+<text x="337.0" y="405.0" font-size="13" font-weight="bold" fill="#002eef" text-anchor="start">Camera driver</text>
+<circle cx="340.0" cy="420.0" r="2.1" fill="#002eef"/>
+<text x="348.0" y="424.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">zed-open-capture</text>
+<text x="348.0" y="440.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">(no NVIDIA GPU, no CUDA)</text>
+<circle cx="340.0" cy="453.0" r="2.1" fill="#002eef"/>
+<text x="348.0" y="457.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">left colour image</text>
+<circle cx="340.0" cy="469.5" r="2.1" fill="#002eef"/>
+<text x="348.0" y="473.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">arrival time − fixed delay</text>
+<rect x="596" y="384" width="240" height="100" rx="8" fill="#eef2ff" stroke="#002eef" stroke-width="1.6"/>
+<text x="607.0" y="405.0" font-size="13" font-weight="bold" fill="#002eef" text-anchor="start">Time and frames</text>
+<circle cx="610.0" cy="420.0" r="2.1" fill="#002eef"/>
+<text x="618.0" y="424.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">chrony: clock on the PPS</text>
+<circle cx="610.0" cy="436.5" r="2.1" fill="#002eef"/>
+<text x="618.0" y="440.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">ptp4l: gPTP to the lidar</text>
+<circle cx="610.0" cy="453.0" r="2.1" fill="#002eef"/>
+<text x="618.0" y="457.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">tf: sensor poses (CAD)</text>
+<rect x="866" y="384" width="270" height="100" rx="8" fill="#eef2ff" stroke="#002eef" stroke-width="1.6"/>
+<text x="877.0" y="405.0" font-size="13" font-weight="bold" fill="#002eef" text-anchor="start">IMU and GNSS drivers</text>
+<circle cx="880.0" cy="420.0" r="2.1" fill="#002eef"/>
+<text x="888.0" y="424.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">Xsens + u-blox ROS 2</text>
+<circle cx="880.0" cy="436.5" r="2.1" fill="#002eef"/>
+<text x="888.0" y="440.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">fix type and covariance</text>
+<circle cx="880.0" cy="453.0" r="2.1" fill="#002eef"/>
+<text x="888.0" y="457.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">NTRIP client: RTCM</text>
+<text x="888.0" y="473.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">→ F9P over USB</text>
+<rect x="1196" y="384" width="310" height="66" rx="8" fill="#eef0f6" stroke="#000c3d" stroke-width="1.6"/>
+<text x="1207.0" y="405.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">Wi-Fi · M.2 E-key</text>
+<circle cx="1210.0" cy="420.0" r="2.1" fill="#000c3d"/>
+<text x="1218.0" y="424.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">Intel AX210, 2.4 GHz</text>
+<rect x="56" y="540" width="240" height="100" rx="8" fill="#eef2ff" stroke="#002eef" stroke-width="1.6"/>
+<text x="67.0" y="561.0" font-size="13" font-weight="bold" fill="#002eef" text-anchor="start">Lidar cones</text>
+<circle cx="70.0" cy="576.0" r="2.1" fill="#002eef"/>
+<text x="78.0" y="580.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">de-skew, ground removal</text>
+<circle cx="70.0" cy="592.5" r="2.1" fill="#002eef"/>
+<text x="78.0" y="596.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">clustering, cone-shape check</text>
+<circle cx="70.0" cy="609.0" r="2.1" fill="#002eef"/>
+<text x="78.0" y="613.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">options: geometric or a</text>
+<text x="78.0" y="629.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">learned detector</text>
+<rect x="326" y="540" width="240" height="100" rx="8" fill="#eef2ff" stroke="#002eef" stroke-width="1.6"/>
+<text x="337.0" y="561.0" font-size="13" font-weight="bold" fill="#002eef" text-anchor="start">Camera colour</text>
+<circle cx="340.0" cy="576.0" r="2.1" fill="#002eef"/>
+<text x="348.0" y="580.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">colour of each cone</text>
+<circle cx="340.0" cy="592.5" r="2.1" fill="#002eef"/>
+<text x="348.0" y="596.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">options: HSV rule, small</text>
+<text x="348.0" y="613.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">CNN, YOLO</text>
+<circle cx="340.0" cy="625.5" r="2.1" fill="#002eef"/>
+<text x="348.0" y="629.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">OpenVINO: Arc GPU or NPU</text>
+<rect x="56" y="670" width="510" height="86" rx="8" fill="#eef2ff" stroke="#002eef" stroke-width="1.6"/>
+<text x="67.0" y="691.0" font-size="13" font-weight="bold" fill="#002eef" text-anchor="start">Lidar–camera fusion</text>
+<circle cx="70.0" cy="706.0" r="2.1" fill="#002eef"/>
+<text x="78.0" y="710.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">lidar cones projected into</text>
+<text x="78.0" y="726.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">the image of the same time</text>
+<circle cx="70.0" cy="739.0" r="2.1" fill="#002eef"/>
+<text x="78.0" y="743.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">position from the lidar</text>
+<circle cx="314.0" cy="706.0" r="2.1" fill="#002eef"/>
+<text x="322.0" y="710.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">colour from the camera</text>
+<circle cx="314.0" cy="722.5" r="2.1" fill="#002eef"/>
+<text x="322.0" y="726.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">no match → "unknown"</text>
+<rect x="56" y="822" width="444" height="116" rx="8" fill="#fff3d6" stroke="#b86e00" stroke-width="1.6"/>
+<text x="67.0" y="843.0" font-size="13" font-weight="bold" fill="#b86e00" text-anchor="start">Map</text>
+<circle cx="70.0" cy="858.0" r="2.1" fill="#b86e00"/>
+<text x="78.0" y="862.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">cone positions + colours</text>
+<text x="78.0" y="878.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">in the map frame</text>
+<circle cx="70.0" cy="891.0" r="2.1" fill="#b86e00"/>
+<text x="78.0" y="895.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">lap 1 builds it, later</text>
+<text x="78.0" y="911.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">laps reuse it</text>
+<circle cx="281.0" cy="858.0" r="2.1" fill="#b86e00"/>
+<text x="289.0" y="862.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">options: EKF-SLAM,</text>
+<text x="289.0" y="878.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">FastSLAM, GraphSLAM</text>
+<circle cx="281.0" cy="891.0" r="2.1" fill="#b86e00"/>
+<text x="289.0" y="895.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">association options:</text>
+<text x="289.0" y="911.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">nearest neighbour, JCBB</text>
+<rect x="580" y="822" width="205" height="116" rx="8" fill="#fff3d6" stroke="#b86e00" stroke-width="1.6"/>
+<text x="591.0" y="843.0" font-size="13" font-weight="bold" fill="#b86e00" text-anchor="start">Localise</text>
+<circle cx="594.0" cy="858.0" r="2.1" fill="#b86e00"/>
+<text x="602.0" y="862.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">car pose in the map</text>
+<text x="602.0" y="878.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">frame</text>
+<circle cx="594.0" cy="891.0" r="2.1" fill="#b86e00"/>
+<text x="602.0" y="895.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">removes odometry drift</text>
+<text x="602.0" y="911.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">(map → odom)</text>
+<rect x="880" y="822" width="256" height="116" rx="8" fill="#fff3d6" stroke="#b86e00" stroke-width="1.6"/>
+<text x="891.0" y="843.0" font-size="13" font-weight="bold" fill="#b86e00" text-anchor="start">State estimation</text>
+<circle cx="894.0" cy="858.0" r="2.1" fill="#b86e00"/>
+<text x="902.0" y="862.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">fuses IMU, wheel speeds,</text>
+<text x="902.0" y="878.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">steering angle, GNSS</text>
+<circle cx="894.0" cy="891.0" r="2.1" fill="#b86e00"/>
+<text x="902.0" y="895.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">out: pose, velocity, yaw rate</text>
+<circle cx="894.0" cy="907.5" r="2.1" fill="#b86e00"/>
+<text x="902.0" y="911.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">options: EKF, UKF; LIO</text>
+<text x="902.0" y="928.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">(lidar + IMU) as an input</text>
+<rect x="56" y="1004" width="444" height="134" rx="8" fill="#eef2ff" stroke="#002eef" stroke-width="1.6"/>
+<text x="67.0" y="1025.0" font-size="13" font-weight="bold" fill="#002eef" text-anchor="start">Path planner</text>
+<circle cx="70.0" cy="1040.0" r="2.1" fill="#002eef"/>
+<text x="78.0" y="1044.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">one mode per mission:</text>
+<text x="78.0" y="1060.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">accel, skidpad,</text>
+<text x="78.0" y="1077.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">autocross, trackdrive</text>
+<circle cx="70.0" cy="1089.5" r="2.1" fill="#002eef"/>
+<text x="78.0" y="1093.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">finds the start/finish</text>
+<text x="78.0" y="1110.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">line, reports crossings</text>
+<circle cx="281.0" cy="1040.0" r="2.1" fill="#002eef"/>
+<text x="289.0" y="1044.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">unknown track: centre line</text>
+<text x="289.0" y="1060.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">options: Delaunay, search</text>
+<circle cx="281.0" cy="1073.0" r="2.1" fill="#002eef"/>
+<text x="289.0" y="1077.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">saved map: race line</text>
+<text x="289.0" y="1093.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">options: min curvature,</text>
+<text x="289.0" y="1110.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">min time</text>
+<rect x="580" y="1004" width="220" height="134" rx="8" fill="#eef2ff" stroke="#002eef" stroke-width="1.6"/>
+<text x="591.0" y="1025.0" font-size="13" font-weight="bold" fill="#002eef" text-anchor="start">Speed profile</text>
+<circle cx="594.0" cy="1040.0" r="2.1" fill="#002eef"/>
+<text x="602.0" y="1044.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">speed limits from grip</text>
+<text x="602.0" y="1060.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">and steering</text>
+<circle cx="594.0" cy="1073.0" r="2.1" fill="#002eef"/>
+<text x="602.0" y="1077.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">options: forward–backward</text>
+<text x="602.0" y="1093.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">pass, or inside an MPC</text>
+<rect x="880" y="1004" width="256" height="134" rx="8" fill="#eef2ff" stroke="#002eef" stroke-width="1.6"/>
+<text x="891.0" y="1025.0" font-size="13" font-weight="bold" fill="#002eef" text-anchor="start">Controller</text>
+<circle cx="894.0" cy="1040.0" r="2.1" fill="#002eef"/>
+<text x="902.0" y="1044.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">tracks the path and speeds</text>
+<circle cx="894.0" cy="1056.5" r="2.1" fill="#002eef"/>
+<text x="902.0" y="1060.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">options: pure pursuit,</text>
+<text x="902.0" y="1077.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">Stanley, PID, MPC</text>
+<circle cx="894.0" cy="1089.5" r="2.1" fill="#002eef"/>
+<text x="902.0" y="1093.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">out: steering angle, axle</text>
+<text x="902.0" y="1110.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">torque, brake pressure</text>
+<circle cx="894.0" cy="1122.5" r="2.1" fill="#002eef"/>
+<text x="902.0" y="1126.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">clamped, rate-limited</text>
+<rect x="56" y="1204" width="444" height="96" rx="8" fill="#f1f3f6" stroke="#475569" stroke-width="1.6"/>
+<text x="67.0" y="1225.0" font-size="13" font-weight="bold" fill="#475569" text-anchor="start">Mission behaviour tree</text>
+<circle cx="70.0" cy="1240.0" r="2.1" fill="#475569"/>
+<text x="78.0" y="1244.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">one tree per mission</text>
+<circle cx="70.0" cy="1256.5" r="2.1" fill="#475569"/>
+<text x="78.0" y="1260.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">starts on "go"</text>
+<circle cx="281.0" cy="1240.0" r="2.1" fill="#475569"/>
+<text x="289.0" y="1244.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">counts laps</text>
+<circle cx="281.0" cy="1256.5" r="2.1" fill="#475569"/>
+<text x="289.0" y="1260.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">last lap: stops in the zone</text>
+<rect x="580" y="1204" width="220" height="96" rx="8" fill="#f1f3f6" stroke="#475569" stroke-width="1.6"/>
+<text x="591.0" y="1225.0" font-size="13" font-weight="bold" fill="#475569" text-anchor="start">AS state manager</text>
+<circle cx="594.0" cy="1240.0" r="2.1" fill="#475569"/>
+<text x="602.0" y="1244.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">follows the VCU's AS state</text>
+<circle cx="594.0" cy="1256.5" r="2.1" fill="#475569"/>
+<text x="602.0" y="1260.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">mission status → VCU</text>
+<circle cx="594.0" cy="1273.0" r="2.1" fill="#475569"/>
+<text x="602.0" y="1277.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">EBS request on a fault</text>
+<rect x="56" y="1320" width="744" height="68" rx="8" fill="#f1f3f6" stroke="#475569" stroke-width="1.6"/>
+<text x="67.0" y="1341.0" font-size="13" font-weight="bold" fill="#475569" text-anchor="start">Supervisor (health)</text>
+<circle cx="70.0" cy="1356.0" r="2.1" fill="#475569"/>
+<text x="78.0" y="1360.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">rate and age of every topic</text>
+<circle cx="70.0" cy="1372.5" r="2.1" fill="#475569"/>
+<text x="78.0" y="1376.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">node heartbeats</text>
+<circle cx="431.0" cy="1356.0" r="2.1" fill="#475569"/>
+<text x="439.0" y="1360.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">CPU and GPU temperature, power</text>
+<circle cx="431.0" cy="1372.5" r="2.1" fill="#475569"/>
+<text x="439.0" y="1376.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">kicks the hardware watchdog</text>
+<rect x="880" y="1204" width="256" height="86" rx="8" fill="#eef2ff" stroke="#002eef" stroke-width="1.6"/>
+<text x="891.0" y="1225.0" font-size="13" font-weight="bold" fill="#002eef" text-anchor="start">CAN bridge (FS-AI API)</text>
+<text x="1126.0" y="1225.0" font-size="11.5" font-weight="bold" fill="#002eef" text-anchor="end">100 Hz</text>
+<circle cx="894.0" cy="1240.0" r="2.1" fill="#002eef"/>
+<text x="902.0" y="1244.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">VCU2AI → ROS topics</text>
+<circle cx="894.0" cy="1256.5" r="2.1" fill="#002eef"/>
+<text x="902.0" y="1260.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">commands → AI2VCU, 10 ms</text>
+<circle cx="894.0" cy="1273.0" r="2.1" fill="#002eef"/>
+<text x="902.0" y="1277.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">answers the handshake</text>
+<rect x="880" y="1330" width="256" height="66" rx="8" fill="#eef0f6" stroke="#000c3d" stroke-width="1.6"/>
+<text x="891.0" y="1351.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">CANable 2.0 · USB</text>
+<circle cx="894.0" cy="1366.0" r="2.1" fill="#000c3d"/>
+<text x="902.0" y="1370.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">USB–CAN, SocketCAN</text>
+<circle cx="894.0" cy="1382.5" r="2.1" fill="#000c3d"/>
+<text x="902.0" y="1386.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">vehicle CAN, 500 kbit/s</text>
+<rect x="1196" y="540" width="310" height="100" rx="8" fill="#eef2ff" stroke="#002eef" stroke-width="1.6"/>
+<text x="1207.0" y="561.0" font-size="13" font-weight="bold" fill="#002eef" text-anchor="start">Telemetry bridge</text>
+<circle cx="1210.0" cy="576.0" r="2.1" fill="#002eef"/>
+<text x="1218.0" y="580.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">Foxglove bridge: live</text>
+<text x="1218.0" y="596.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">topics to the pit</text>
+<circle cx="1210.0" cy="609.0" r="2.1" fill="#002eef"/>
+<text x="1218.0" y="613.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">read-only</text>
+<rect x="1196" y="670" width="310" height="100" rx="8" fill="#f1f3f6" stroke="#475569" stroke-width="1.6"/>
+<text x="1207.0" y="691.0" font-size="13" font-weight="bold" fill="#475569" text-anchor="start">Logger (black box)</text>
+<circle cx="1210.0" cy="706.0" r="2.1" fill="#475569"/>
+<text x="1218.0" y="710.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">rosbag2 (MCAP): all topics</text>
+<circle cx="1210.0" cy="722.5" r="2.1" fill="#475569"/>
+<text x="1218.0" y="726.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">raw CAN log (candump)</text>
+<circle cx="1210.0" cy="739.0" r="2.1" fill="#475569"/>
+<text x="1218.0" y="743.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">GNSS time, git hash per run</text>
+<rect x="1196" y="1204" width="310" height="184" rx="8" fill="#eef0f6" stroke="#000c3d" stroke-width="1.6"/>
+<text x="1207.0" y="1225.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">MIO-5379 hardware</text>
+<circle cx="1210.0" cy="1240.0" r="2.1" fill="#000c3d"/>
+<text x="1218.0" y="1244.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">Core Ultra 7 255H, 16 cores</text>
+<circle cx="1210.0" cy="1256.5" r="2.1" fill="#000c3d"/>
+<text x="1218.0" y="1260.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">Arc GPU + NPU: OpenVINO</text>
+<circle cx="1210.0" cy="1273.0" r="2.1" fill="#000c3d"/>
+<text x="1218.0" y="1277.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">32 GB DDR5, 1 TB NVMe</text>
+<circle cx="1210.0" cy="1289.5" r="2.1" fill="#000c3d"/>
+<text x="1218.0" y="1293.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">DC in 12–24 V: 13.7 V direct</text>
+<circle cx="1210.0" cy="1306.0" r="2.1" fill="#000c3d"/>
+<text x="1218.0" y="1310.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">hardware watchdog</text>
+<circle cx="1210.0" cy="1322.5" r="2.1" fill="#000c3d"/>
+<text x="1218.0" y="1326.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">on-board CAN-FD unused:</text>
+<text x="1218.0" y="1343.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">no Linux driver</text>
+<circle cx="1210.0" cy="1355.5" r="2.1" fill="#000c3d"/>
+<text x="1218.0" y="1359.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">3.5 Grms, 0–60 °C</text>
+<circle cx="1210.0" cy="1372.0" r="2.1" fill="#000c3d"/>
+<text x="1218.0" y="1376.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">Ubuntu 24.04, ROS 2, Docker</text>
+<rect x="56" y="1474" width="300" height="82" rx="8" fill="#eef0f6" stroke="#000c3d" stroke-width="1.6"/>
+<text x="67.0" y="1495.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">Sensor socket</text>
+<circle cx="70.0" cy="1510.0" r="2.1" fill="#000c3d"/>
+<text x="78.0" y="1514.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">TE DT06-2S, front plate</text>
+<circle cx="70.0" cy="1526.5" r="2.1" fill="#000c3d"/>
+<text x="78.0" y="1530.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">12 V, up to 5 A</text>
+<rect x="880" y="1474" width="460" height="82" rx="8" fill="#eef0f6" stroke="#000c3d" stroke-width="1.6"/>
+<text x="891.0" y="1495.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">Compute plug (7W2)</text>
+<circle cx="894.0" cy="1510.0" r="2.1" fill="#000c3d"/>
+<text x="902.0" y="1514.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">13.7 V, 30 A fuse</text>
+<circle cx="894.0" cy="1526.5" r="2.1" fill="#000c3d"/>
+<text x="902.0" y="1530.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">vehicle CAN, 500 kbit/s</text>
+<rect x="1420" y="1474" width="446" height="82" rx="8" fill="#eef0f6" stroke="#000c3d" stroke-width="1.6"/>
+<text x="1431.0" y="1495.0" font-size="13" font-weight="bold" fill="#000c3d" text-anchor="start">VCU</text>
+<circle cx="1434.0" cy="1510.0" r="2.1" fill="#000c3d"/>
+<text x="1442.0" y="1514.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">AS state machine</text>
+<circle cx="1434.0" cy="1526.5" r="2.1" fill="#000c3d"/>
+<text x="1442.0" y="1530.5" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">steering, motors, brakes</text>
+<circle cx="1646.0" cy="1510.0" r="2.1" fill="#000c3d"/>
+<text x="1654.0" y="1514.0" font-size="12" font-weight="normal" fill="#374151" text-anchor="start">wheel speeds every 10 ms</text>
+<path d="M 176,190 L 176,272" fill="none" stroke="#374151" stroke-width="1.6" marker-end="url(#ah374151)" marker-start="url(#ah374151)"/>
+<text x="184.0" y="226.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">Ethernet: points, gPTP</text>
+<path d="M 446,190 L 446,272" fill="none" stroke="#374151" stroke-width="1.6" marker-end="url(#ah374151)"/>
+<text x="454.0" y="226.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">USB 3: images</text>
+<path d="M 866,160 L 836,160" fill="none" stroke="#002eef" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ah002eef)"/>
+<text x="851.0" y="153.0" font-size="10" font-weight="bold" fill="#002eef" text-anchor="middle">PPS</text>
+<path d="M 716,190 L 716,272" fill="none" stroke="#002eef" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ah002eef)"/>
+<text x="724.0" y="226.0" font-size="10.5" font-weight="bold" fill="#002eef" text-anchor="start">PPS, RS-232 level</text>
+<path d="M 1001,190 L 1001,272" fill="none" stroke="#374151" stroke-width="1.6" marker-end="url(#ah374151)" marker-start="url(#ah374151)"/>
+<text x="1009.0" y="226.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">USB: IMU, GNSS; RTCM in</text>
+<path d="M 1720,190 L 1720,305 L 1506,305" fill="none" stroke="#0e7490" stroke-width="2" stroke-dasharray="2 3" marker-end="url(#ah0e7490)"/>
+<text x="1612.0" y="299.0" font-size="10" font-weight="bold" fill="#0e7490" text-anchor="middle">RTCM</text>
+<path d="M 176,338 L 176,384" fill="none" stroke="#374151" stroke-width="1.6" marker-end="url(#ah374151)"/>
+<path d="M 446,338 L 446,384" fill="none" stroke="#374151" stroke-width="1.6" marker-end="url(#ah374151)"/>
+<path d="M 716,338 L 716,384" fill="none" stroke="#002eef" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ah002eef)"/>
+<path d="M 1001,338 L 1001,384" fill="none" stroke="#374151" stroke-width="1.6" marker-end="url(#ah374151)" marker-start="url(#ah374151)"/>
+<path d="M 1240,338 L 1240,362 L 1110,362 L 1110,384" fill="none" stroke="#374151" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#ah374151)"/>
+<text x="1175.0" y="356.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">RTCM</text>
+<path d="M 1351,540 L 1351,450" fill="none" stroke="#374151" stroke-width="1.6" marker-end="url(#ah374151)"/>
+<text x="1359.0" y="500.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">live topics</text>
+<path d="M 1506,417 L 1576,417" fill="none" stroke="#0e7490" stroke-width="2" stroke-dasharray="2 3" marker-end="url(#ah0e7490)"/>
+<text x="1554.0" y="410.0" font-size="10" font-weight="bold" fill="#0e7490" text-anchor="end">2.4 GHz</text>
+<path d="M 176,484 L 176,540" fill="none" stroke="#374151" stroke-width="1.6" marker-end="url(#ah374151)"/>
+<text x="184.0" y="500.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">point cloud</text>
+<path d="M 446,484 L 446,540" fill="none" stroke="#374151" stroke-width="1.6" marker-end="url(#ah374151)"/>
+<text x="454.0" y="500.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">image</text>
+<path d="M 176,640 L 176,670" fill="none" stroke="#002eef" stroke-width="1.6" marker-end="url(#ah002eef)"/>
+<text x="184.0" y="659.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">cones</text>
+<path d="M 446,640 L 446,670" fill="none" stroke="#002eef" stroke-width="1.6" marker-end="url(#ah002eef)"/>
+<text x="454.0" y="659.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">colours</text>
+<path d="M 450,756 L 450,822" fill="none" stroke="#002eef" stroke-width="1.6" marker-end="url(#ah002eef)"/>
+<text x="458.0" y="784.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">coloured cones</text>
+<path d="M 1001,484 L 1001,822" fill="none" stroke="#374151" stroke-width="1.6" marker-end="url(#ah374151)"/>
+<text x="1009.0" y="660.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">IMU, GNSS fix</text>
+<path d="M 500,860 L 580,860" fill="none" stroke="#b86e00" stroke-width="2" marker-end="url(#ahb86e00)"/>
+<text x="540.0" y="853.0" font-size="10.5" font-weight="bold" fill="#b86e00" text-anchor="middle">map cones</text>
+<path d="M 580,905 L 500,905" fill="none" stroke="#b86e00" stroke-width="2" marker-end="url(#ahb86e00)"/>
+<text x="540.0" y="898.0" font-size="10.5" font-weight="bold" fill="#b86e00" text-anchor="middle">pose</text>
+<path d="M 880,860 L 785,860" fill="none" stroke="#b86e00" stroke-width="2" marker-end="url(#ahb86e00)"/>
+<text x="832.0" y="853.0" font-size="10.5" font-weight="bold" fill="#b86e00" text-anchor="middle">odometry</text>
+<path d="M 785,905 L 880,905" fill="none" stroke="#b86e00" stroke-width="2" marker-end="url(#ahb86e00)"/>
+<text x="832.0" y="898.0" font-size="10.5" font-weight="bold" fill="#b86e00" text-anchor="middle">map → odom</text>
+<path d="M 450,938 L 450,1004" fill="none" stroke="#b86e00" stroke-width="1.6" marker-end="url(#ahb86e00)"/>
+<text x="458.0" y="975.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">cone map, pose</text>
+<path d="M 960,938 L 960,1004" fill="none" stroke="#b86e00" stroke-width="1.6" marker-end="url(#ahb86e00)"/>
+<text x="968.0" y="975.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">pose, velocity</text>
+<path d="M 500,1060 L 580,1060" fill="none" stroke="#002eef" stroke-width="1.6" marker-end="url(#ah002eef)"/>
+<text x="540.0" y="1053.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">path</text>
+<path d="M 800,1060 L 880,1060" fill="none" stroke="#002eef" stroke-width="1.6" marker-end="url(#ah002eef)"/>
+<text x="840.0" y="1053.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle">speeds</text>
+<path d="M 360,1138 L 360,1204" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#ah475569)"/>
+<text x="352.0" y="1166.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="end">line crossed</text>
+<path d="M 460,1204 L 460,1138" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#ah475569)"/>
+<text x="468.0" y="1166.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="start">mission, mode</text>
+<path d="M 580,1235 L 500,1235" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#ah475569)"/>
+<rect x="505.8" y="1219.0" width="68.5" height="14" rx="3" fill="#ffffff" opacity="0.96"/>
+<text x="540.0" y="1228.0" font-size="10" font-weight="normal" fill="#374151" text-anchor="middle">AS state, go</text>
+<path d="M 500,1270 L 580,1270" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#ah475569)"/>
+<rect x="516.3" y="1254.0" width="47.5" height="14" rx="3" fill="#ffffff" opacity="0.96"/>
+<text x="540.0" y="1263.0" font-size="10" font-weight="normal" fill="#374151" text-anchor="middle">finished</text>
+<path d="M 880,1235 L 800,1235" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#ah475569)"/>
+<rect x="805.8" y="1219.0" width="68.5" height="14" rx="3" fill="#ffffff" opacity="0.96"/>
+<text x="840.0" y="1228.0" font-size="10" font-weight="normal" fill="#374151" text-anchor="middle">AS state, go</text>
+<path d="M 800,1270 L 880,1270" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#ah475569)"/>
+<rect x="807.8" y="1254.0" width="64.4" height="14" rx="3" fill="#ffffff" opacity="0.96"/>
+<text x="840.0" y="1263.0" font-size="10" font-weight="normal" fill="#374151" text-anchor="middle">status, EBS</text>
+<path d="M 690,1320 L 690,1300" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#ah475569)"/>
+<text x="698.0" y="1314.0" font-size="10" font-weight="normal" fill="#374151" text-anchor="start">fault</text>
+<path d="M 1008,1138 L 1008,1204" fill="none" stroke="#000c3d" stroke-width="2.4" marker-end="url(#ah000c3d)"/>
+<text x="1000.0" y="1166.0" font-size="10.5" font-weight="bold" fill="#000c3d" text-anchor="end">steering, torque, brake</text>
+<path d="M 1136,1240 L 1166,1240 L 1166,920 L 1136,920" fill="none" stroke="#374151" stroke-width="1.6" marker-end="url(#ah374151)"/>
+<rect x="1159.5" y="999.1" width="16.5" height="161.8" rx="3" fill="#ffffff" opacity="0.96"/>
+<text x="1171.0" y="1080.0" font-size="10.5" font-weight="normal" fill="#374151" text-anchor="middle" transform="rotate(-90 1171 1080)">wheel speeds, steering angle</text>
+<path d="M 1008,1290 L 1008,1330" fill="none" stroke="#000c3d" stroke-width="2.4" marker-end="url(#ah000c3d)" marker-start="url(#ah000c3d)"/>
+<path d="M 1008,1396 L 1008,1474" fill="none" stroke="#000c3d" stroke-width="2.4" marker-end="url(#ah000c3d)" marker-start="url(#ah000c3d)"/>
+<text x="1016.0" y="1428.0" font-size="10.5" font-weight="bold" fill="#000c3d" text-anchor="start">CAN</text>
+<path d="M 1340,1515 L 1420,1515" fill="none" stroke="#000c3d" stroke-width="2.4" marker-end="url(#ah000c3d)" marker-start="url(#ah000c3d)"/>
+<text x="1380.0" y="1508.0" font-size="10.5" font-weight="bold" fill="#000c3d" text-anchor="middle">CAN</text>
+<path d="M 1300,1474 L 1300,1388" fill="none" stroke="#b91c1c" stroke-width="2" stroke-dasharray="12 3 2 3" marker-end="url(#ahb91c1c)"/>
+<text x="1308.0" y="1428.0" font-size="10.5" font-weight="bold" fill="#b91c1c" text-anchor="start">13.7 V</text>
+<path d="M 56,1515 L 16,1515 L 16,135 L 56,135" fill="none" stroke="#b91c1c" stroke-width="2" stroke-dasharray="12 3 2 3" marker-end="url(#ahb91c1c)"/>
+<rect x="8.5" y="787.9" width="16.5" height="104.2" rx="3" fill="#ffffff" opacity="0.96"/>
+<text x="20.0" y="840.0" font-size="10.5" font-weight="bold" fill="#b91c1c" text-anchor="middle" transform="rotate(-90 20 840)">12 V to the lidar</text>
+<text x="1576.0" y="548.0" font-size="13" font-weight="bold" fill="#111827" text-anchor="start">Key</text>
+<rect x="1576" y="563" width="30" height="15" rx="4" fill="#eef0f6" stroke="#000c3d" stroke-width="1.5"/>
+<text x="1616.0" y="574.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">hardware</text>
+<rect x="1576" y="587" width="30" height="15" rx="4" fill="#eef2ff" stroke="#002eef" stroke-width="1.5"/>
+<text x="1616.0" y="598.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">software</text>
+<rect x="1576" y="611" width="30" height="15" rx="4" fill="#fff3d6" stroke="#b86e00" stroke-width="1.5"/>
+<text x="1616.0" y="622.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">map + localise</text>
+<rect x="1576" y="635" width="30" height="15" rx="4" fill="#f1f3f6" stroke="#475569" stroke-width="1.5"/>
+<text x="1616.0" y="646.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">system layer</text>
+<rect x="1576" y="659" width="30" height="15" rx="4" fill="#eef0f6" stroke="#000c3d" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="1616.0" y="670.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">good to have</text>
+<line x1="1576" y1="696" x2="1606" y2="696" stroke="#374151" stroke-width="1.6"/>
+<text x="1616.0" y="700.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">data</text>
+<line x1="1576" y1="720" x2="1606" y2="720" stroke="#000c3d" stroke-width="2.4"/>
+<text x="1616.0" y="724.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">CAN: commands and feedback</text>
+<line x1="1576" y1="744" x2="1606" y2="744" stroke="#002eef" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="1616.0" y="748.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">time (PPS)</text>
+<line x1="1576" y1="768" x2="1606" y2="768" stroke="#b91c1c" stroke-width="2" stroke-dasharray="12 3 2 3"/>
+<text x="1616.0" y="772.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">power</text>
+<line x1="1576" y1="792" x2="1606" y2="792" stroke="#0e7490" stroke-width="2" stroke-dasharray="2 3"/>
+<text x="1616.0" y="796.0" font-size="11.5" font-weight="normal" fill="#374151" text-anchor="start">radio or internet</text>
+<text x="1576.0" y="830.0" font-size="11.5" font-weight="normal" fill="#5b6170" text-anchor="start">Arrowheads at both ends: both</text>
+<text x="1576.0" y="847.0" font-size="11.5" font-weight="normal" fill="#5b6170" text-anchor="start">directions.</text>
+<text x="1576.0" y="881.0" font-size="11.5" font-weight="normal" fill="#5b6170" text-anchor="start">"options:" lists the methods we</text>
+<text x="1576.0" y="898.0" font-size="11.5" font-weight="normal" fill="#5b6170" text-anchor="start">compare in simulation; none</text>
+<text x="1576.0" y="915.0" font-size="11.5" font-weight="normal" fill="#5b6170" text-anchor="start">is fixed yet.</text>
+<text x="1576.0" y="949.0" font-size="11.5" font-weight="normal" fill="#5b6170" text-anchor="start">The pose reaches every block</text>
+<text x="1576.0" y="966.0" font-size="11.5" font-weight="normal" fill="#5b6170" text-anchor="start">through tf2 and is not drawn.</text>
+<text x="1576.0" y="1000.0" font-size="11.5" font-weight="normal" fill="#5b6170" text-anchor="start">One clock: the F9P PPS sets the</text>
+<text x="1576.0" y="1017.0" font-size="11.5" font-weight="normal" fill="#5b6170" text-anchor="start">computer clock (chrony), which</text>
+<text x="1576.0" y="1034.0" font-size="11.5" font-weight="normal" fill="#5b6170" text-anchor="start">passes it to the lidar (gPTP).</text>
+</svg>
